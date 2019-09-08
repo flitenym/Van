@@ -51,7 +51,7 @@
                     <Border BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}" Background="White" Opacity="0.95">
                         <Grid>
-                            <Grid Margin="1">
+                            <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition />
@@ -71,6 +71,7 @@
                                 
                                 <Rectangle x:Name="moveRectangle" Fill="Transparent"
                                            Grid.Row="0" Grid.Column="0"/>
+                                
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <Button x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}"
                                             Content="0" />
@@ -79,8 +80,9 @@
                                     <Button x:Name="closeButton" Style="{StaticResource WindowButtonStyle}"
                                             Content="r" />
                                 </StackPanel>
+                                
                                 <Grid Background="{TemplateBinding Background}"
-                                           Grid.Row="1" Grid.ColumnSpan="2" Margin="5,5,5,5">
+                                           Grid.Row="1" Grid.ColumnSpan="2" >
                                     <AdornerDecorator>
                                         <ContentPresenter/>
                                     </AdornerDecorator>

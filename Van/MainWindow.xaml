@@ -72,7 +72,7 @@
         </Grid>
 
 
-        <Grid x:Name="GridLeftMenu" Background="LightCyan" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-258,0,0,0">
+        <Grid x:Name="GridLeftMenu" Background="Blue" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-258,0,0,0" >
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
