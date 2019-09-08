@@ -104,21 +104,7 @@
             x:Name="bottom"
             Height="5"
             VerticalAlignment="Bottom"
-            Margin="5,0,5,0" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Transparent"
-            HorizontalAlignment="Left"
-            Margin="0,5,0,5"
-            Width="5"
-            x:Name="left"/>
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Transparent"
-            Margin="0,5,0,5"
-            Width="5"
-            HorizontalAlignment="Right"
-            x:Name="right" />
+            Margin="5,0,5,0" /> 
                                 <Rectangle
             Stroke="{x:Null}"
             Fill="Transparent"

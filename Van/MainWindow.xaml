@@ -13,41 +13,41 @@
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="258"/>
+                <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="255"/>
             </DoubleAnimationUsingKeyFrames>   
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
-                <EasingDoubleKeyFrame KeyTime="0" Value="258"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0" Value="255"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="0"/>
             </DoubleAnimationUsingKeyFrames> 
         </Storyboard>
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="-258"/>
+                <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="-255"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
-                <EasingDoubleKeyFrame KeyTime="0" Value="-258"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0" Value="-255"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
 
     <Window.Triggers>
-        <EventTrigger RoutedEvent="Button.Click" SourceName="ButtonLeftMenu">
+        <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource OpenLeftMenu}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="Grid.MouseLeave" SourceName="GridLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource CloseLeftMenu}"/>
         </EventTrigger>
-        <EventTrigger RoutedEvent="Button.Click" SourceName="ButtonRightMenu">
+        <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonRightMenu">
             <BeginStoryboard Storyboard="{StaticResource OpenRightMenu}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="Grid.MouseLeave" SourceName="GridRightMenu">
@@ -56,23 +56,11 @@
     </Window.Triggers>
 
     <Grid>
-        <Grid Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left">
-            <Button Width="10" Name="ButtonLeftMenu" Height="Auto" Padding="0" Style="{DynamicResource MaterialDesignToolButton}"  VerticalAlignment="Stretch" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"  >
-                <Button.Content>
-                    <materialDesign:PackIcon Kind="ChevronRight" Foreground="Black" Margin="-3,0,0,0" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                </Button.Content>
-            </Button>
-        </Grid>
-        <Grid Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right">
-            <Button Width="10" Name="ButtonRightMenu" Height="Auto" Padding="0" Style="{DynamicResource MaterialDesignToolButton}"  VerticalAlignment="Stretch" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"  >
-                <Button.Content>
-                    <materialDesign:PackIcon Kind="ChevronLeft" Foreground="Black" Margin="-3,0,0,0" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                </Button.Content>
-            </Button>
-        </Grid>
+        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" />
+        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" /> 
 
 
-        <Grid x:Name="GridLeftMenu" Background="Blue" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-258,0,0,0" >
+        <Grid x:Name="GridLeftMenu" Background="Blue" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -83,7 +71,7 @@
             </Grid.RenderTransform>
         </Grid>
 
-        <Grid x:Name="GridRightMenu" Background="LightCyan" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-258,0">
+        <Grid x:Name="GridRightMenu" Background="LightCyan" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
