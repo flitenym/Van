@@ -56,7 +56,7 @@
     </Window.Triggers>
 
     <Grid>
-        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" />
+        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" /> 
         <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" /> 
 
 
@@ -82,5 +82,9 @@
             </Grid.RenderTransform>
         </Grid>
 
+        <Grid x:Name="GridBottomState" Background="Black" Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-1,0,-1,0"/>
+
+            
+        
     </Grid>
 </controls:WindowControl>

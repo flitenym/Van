@@ -47,6 +47,7 @@ namespace CustomControls
         {
             Close();
         }
+
         #endregion
 
 
@@ -67,7 +68,7 @@ namespace CustomControls
             Rectangle moveRectangle = GetTemplateChild("moveRectangle") as Rectangle;
             if (moveRectangle != null)
             {
-                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown;
+                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown; 
             }
 
 
