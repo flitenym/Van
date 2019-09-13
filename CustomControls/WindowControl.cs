@@ -33,6 +33,7 @@ namespace CustomControls
         }
 
         #region Click events
+
         protected void MinimizeClick(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;

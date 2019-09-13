@@ -14,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Van
+namespace Van.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для MainWindowView.xaml
     /// </summary>
-    public partial class MainWindow : WindowControl
+    public partial class MainWindowView : WindowControl
     {
-        public MainWindow()
+        public MainWindowView()
         {
             InitializeComponent();
         }

@@ -1,4 +1,4 @@
-﻿<controls:WindowControl x:Class="Van.MainWindow"
+﻿<controls:WindowControl x:Class="Van.View.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Van"
         mc:Ignorable="d" FontSize="14"
-        Title="Привет" Height="450" Width="800" Icon="Images/icon.ico">
+        Title="Привет" Height="450" Width="800" Icon="../Images/icon.ico">
 
     <Window.Resources> 
         <!--анимация открытия меню-->
