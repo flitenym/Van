@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Van.Interfaces;
 using Van.Helper;
+using Van.ViewModel;
 
 namespace Van
 {

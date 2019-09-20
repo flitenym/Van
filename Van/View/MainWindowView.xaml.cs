@@ -1,30 +1,40 @@
-﻿using CustomControls;
-using System;
-using System.Collections.Generic;
+﻿using CustomControls; 
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Van.Helper;
+using Van.Interfaces;
+using Van.Model;
+using Van.ViewModel;
 
 namespace Van.View
 {
     /// <summary>
     /// Логика взаимодействия для MainWindowView.xaml
     /// </summary>
-    public partial class MainWindowView : WindowControl
+    public partial class MainWindowView : WindowControl, IMainWindowView
     {
         public MainWindowView()
         {
             InitializeComponent();
         }
-         
+
+        public void SnackBar()
+        {
+            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
+            Snackbar.MessageQueue.Enqueue(
+                win.IsMessagePanelContent,
+                "OK",
+                param => Trace.WriteLine("Actioned: " + param),
+                win.IsMessagePanelContent);
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
+            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+            var settings = modules.Where(x => x.IdType == 0).FirstOrDefault();
+            win.SelectedModule = settings;
+        }
     }
 }

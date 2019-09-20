@@ -60,7 +60,31 @@
         <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" /> 
 
 
-        <Grid x:Name="GridLeftMenu" Background="Blue" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
+        <Grid x:Name="GridLeftMenu" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="32" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Click="Settings_Click">
+                    <Button.Content>
+                        <materialDesign:PackIcon Kind="Settings" Foreground="{DynamicResource DarkLightForeground}"/>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="GridRightMenu" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -70,21 +94,15 @@
                 </TransformGroup>
             </Grid.RenderTransform>
         </Grid>
+ 
+        <materialDesign:Snackbar HorizontalAlignment="Stretch"
+                                 MessageQueue="{materialDesign:MessageQueue}" 
+                                 Background="{DynamicResource MaterialDesignBackground}"
+                                 Foreground="{DynamicResource MaterialDesignForeground}" 
+                                 x:Name="Snackbar" 
+                                 FontWeight="Bold" 
+                                 ActionButtonStyle="{DynamicResource ActionButton}"/>
 
-        <Grid x:Name="GridRightMenu" Background="LightCyan" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
-            <Grid.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Grid.RenderTransform>
-        </Grid>
 
-        <Grid x:Name="GridBottomState" Background="Black" Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-1,0,-1,0"/>
-
-            
-        
     </Grid>
 </controls:WindowControl>
