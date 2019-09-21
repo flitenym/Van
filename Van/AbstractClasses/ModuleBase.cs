@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using Van.Interfaces;
+using static Van.Helper.Enums;
 
 namespace Van.AbstractClasses
 {
@@ -14,6 +15,8 @@ namespace Van.AbstractClasses
 
         public abstract int Num { get; }
 
+        public abstract ModelBaseClasses modelClass { get; }
+
         public UserControl UserInterface
         {
             get
@@ -25,8 +28,6 @@ namespace Van.AbstractClasses
                 return view;
             }
         }
-
-        public abstract int IdType { get; }
 
         public void Deactivate()
         {

@@ -34,7 +34,7 @@
                 <RowDefinition Height="100" />
             </Grid.RowDefinitions>
             <Grid Grid.Column="0" Grid.Row="0" VerticalAlignment="Top">
-                <Button x:Uid="Blue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource MaterialDesignToolForegroundButton}"  Click="Button_Click">
+                <Button x:Uid="Blue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Style="{StaticResource MaterialDesignToolForegroundButton}" Command="{Binding ThemeAcceptor}" >
                     <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
                 </Button>
             </Grid>

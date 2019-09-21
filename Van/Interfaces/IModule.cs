@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using static Van.Helper.Enums;
 
 namespace Van.Interfaces
 {
@@ -10,7 +11,7 @@ namespace Van.Interfaces
     {
         string Name { get; }
         int Num { get; }
-        int IdType { get; }
+        ModelBaseClasses modelClass { get; }
         UserControl UserInterface { get; }
         void Deactivate();
     }

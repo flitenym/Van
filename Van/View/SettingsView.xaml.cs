@@ -24,30 +24,6 @@ namespace Van.View
         public SettingsView()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            Button bn = (Button)sender;
-
-            Type TestType = Type.GetType("Freon.Model." + bn.Uid.ToString(), false, true);
-
-            //если класс не найден
-            if (TestType != null)
-            {
-                System.Reflection.ConstructorInfo ci = TestType.GetConstructor(new Type[] { });
-
-                //вызываем конструтор
-                object Obj = ci.Invoke(new object[] { });
-
-                if (win.SelectedTheme != (ITheme)Obj)
-                {
-                    win.SelectedTheme = (ITheme)Obj;
-                    Message($"Тема изменена на {((ITheme)Obj).Name}");
-                }
-            }
-        }
-
+        } 
     }
 }

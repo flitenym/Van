@@ -7,25 +7,17 @@ using System.Windows.Controls;
 using Van.AbstractClasses;
 using Van.View;
 using Van.ViewModel;
+using static Van.Helper.Enums;
 
 namespace Van.Model
 {
     class SettingsModel : ModuleBase
     {
-        public override string Name
-        {
-            get { return "Настройки"; }
-        }
+        public override string Name => "Настройки";
 
-        public override int Num
-        {
-            get { return 0; }
-        }
+        public override int Num => 0;
 
-        public override int IdType
-        {
-            get { return 0; }
-        }
+        public override ModelBaseClasses modelClass => ModelBaseClasses.Settings;
 
         protected override UserControl CreateViewAndViewModel()
         {

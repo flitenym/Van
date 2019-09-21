@@ -4,25 +4,42 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Van.Helper;
+using System.Runtime.CompilerServices;
+using static Van.Helper.Helper;
 
 namespace Van.ViewModel
 {
     class SettingsViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        private ITheme _SelectedTheme;
-        public ITheme SelectedTheme
+        public SettingsViewModel()
         {
-            get { return _SelectedTheme; }
-            set
+            
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+
+        private RelayCommand themeAcceptor;
+        public RelayCommand ThemeAcceptor
+        {
+            get
             {
-                _SelectedTheme = null;
-                if (value == _SelectedTheme) return;
-                if (_SelectedTheme != null) _SelectedTheme.Deactivate();
-                _SelectedTheme = value;
-                _SelectedTheme.SelectTheme();
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(_SelectedTheme)));
+                return themeAcceptor ??
+                  (themeAcceptor = new RelayCommand(obj =>
+                  {
+                      AcceptTheme();
+                  }));
             }
+        }
+
+        public void AcceptTheme() {
+            Message("Тема изменена");
         }
     }
 }

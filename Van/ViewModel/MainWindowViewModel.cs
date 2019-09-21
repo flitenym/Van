@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Van.Helper;
 
 namespace Van.ViewModel
 {
@@ -121,8 +122,26 @@ namespace Van.ViewModel
             }
         }
 
+        private RelayCommand setSettingsView;
+        public RelayCommand SetSettingsView
+        {
+            get
+            {
+                return setSettingsView ??
+                    (setSettingsView = new RelayCommand(obj =>
+                    {
+                        SetSettings();
+                    }));
+            }
+        }
 
 
+        private void SetSettings()
+        { 
+            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+            var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
+            this.SelectedModule = settings;
+        }
 
     }
 }

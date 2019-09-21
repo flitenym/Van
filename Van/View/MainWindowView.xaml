@@ -76,7 +76,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Click="Settings_Click">
+                <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Command="{Binding SetSettingsView}">
                     <Button.Content>
                         <materialDesign:PackIcon Kind="Settings" Foreground="{DynamicResource DarkLightForeground}"/>
                     </Button.Content>
@@ -103,6 +103,9 @@
                                  FontWeight="Bold" 
                                  ActionButtonStyle="{DynamicResource ActionButton}"/>
 
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="GridMain" >
+            <ContentPresenter x:Name="contentPresenter" Content="{Binding UserInterface}" /> 
+        </Grid> 
 
     </Grid>
 </controls:WindowControl>

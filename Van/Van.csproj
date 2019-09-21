@@ -66,6 +66,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\Enums.cs" />
+    <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="View\SettingsView.xaml.cs">
