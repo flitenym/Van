@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Van.Interfaces;
+using static Van.Helper.Enums;
 
 namespace Van.AbstractClasses
 {
@@ -8,9 +9,11 @@ namespace Van.AbstractClasses
     {
         private ResourceDictionary resource;
 
+        public abstract string Title { get; }
         public abstract string Name { get; }
-
         public abstract int Num { get; }
+        public abstract ThemeBaseClasses ThemeClass { get; }
+        public abstract string UriPath { get; }
 
         public ResourceDictionary ResourceDictionary
         {
@@ -23,8 +26,6 @@ namespace Van.AbstractClasses
                 return resource;
             }
         }
-
-        public abstract string UriPath { get; }
 
         public void Deactivate()
         {
@@ -42,6 +43,5 @@ namespace Van.AbstractClasses
         {
             return Application.LoadComponent(new Uri(UriPath, UriKind.Relative)) as ResourceDictionary;
         }
-
     }
 }

@@ -21,15 +21,7 @@ namespace Van
         {
             var mainWindow = new MainWindowView();
 
-            List<IModule> modules = new List<IModule>(); //лист где все страницы
-
-            modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
-
-            List<ITheme> themes = new List<ITheme>(); //лист где все темы
-
-            themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
-
-            var vm = new MainWindowViewModel(modules, themes);
+            var vm = new MainWindowViewModel();
 
             mainWindow.DataContext = vm;
 

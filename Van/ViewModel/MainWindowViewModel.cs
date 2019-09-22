@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Van.Helper;
+using static Van.Helper.Enums;
 
 namespace Van.ViewModel
 {
@@ -14,14 +15,21 @@ namespace Van.ViewModel
 
         public event PropertyChangedEventHandler ThemeChanged = delegate { };
 
-        public MainWindowViewModel(IEnumerable<IModule> modules, IEnumerable<ITheme> themes)
-        { 
-            //Темы без темного и светлого
-            Themes = themes.Where(x => x.Num > 0).OrderBy(m => m.Num).ToList();
-            SelectedTheme = this.Themes.FirstOrDefault();
+        public MainWindowViewModel()
+        {
+            List<IModule> modules = new List<IModule>(); //лист где все страницы
 
-            //Темы без темного и светлого
-            DarkLightThemes = themes.Where(x => x.Num < 0).OrderBy(m => m.Num).ToList();
+            modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+
+            List<ITheme> themes = new List<ITheme>(); //лист где все темы
+
+            themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+
+
+            Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
+            SelectedTheme = this.Themes.FirstOrDefault();
+             
+            DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
         } 
         public List<ITheme> Themes { get; private set; } //лист где все темы без темного и светлого
@@ -134,7 +142,6 @@ namespace Van.ViewModel
                     }));
             }
         }
-
 
         private void SetSettings()
         { 

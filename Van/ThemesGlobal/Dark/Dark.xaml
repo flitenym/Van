@@ -5,131 +5,33 @@
                     xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
                     xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    
+    <ResourceDictionary.MergedDictionaries> 
+        <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ScrollControlStyle.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 
-    <SolidColorBrush x:Key="MaterialDesignBackground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="MaterialDesignForeground" Color="#FF424242" />
-    <SolidColorBrush x:Key="ActionButtonForeground" Color="#FF424242"  />
-    <SolidColorBrush x:Key="StackPanelMainBackground" Color="#FF424242"  />
-    <SolidColorBrush x:Key="WindowForeground" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="DarkLightForeground" Color="#FF424242" />
-    <SolidColorBrush x:Key="ThemeIconForeground" Color="#FF424242" />
-    <SolidColorBrush x:Key="ThemeForeground" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="logoCard" Color="#FF424242"  />
-    <SolidColorBrush x:Key="settingsCard" Color="#FF424242"  />
-    <SolidColorBrush x:Key="gridSplitterBackground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="ColorPickerBackground" Color="#FF424242"  />
-    <SolidColorBrush x:Key="ColorPickerCloseIconForeground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="AccountBackground" Color="#FF424242"  />
-    <SolidColorBrush x:Key="AccountForeground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="RefreshForeground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="DataGridBackground" Color="#FF424242"  />
-    <SolidColorBrush x:Key="DataGridForeground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="#89FFFFFF" po:Freeze="True" />
-    <SolidColorBrush x:Key="ScrollBarBackground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="GridSplitterBackground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="GridSplitterFill" Color="#FFFFFFFF"  />
+    <Color x:Key="Black">#FFFFFFFF</Color>
+    <Color x:Key="Gray">#FF424242</Color>
+    <Color x:Key="WhiteGray">#89FFFFFF</Color>
+    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="MaterialDesignForeground" Color="{StaticResource Gray}" />
+    <SolidColorBrush x:Key="ActionButtonForeground" Color="{StaticResource Gray}" />
+    <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="DarkLightForeground" Color="{StaticResource Gray}" />
+    <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Gray}" />
 
 
-    <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="IsTabStop" Value="false"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border x:Name="rectangle"
-                                SnapsToDevicePixels="True"
-                                Background="{StaticResource ScrollBarBackground}"
-                                CornerRadius="3"
-                                Opacity="0.2"
-                                Height="{TemplateBinding Height}"
-                                Width="{TemplateBinding Width}"/>
-                    <ControlTemplate.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="rectangle" Storyboard.TargetProperty="Opacity" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation To="0.2" Duration="0:0:0.3" Storyboard.TargetName="rectangle" Storyboard.TargetProperty="Opacity" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+
+    <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
+        <Setter Property="Background" Value="{StaticResource ScrollBarBackground}" />
+    </Style>
+    
+    <Style x:Key="SrollViewerControl" BasedOn="{StaticResource ScrollViewerStyle}" TargetType="{x:Type ScrollViewer}">
+        <Setter Property="Foreground" Value="{StaticResource ScrollBarBackground}" />
     </Style>
 
-    <Style TargetType="{x:Type ScrollBar}">
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-        <Setter Property="Width" Value="14"/>
-        <Setter Property="Margin" Value="-14 0 0 0" />
-        <Setter Property="MinWidth" Value="{Binding Width, RelativeSource={RelativeSource Self}}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-
-                        <Border Padding="0 4">
-                            <Track x:Name="PART_Track"
-                               IsDirectionReversed="true"
-                               IsEnabled="{TemplateBinding IsMouseOver}"
-                               Width="6"
-                               HorizontalAlignment="Center">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageUpCommand}" />
-                                </Track.DecreaseRepeatButton>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageDownCommand}" />
-                                </Track.IncreaseRepeatButton>
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource ScrollBarThumb}" />
-                                </Track.Thumb>
-                            </Track>
-                        </Border>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="Width" Value="Auto"/>
-                <Setter Property="MinWidth" Value="0"/>
-                <Setter Property="Height" Value="14"/>
-                <Setter Property="MinHeight" Value="{Binding Height, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Margin" Value="0 -14 0 0" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Grid x:Name="Bg" SnapsToDevicePixels="true">
-                                <Track x:Name="PART_Track"
-                                    IsEnabled="{TemplateBinding IsMouseOver}"
-                                    Height="6"
-                                       >
-                                    <Track.DecreaseRepeatButton>
-                                        <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageLeftCommand}"/>
-                                    </Track.DecreaseRepeatButton>
-                                    <Track.IncreaseRepeatButton>
-                                        <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageRightCommand}"/>
-                                    </Track.IncreaseRepeatButton>
-                                    <Track.Thumb>
-                                        <Thumb Style="{StaticResource ScrollBarThumb}" />
-                                    </Track.Thumb>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
+    
 
 
 </ResourceDictionary>

@@ -57,7 +57,7 @@
 
     <Grid>
         <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" /> 
-        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" /> 
+        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="0" /> 
 
 
         <Grid x:Name="GridLeftMenu" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
@@ -84,7 +84,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="GridRightMenu" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
+        <Grid x:Name="GridRightMenu" Width="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

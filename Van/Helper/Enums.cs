@@ -47,5 +47,19 @@ namespace Van.Helper
             RightMenu = 2
         }
 
+        public enum ThemeBaseClasses
+        {
+            /// <summary>
+            /// Темная/светлая тема
+            /// </summary>
+            [Description("Темная/светлая тема")]
+            GlobalTheme = 0,
+            /// <summary>
+            /// Обычная тема
+            /// </summary>
+            [Description("Обычная тема")]
+            GeneralTheme = 1
+        }
+
     }
 }
