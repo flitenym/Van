@@ -13,16 +13,16 @@
 
     <Color x:Key="Black">#FFFFFFFF</Color>
     <Color x:Key="Gray">#FF424242</Color>
-    <Color x:Key="WhiteGray">#89FFFFFF</Color>
+    <Color x:Key="WhiteGray">#FFFFFF</Color>
     <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource Black}" />
     <SolidColorBrush x:Key="MaterialDesignForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ActionButtonForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource Black}" />
     <SolidColorBrush x:Key="DarkLightForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Gray}" />
-
-
-
+    <SolidColorBrush x:Key="WindowsBackGround" Color="{StaticResource WhiteGray}" />
+    
+    
     <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
         <Setter Property="Background" Value="{StaticResource ScrollBarBackground}" />
     </Style>

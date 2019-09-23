@@ -24,12 +24,27 @@ namespace CustomControls
             : base()
         {
             PreviewMouseMove += OnPreviewMouseMove;
+            this.StateChanged += OnStateChanged;
         }
 
         protected void OnPreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.LeftButton != MouseButtonState.Pressed)
                 Cursor = Cursors.Arrow;
+        }
+
+        protected void OnStateChanged(object sender, EventArgs e)
+        {
+            Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
+
+            if (WindowState == WindowState.Maximized)
+            {
+                border.Margin = new Thickness(6); 
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                border.Margin = new Thickness(0); 
+            }
         }
 
         #region Click events
@@ -41,7 +56,19 @@ namespace CustomControls
 
         protected void RestoreClick(object sender, RoutedEventArgs e)
         {
-            WindowState = (WindowState == WindowState.Normal) ? WindowState.Maximized : WindowState.Normal;
+            Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
+
+            if (WindowState == WindowState.Normal)
+            { 
+                MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+                border.Margin = new Thickness(6);
+                WindowState = WindowState.Maximized;
+            }
+            else if (WindowState == WindowState.Maximized)
+            {
+                border.Margin = new Thickness(0);
+                WindowState = WindowState.Normal;
+            }
         }
 
         protected void CloseClick(object sender, RoutedEventArgs e)
@@ -69,7 +96,7 @@ namespace CustomControls
             Rectangle moveRectangle = GetTemplateChild("moveRectangle") as Rectangle;
             if (moveRectangle != null)
             {
-                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown; 
+                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown;
             }
 
 
@@ -205,8 +232,9 @@ namespace CustomControls
 
         private void OnSourceInitialized(object sender, EventArgs e)
         {
-            _hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+            _hwndSource = (HwndSource)PresentationSource.FromVisual(this); 
         }
+
     }
 
 }

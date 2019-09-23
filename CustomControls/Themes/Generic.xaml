@@ -40,16 +40,17 @@
 
     <!-- Window style -->
     <Style TargetType="{x:Type local:WindowControl}">
-        <Setter Property="WindowStyle" Value="None"/>
-        <Setter Property="ResizeMode" Value="NoResize"/>
+        <Setter Property="WindowStyle" Value="None"/> 
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
         <Setter Property="Background" Value="LightBlue"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="Black"/> 
             <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WindowControl}">
-                    <Border BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" Background="White" Opacity="0.95">
+                    <Border x:Name="PART_WindowBorder" BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}" Background="{DynamicResource WindowsBackGround}">
                         <Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -69,8 +70,7 @@
                                        VerticalAlignment="Center" HorizontalAlignment="Left" 
                                        Margin="36,0,0,0"/>
 
-                                <Rectangle x:Name="moveRectangle" Fill="Transparent"
-                                        Grid.Row="0" Grid.Column="0"/> 
+                                <Rectangle  x:Name="moveRectangle" Fill="Transparent" Grid.Row="0" Grid.Column="0"/> 
 
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <Button x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}"
