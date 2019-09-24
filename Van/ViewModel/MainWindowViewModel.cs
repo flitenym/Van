@@ -21,6 +21,8 @@ namespace Van.ViewModel
 
             modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
 
+            this.SelectedModule = modules.Where(x => x.modelClass == ModelBaseClasses.Main).FirstOrDefault();
+
             List<ITheme> themes = new List<ITheme>(); //лист где все темы
 
             themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();

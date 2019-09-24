@@ -4,21 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+             xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz" 
              xmlns:local="clr-namespace:Van.View"
              xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries> 
-                <ResourceDictionary Source="/Themes/Blue/Blue.xaml" x:Name="blue"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
-
-    <Grid Margin="5">
+             d:DesignHeight="450" d:DesignWidth="800"> 
+    <Grid>
         <TextBlock Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Темы" HorizontalAlignment="Center"/>
         <ScrollViewer Style="{DynamicResource SrollViewerControl}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel
@@ -48,84 +40,8 @@
                             <TextBlock Text="Здесь будет показ темы"/>
                         </StackPanel>
                     </Expander>
-                </Grid>
-
-                <Grid Height="200" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" VerticalAlignment="Top">
-                        <Button   
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
-                        </Button>
-                    </Grid>
-                    <Expander Grid.Column="1" HorizontalAlignment="Stretch" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <TextBlock Text="Здесь будет показ темы"/>
-                        </StackPanel>
-                    </Expander>
-                </Grid>
-                <Grid Height="200"  Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" VerticalAlignment="Top">
-                        <Button   
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
-                        </Button>
-                    </Grid>
-                    <Expander Grid.Column="1" HorizontalAlignment="Stretch" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <TextBlock Text="Здесь будет показ темы"/>
-                        </StackPanel>
-                    </Expander>
-                </Grid>
-                <Grid Height="200"  Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" VerticalAlignment="Top">
-                        <Button   
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
-                        </Button>
-                    </Grid>
-                    <Expander Grid.Column="1" HorizontalAlignment="Stretch" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <TextBlock Text="Здесь будет показ темы"/>
-                        </StackPanel>
-                    </Expander>
-                </Grid>
-                <Grid Height="200"  Background="Firebrick">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" VerticalAlignment="Top">
-                        <Button   
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
-                        </Button>
-                    </Grid>
-                    <Expander Grid.Column="1" HorizontalAlignment="Stretch" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <TextBlock Text="Здесь будет показ темы"/>
-                        </StackPanel>
-                    </Expander>
-                </Grid>
+                </Grid>  
+                
             </StackPanel>
         </ScrollViewer>
     </Grid>

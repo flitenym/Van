@@ -44,7 +44,12 @@ namespace Van.Helper
             /// Класс для меню справа
             /// </summary>
             [Description("Правое меню")]
-            RightMenu = 2
+            RightMenu = 2,
+            /// <summary>
+            /// Рабочее место
+            /// </summary>
+            [Description("Рабочее место")]
+            Main = 3
         }
 
         public enum ThemeBaseClasses
