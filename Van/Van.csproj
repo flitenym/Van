@@ -81,16 +81,11 @@
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Model\UserInformationModel.cs" />
-    <Compile Include="Model\WorkSpaceModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
-    <Compile Include="ViewModel\WorkSpaceViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="View\UserInformationView.xaml.cs">
       <DependentUpon>UserInformationView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\WorkSpaceView.xaml.cs">
-      <DependentUpon>WorkSpaceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -126,10 +121,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\UserInformationView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\WorkSpaceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

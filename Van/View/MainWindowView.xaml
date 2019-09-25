@@ -5,24 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz" 
+        xmlns:localViews="clr-namespace:Van.View"
+        xmlns:localViewModels="clr-namespace:Van.ViewModel"
         xmlns:local="clr-namespace:Van"
         mc:Ignorable="d" FontSize="14"
         Title="Привет" Height="450" Width="800" Icon="../Images/icon.ico">
 
-    <Window.Resources> 
+    <Window.Resources>
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
                 <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="255"/>
-            </DoubleAnimationUsingKeyFrames>   
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="255"/>
                 <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="0"/>
-            </DoubleAnimationUsingKeyFrames> 
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenRightMenu">
@@ -55,9 +59,33 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Grid>
-        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" /> 
-        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="0" /> 
+    <Grid> 
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="GridMain" Margin="15,0,15,0"> 
+            <dockablz:Layout>
+                <dragablz:TabablzControl >
+                    <dragablz:TabablzControl.InterTabController>
+                        <dragablz:InterTabController />
+                    </dragablz:TabablzControl.InterTabController>
+                    <TabItem Header="Пользователь">
+                        <localViews:UserInformationView>
+                            <localViews:UserInformationView.DataContext>
+                                <localViewModels:UserInformationViewModel />
+                            </localViews:UserInformationView.DataContext>
+                        </localViews:UserInformationView>
+                    </TabItem>
+                    <TabItem Header="Настройки">
+                        <localViews:SettingsView>
+                            <localViews:SettingsView.DataContext>
+                                <localViewModels:SettingsViewModel />
+                            </localViews:SettingsView.DataContext>
+                        </localViews:SettingsView>
+                    </TabItem>
+                </dragablz:TabablzControl> 
+            </dockablz:Layout>
+        </Grid>
+
+        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" />
+        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" />
 
 
         <Grid x:Name="GridLeftMenu" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
@@ -84,7 +112,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="GridRightMenu" Width="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
+        <Grid x:Name="GridRightMenu" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -94,7 +122,7 @@
                 </TransformGroup>
             </Grid.RenderTransform>
         </Grid>
- 
+
         <materialDesign:Snackbar HorizontalAlignment="Stretch"
                                  MessageQueue="{materialDesign:MessageQueue}" 
                                  Background="{DynamicResource MaterialDesignBackground}"
@@ -102,10 +130,6 @@
                                  x:Name="Snackbar" 
                                  FontWeight="Bold" 
                                  ActionButtonStyle="{DynamicResource ActionButton}"/>
-
-        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="GridMain" >
-            <ContentPresenter x:Name="contentPresenter" Content="{Binding UserInterface}" /> 
-        </Grid> 
 
     </Grid>
 </controls:WindowControl>

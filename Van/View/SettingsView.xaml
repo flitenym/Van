@@ -32,7 +32,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Style="{StaticResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{Binding Source={StaticResource BlueButton}}"/>
+                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource BlueButton}"/>
                         </Button>
                     </Grid>
                     <Expander Grid.Column="1" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
