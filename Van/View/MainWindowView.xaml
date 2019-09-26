@@ -59,36 +59,34 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Grid> 
-        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="GridMain" Margin="15,0,15,0"> 
-            <dockablz:Layout>
-                <dragablz:TabablzControl >
-                    <dragablz:TabablzControl.InterTabController>
-                        <dragablz:InterTabController />
-                    </dragablz:TabablzControl.InterTabController>
-                    <TabItem Header="Пользователь">
-                        <localViews:UserInformationView>
-                            <localViews:UserInformationView.DataContext>
-                                <localViewModels:UserInformationViewModel />
-                            </localViews:UserInformationView.DataContext>
-                        </localViews:UserInformationView>
-                    </TabItem>
-                    <TabItem Header="Настройки">
-                        <localViews:SettingsView>
-                            <localViews:SettingsView.DataContext>
-                                <localViewModels:SettingsViewModel />
-                            </localViews:SettingsView.DataContext>
-                        </localViews:SettingsView>
-                    </TabItem>
-                </dragablz:TabablzControl> 
-            </dockablz:Layout>
-        </Grid>
+    <Grid>  
+        <dockablz:Layout Margin="15,0,15,0">
+            <dragablz:TabablzControl BorderThickness="0">
+                <dragablz:TabablzControl.InterTabController>
+                    <dragablz:InterTabController />
+                </dragablz:TabablzControl.InterTabController>
+                <TabItem Header="Пользователь">
+                    <localViews:UserInformationView>
+                        <localViews:UserInformationView.DataContext>
+                            <localViewModels:UserInformationViewModel />
+                        </localViews:UserInformationView.DataContext>
+                    </localViews:UserInformationView>
+                </TabItem>
+                <TabItem Header="Настройки">
+                    <localViews:SettingsView>
+                        <localViews:SettingsView.DataContext>
+                            <localViewModels:SettingsViewModel />
+                        </localViews:SettingsView.DataContext>
+                    </localViews:SettingsView>
+                </TabItem>
+            </dragablz:TabablzControl> 
+        </dockablz:Layout> 
 
         <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" />
         <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" />
 
 
-        <Grid x:Name="GridLeftMenu" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
+        <Grid x:Name="GridLeftMenu" Background="White" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -112,7 +110,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="GridRightMenu" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
+        <Grid x:Name="GridRightMenu" Background="White" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
