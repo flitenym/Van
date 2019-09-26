@@ -10,6 +10,7 @@
         xmlns:localViews="clr-namespace:Van.View"
         xmlns:localViewModels="clr-namespace:Van.ViewModel"
         xmlns:local="clr-namespace:Van"
+        xmlns:nodes="clr-namespace:Van.Helper"
         mc:Ignorable="d" FontSize="14"
         Title="Привет" Height="450" Width="800" Icon="../Images/icon.ico">
 
@@ -18,28 +19,28 @@
         <Storyboard x:Key="OpenLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="255"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="255"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="255"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
-                <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="-255"/>
+                <SplineDoubleKeyFrame  KeyTime="0" Value="1"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="-255"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="-255"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.2" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
@@ -86,7 +87,7 @@
         <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" />
 
 
-        <Grid x:Name="GridLeftMenu" Background="White" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
+        <Grid materialDesign:ShadowAssist.ShadowDepth="Depth4" x:Name="GridLeftMenu" Background="White" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -95,19 +96,38 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </Grid.RenderTransform>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="32" />
-            </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Command="{Binding SetSettingsView}">
-                    <Button.Content>
-                        <materialDesign:PackIcon Kind="Settings" Foreground="{DynamicResource DarkLightForeground}"/>
-                    </Button.Content>
-                </Button>
-            </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0"> 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+                <TreeView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Nodes}">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Command="{Binding SetSettingsView}">
+                        <Button.Content>
+                            <materialDesign:PackIcon Kind="Settings" Foreground="{DynamicResource DarkLightForeground}"/>
+                        </Button.Content>
+                    </Button>
+                </StackPanel> 
+                
+            </Grid>
+            <Rectangle Grid.Column="1" Fill="LightGray"  />
+
+
         </Grid>
 
         <Grid x:Name="GridRightMenu" Background="White" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">

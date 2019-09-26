@@ -11,7 +11,9 @@ namespace Van.Interfaces
     {
         string Name { get; }
         int Num { get; }
-        ModelBaseClasses modelClass { get; }
+        Guid ID { get; }
+        Guid? ParentID { get; }
+        ModelBaseClasses modelClass { get; } 
         UserControl UserInterface { get; }
         void Deactivate();
     }

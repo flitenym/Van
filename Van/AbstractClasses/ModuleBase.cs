@@ -15,7 +15,12 @@ namespace Van.AbstractClasses
 
         public abstract int Num { get; }
 
+        public abstract Guid ID { get; }
+
+        public abstract Guid? ParentID { get; }
+
         public abstract ModelBaseClasses modelClass { get; }
+
 
         public UserControl UserInterface
         {

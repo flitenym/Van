@@ -14,10 +14,12 @@ namespace CustomControls
 {
     public class WindowControl : Window
     {
+        public static bool restoreIfMove = false;
+
         static WindowControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WindowControl),
-                new FrameworkPropertyMetadata(typeof(WindowControl))); 
+                new FrameworkPropertyMetadata(typeof(WindowControl)));
         }
 
         public WindowControl()
@@ -39,11 +41,11 @@ namespace CustomControls
 
             if (WindowState == WindowState.Maximized)
             {
-                border.Margin = new Thickness(6); 
+                border.Margin = new Thickness(6);
             }
             else if (WindowState == WindowState.Normal)
             {
-                border.Margin = new Thickness(0); 
+                border.Margin = new Thickness(0);
             }
         }
 
@@ -59,7 +61,7 @@ namespace CustomControls
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
 
             if (WindowState == WindowState.Normal)
-            { 
+            {
                 MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
                 border.Margin = new Thickness(6);
                 WindowState = WindowState.Maximized;
@@ -96,9 +98,12 @@ namespace CustomControls
             Rectangle moveRectangle = GetTemplateChild("moveRectangle") as Rectangle;
             if (moveRectangle != null)
             {
-                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown;
+                moveRectangle.PreviewMouseDown += moveRectangle_PreviewMouseDown; 
+                moveRectangle.MouseLeftButtonUp += moveRectangle_MouseLeftButtonUp;
+                moveRectangle.MouseMove += moveRectangle_MouseMove;
             }
 
+            restoreIfMove = false;
 
             Grid resizeGrid = GetTemplateChild("resizeGrid") as Grid;
             if (resizeGrid != null)
@@ -117,10 +122,98 @@ namespace CustomControls
             base.OnApplyTemplate();
         }
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetCursorPos(out POINT lpPoint);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+        }
+
+        private void moveRectangle_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (restoreIfMove)
+            {
+                restoreIfMove = false;
+
+                double percentHorizontal = e.GetPosition(this).X / ActualWidth;
+                double targetHorizontal = RestoreBounds.Width * percentHorizontal;
+
+                double percentVertical = e.GetPosition(this).Y / ActualHeight;
+                double targetVertical = RestoreBounds.Height * percentVertical;
+
+                WindowState = WindowState.Normal;
+
+                POINT lMousePosition;
+                GetCursorPos(out lMousePosition);
+
+                Left = lMousePosition.X - targetHorizontal;
+                Top = lMousePosition.Y - targetVertical;
+
+                DragMove();
+            }
+        }
+
         private void moveRectangle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
-                DragMove();
+            if (e.ChangedButton != MouseButton.Left) { return; }
+            if (e.ClickCount == 2)
+            {
+                SwitchState();
+                return;
+            }
+            else if (WindowState == WindowState.Maximized)
+            {
+                restoreIfMove = true;
+                return;
+            }
+            DragMove(); 
+        }
+
+        private void moveRectangle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            restoreIfMove = false;
+        }
+
+        private void SwitchState()
+        {
+            switch (WindowState)
+            {
+                case WindowState.Normal:
+                    {
+                        WindowState = WindowState.Maximized;
+                        break;
+                    }
+                case WindowState.Maximized:
+                    {
+                        WindowState = WindowState.Normal;
+                        break;
+                    }
+            }
+        }
+
+        private void moveRectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                SwitchState();
+                return;
+            }
+            else if (WindowState == WindowState.Maximized)
+            {
+                restoreIfMove = true;
+                return;
+            }
+            DragMove();
         }
 
 

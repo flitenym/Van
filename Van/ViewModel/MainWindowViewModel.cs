@@ -6,26 +6,35 @@ using System.Windows;
 using System.Windows.Controls;
 using Van.Helper;
 using static Van.Helper.Enums;
+using System.Collections.ObjectModel;
+using System;
 
 namespace Van.ViewModel
 {
     class MainWindowViewModel : INotifyPropertyChanged
     {
+
+        #region Fields
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public event PropertyChangedEventHandler ThemeChanged = delegate { };
 
+        public List<ITheme> Themes { get; private set; }
+
+        public List<ITheme> DarkLightThemes { get; private set; }
+
+        public IMainWindowView MainWindowView { get; set; }
+
+        #endregion
+
         public MainWindowViewModel()
-        {
-            List<IModule> modules = new List<IModule>(); //лист где все страницы
+        { 
+            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>();
 
-            modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+            Nodes = GetTreeViewItems(modules);
 
-            //this.SelectedModule = modules.Where(x => x.modelClass == ModelBaseClasses.Main).FirstOrDefault();
-
-            List<ITheme> themes = new List<ITheme>(); //лист где все темы
-
-            themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
 
 
             Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
@@ -33,11 +42,58 @@ namespace Van.ViewModel
              
             DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
-        } 
-        public List<ITheme> Themes { get; private set; } //лист где все темы без темного и светлого
-        public List<ITheme> DarkLightThemes { get; private set; }  
+        }
 
-        public IMainWindowView MainWindowView { get; set; }
+        private ObservableCollection<Node> nodeData = new ObservableCollection<Node>();
+        public ObservableCollection<Node> Nodes
+        {
+            get { return nodeData; }
+            set
+            {
+                nodeData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Nodes)));
+            }
+        }
+
+        public ObservableCollection<Node> GetTreeViewItems(IEnumerable<IModule> modules) {
+
+            var nodes = new ObservableCollection<Node>();
+
+            foreach (var module in modules) {
+                if (module.ParentID == null)
+                {
+                    var node = new Node();
+                    node.Name = module.Name;
+                    node.ParentName = string.Empty;
+                    node.View = module;
+                    node.Nodes = GetNodes(modules, module.ID);
+
+                    nodes.Add(node);
+                }
+            }
+
+            return nodes;
+        }
+
+        public ObservableCollection<Node> GetNodes(IEnumerable<IModule> modules, Guid moduleID) {
+            var nodes = new ObservableCollection<Node>();
+
+            foreach (var module in modules) {
+                if (module.ParentID != null && module.ParentID == moduleID)
+                {
+                    var node = new Node();
+                    node.Name = module.Name;
+                    node.ParentName = modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name;
+                    node.View = module;
+                    node.Nodes = GetNodes(modules, module.ID);
+
+                    nodes.Add(node);
+                }
+            }
+
+            return nodes;
+        }
+
 
         public void SnackBar()
         {
@@ -47,6 +103,8 @@ namespace Van.ViewModel
 
             MainWindowView.SnackBar();
         }
+
+        #region Видимость прогресс бара бесконечного
 
         public bool isLoadingPanelVisible = false;
 
@@ -62,6 +120,10 @@ namespace Van.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsLoadingPanelVisible)));
             }
         }
+
+        #endregion
+
+        #region Сообщение в SnackBar
 
         public string isMessagePanelContent = string.Empty;
 
@@ -79,30 +141,9 @@ namespace Van.ViewModel
             }
         }
 
-        private IModule _SelectedModule;
+        #endregion
 
-        public IModule SelectedModule
-        {
-            get { return _SelectedModule; }
-            set
-            {
-                _SelectedModule = null;
-                if (value == _SelectedModule) return;
-                if (_SelectedModule != null) _SelectedModule.Deactivate();
-                _SelectedModule = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(_SelectedModule)));
-                PropertyChanged(this, new PropertyChangedEventArgs("UserInterface"));
-            }
-        }
-
-        public UserControl UserInterface
-        {
-            get
-            {
-                if (SelectedModule == null) return null;
-                return SelectedModule.UserInterface;
-            }
-        }
+        #region Выбор обычной темы
 
         private ITheme _SelectedTheme;
         public ITheme SelectedTheme
@@ -118,6 +159,10 @@ namespace Van.ViewModel
             }
         }
 
+        #endregion
+
+        #region Выбор глобальной темы
+
         private ITheme _SelectedThemeDarkOrLight;
         public ITheme SelectedThemeDarkOrLight
         {
@@ -131,6 +176,8 @@ namespace Van.ViewModel
                 _SelectedThemeDarkOrLight.SelectTheme();
             }
         }
+
+        #endregion
 
         private RelayCommand setSettingsView;
         public RelayCommand SetSettingsView
@@ -148,8 +195,7 @@ namespace Van.ViewModel
         private void SetSettings()
         { 
             var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
-            var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
-            this.SelectedModule = settings;
+            var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault(); 
         }
 
     }

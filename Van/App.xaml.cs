@@ -26,10 +26,7 @@ namespace Van
             mainWindow.DataContext = vm;
 
             mainWindow.Closing += (s, args) =>
-            {
-                if (vm.SelectedModule != null)
-                    vm.SelectedModule.Deactivate();
-
+            { 
                 if (vm.SelectedTheme != null)
                     vm.SelectedTheme.Deactivate();
             };

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Van.AbstractClasses;
+using Van.Helper;
 using Van.View;
 using Van.ViewModel;
 using static Van.Helper.Enums;
@@ -17,7 +18,10 @@ namespace Van.Model
 
         public override int Num => 0;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.Settings;
+        public override Guid ID => Types.ViewID.SettingsView;
+        public override Guid? ParentID => null;
+
+        public override ModelBaseClasses modelClass => ModelBaseClasses.Settings; 
 
         protected override UserControl CreateViewAndViewModel()
         {
