@@ -15,5 +15,13 @@ namespace Van.Helper
                 .Where(t => !t.IsAbstract && t.IsClass)
                 .Select(t => (T)Activator.CreateInstance(t));
         }
+
+        public static IEnumerable<T> CreateAllInstancesOfAbstract<T>()
+        {
+            return typeof(StaticReflectionHelper).Assembly.GetTypes()
+                .Where(t => typeof(T).IsAssignableFrom(t))
+                .Where(t => t.IsAbstract && t.IsClass)
+                .Select(t => (T)Activator.CreateInstance(t));
+        }
     }
 }

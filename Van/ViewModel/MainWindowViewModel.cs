@@ -8,6 +8,7 @@ using Van.Helper;
 using static Van.Helper.Enums;
 using System.Collections.ObjectModel;
 using System;
+using Van.AbstractClasses;
 
 namespace Van.ViewModel
 {
@@ -26,6 +27,8 @@ namespace Van.ViewModel
 
         public IMainWindowView MainWindowView { get; set; }
 
+        private TabControlViewModel _selectedViewModel;
+
         #endregion
 
         public MainWindowViewModel()
@@ -34,8 +37,12 @@ namespace Van.ViewModel
 
             Nodes = GetTreeViewItems(modules);
 
-            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
 
+            var moduleViews = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
+            SetViewModels(moduleViews);
+
+
+            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
 
             Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
             SelectedTheme = this.Themes.FirstOrDefault();
@@ -43,6 +50,22 @@ namespace Van.ViewModel
             DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
         }
+
+        public void SetViewModels(IEnumerable<ModuleBase> modules)
+        {
+            foreach (var module in modules)
+            {
+                _viewModels.Add(new TabControlViewModel { Name = module.Name, SimpleContent = module.UserInterface });
+            }
+
+            _selectedViewModel = _viewModels.FirstOrDefault();
+        }
+
+        private readonly ObservableCollection<TabControlViewModel> _viewModels = new ObservableCollection<TabControlViewModel>();
+
+        public ObservableCollection<TabControlViewModel> ViewModels => _viewModels;
+
+        #region Дерево в левом меню
 
         private ObservableCollection<Node> nodeData = new ObservableCollection<Node>();
         public ObservableCollection<Node> Nodes
@@ -94,6 +117,7 @@ namespace Van.ViewModel
             return nodes;
         }
 
+        #endregion
 
         public void SnackBar()
         {

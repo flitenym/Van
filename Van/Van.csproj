@@ -87,6 +87,7 @@
     <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Model\UserInformationModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="ViewModel\TabControlViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="View\UserInformationView.xaml.cs">

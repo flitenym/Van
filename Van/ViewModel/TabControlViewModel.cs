@@ -12,8 +12,28 @@ using System;
 
 namespace Van.ViewModel
 {
-    class UserInformationViewModel : INotifyPropertyChanged
-    {
+    class TabControlViewModel : INotifyPropertyChanged
+    { 
+
+        public string Name { get; set; }
+
+        public object SimpleContent { get; set; }
+
+        private bool isSelected = false;
+
+        public bool IsSelected
+        {
+            get
+            {
+                return isSelected;
+            }
+            set
+            {
+                isSelected = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {

@@ -62,32 +62,37 @@
 
     <Grid>  
         <dockablz:Layout Margin="15,0,15,0">
-            <dragablz:TabablzControl BorderThickness="0">
+            <dragablz:TabablzControl 
+                BorderThickness="0" 
+                ItemsSource="{Binding ViewModels}" 
+                SelectedItem="{Binding SelectedViewModel}">
                 <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController />
                 </dragablz:TabablzControl.InterTabController>
-                <TabItem Header="Пользователь">
-                    <localViews:UserInformationView>
-                        <localViews:UserInformationView.DataContext>
-                            <localViewModels:UserInformationViewModel />
-                        </localViews:UserInformationView.DataContext>
-                    </localViews:UserInformationView>
-                </TabItem>
-                <TabItem Header="Настройки">
-                    <localViews:SettingsView>
-                        <localViews:SettingsView.DataContext>
-                            <localViewModels:SettingsViewModel />
-                        </localViews:SettingsView.DataContext>
-                    </localViews:SettingsView>
-                </TabItem>
-            </dragablz:TabablzControl> 
+                <TabControl.ContentTemplate>
+                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
+                        <ContentPresenter Content="{Binding SimpleContent}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+                <dragablz:TabablzControl.HeaderItemTemplate>
+                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.HeaderItemTemplate>
+                <TabControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}"> 
+                        <ContentPresenter Content="{Binding SimpleContent}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </dragablz:TabablzControl>
         </dockablz:Layout> 
+
 
         <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15" />
         <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" />
 
 
-        <Grid materialDesign:ShadowAssist.ShadowDepth="Depth4" x:Name="GridLeftMenu" Background="White" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
+        <Grid x:Name="GridLeftMenu" Background="White" Width="250" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-256,0,0,0" >
             <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -99,7 +104,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2" />
+                <ColumnDefinition Width="1" />
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0"> 
@@ -125,7 +130,11 @@
                 </StackPanel> 
                 
             </Grid>
-            <Rectangle Grid.Column="1" Fill="LightGray"  />
+            <Rectangle Grid.Column="1" Fill="White" >
+                <Rectangle.Effect>
+                    <DropShadowEffect BlurRadius="5" Direction="-45" ShadowDepth="2"/>
+                </Rectangle.Effect>
+            </Rectangle>
 
 
         </Grid>

@@ -13,12 +13,7 @@ using System;
 namespace Van.ViewModel
 {
     class SettingsViewModel : INotifyPropertyChanged
-    {
-        public SettingsViewModel()
-        {
-            
-        }
-
+    { 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
