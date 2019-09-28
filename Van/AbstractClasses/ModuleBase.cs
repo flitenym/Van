@@ -36,12 +36,12 @@ namespace Van.AbstractClasses
 
         public void Deactivate()
         {
-            //if (view != null)
-            //{
-            //    var d = view.DataContext as IDisposable;
-            //    if (d != null) d.Dispose();
-            //    view = null;
-            //}
+            if (view != null)
+            {
+                var d = view.DataContext as IDisposable;
+                if (d != null) d.Dispose();
+                view = null;
+            }
         }
 
     }

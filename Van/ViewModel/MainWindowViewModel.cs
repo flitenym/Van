@@ -61,6 +61,18 @@ namespace Van.ViewModel
             _selectedViewModel = _viewModels.FirstOrDefault();
         }
 
+        public TabControlViewModel SelectedViewModel
+        {
+            get { return _selectedViewModel; }
+            set
+            {
+                if (_selectedViewModel == value) return;
+                _selectedViewModel = value;
+
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedViewModel)));
+            }
+        }
+
         private readonly ObservableCollection<TabControlViewModel> _viewModels = new ObservableCollection<TabControlViewModel>();
 
         public ObservableCollection<TabControlViewModel> ViewModels => _viewModels;
