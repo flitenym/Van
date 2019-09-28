@@ -71,7 +71,7 @@
                 </dragablz:TabablzControl.InterTabController>
                 <TabControl.ContentTemplate>
                     <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
-                        <ContentPresenter Content="{Binding SimpleContent}" />
+                        <ContentPresenter Content="{Binding ViewContent}" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
                 <dragablz:TabablzControl.HeaderItemTemplate>
@@ -80,8 +80,8 @@
                     </DataTemplate>
                 </dragablz:TabablzControl.HeaderItemTemplate>
                 <TabControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}"> 
-                        <ContentPresenter Content="{Binding SimpleContent}" />
+                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
+                        <ContentPresenter Content="{Binding ViewContent}" />
                     </DataTemplate>
                 </TabControl.ItemTemplate>
             </dragablz:TabablzControl>

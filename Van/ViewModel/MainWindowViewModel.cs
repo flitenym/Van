@@ -55,7 +55,7 @@ namespace Van.ViewModel
         {
             foreach (var module in modules)
             {
-                _viewModels.Add(new TabControlViewModel { Name = module.Name, SimpleContent = module.UserInterface });
+                _viewModels.Add(new TabControlViewModel { Name = module.Name, ViewContent = module.UserInterface });
             }
 
             _selectedViewModel = _viewModels.FirstOrDefault();
