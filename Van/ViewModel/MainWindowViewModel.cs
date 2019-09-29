@@ -9,6 +9,7 @@ using static Van.Helper.Enums;
 using System.Collections.ObjectModel;
 using System;
 using Van.AbstractClasses;
+using Dragablz;
 
 namespace Van.ViewModel
 {
@@ -17,9 +18,7 @@ namespace Van.ViewModel
 
         #region Fields
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public event PropertyChangedEventHandler ThemeChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged = delegate { }; 
 
         public List<ITheme> Themes { get; private set; }
 
@@ -48,15 +47,12 @@ namespace Van.ViewModel
             SelectedTheme = this.Themes.FirstOrDefault();
              
             DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
-            SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
+            SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault(); 
         }
 
         public void SetViewModels(IEnumerable<ModuleBase> modules)
-        {
-            foreach (var module in modules)
-            {
-                _viewModels.Add(new TabControlViewModel { Name = module.Name, ViewContent = module.UserInterface });
-            }
+        { 
+            _viewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID }); 
 
             _selectedViewModel = _viewModels.FirstOrDefault();
         }
@@ -98,6 +94,7 @@ namespace Van.ViewModel
                 if (module.ParentID == null)
                 {
                     var node = new Node();
+                    node.ID = module.ID;
                     node.Name = module.Name;
                     node.ParentName = string.Empty;
                     node.View = module;
@@ -117,6 +114,7 @@ namespace Van.ViewModel
                 if (module.ParentID != null && module.ParentID == moduleID)
                 {
                     var node = new Node();
+                    node.ID = module.ID;
                     node.Name = module.Name;
                     node.ParentName = modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name;
                     node.View = module;
@@ -128,6 +126,8 @@ namespace Van.ViewModel
 
             return nodes;
         }
+
+
 
         #endregion
 
@@ -215,24 +215,70 @@ namespace Van.ViewModel
 
         #endregion
 
-        private RelayCommand setSettingsView;
-        public RelayCommand SetSettingsView
+        //private RelayCommand setSettingsView;
+        //public RelayCommand SetSettingsView
+        //{
+        //    get
+        //    {
+        //        return setSettingsView ??
+        //            (setSettingsView = new RelayCommand(obj =>
+        //            {
+        //                SetSettings();
+        //            }));
+        //    }
+        //}
+
+        //private void SetSettings()
+        //{ 
+        //    var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+        //    var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault(); 
+        //}
+
+        private RelayCommand setSelectedTreeViewItem;
+        public RelayCommand SetSelectedTreeViewItem
         {
             get
             {
-                return setSettingsView ??
-                    (setSettingsView = new RelayCommand(obj =>
+                return setSelectedTreeViewItem ??
+                    (setSelectedTreeViewItem = new RelayCommand(obj =>
                     {
-                        SetSettings();
+                        AddItemInTabControl((Node)obj); 
                     }));
             }
         }
 
-        private void SetSettings()
-        { 
-            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
-            var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault(); 
+        private void AddItemInTabControl(Node node)
+        {
+            var existingViewModel = _viewModels.Where(x => x.ID == node.ID).FirstOrDefault();
+            int? index = null;
+            if (existingViewModel != null)
+            {
+                index = _viewModels.IndexOf(existingViewModel);
+            }
+
+            if (index == null)
+            {
+                _viewModels.Add(new TabControlViewModel { Name = node.View.Name, ViewContent = node.View.UserInterface, ID = node.ID });
+            }
+            else
+            {
+                Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
+            }
         }
+
+        public ItemActionCallback ClosingTabItemHandler
+        {
+            get { return ClosingTabItemHandlerImpl; }
+        }
+        
+        private void ClosingTabItemHandlerImpl(ItemActionCallbackArgs<TabablzControl> args)
+        {
+            var viewModel = args.DragablzItem.DataContext as TabControlViewModel;
+            if (_viewModels.Count() == 1) { args.Cancel(); return; }
+
+            _viewModels.Remove(viewModel); 
+        }
+
 
     }
 }

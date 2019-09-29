@@ -17,6 +17,8 @@ namespace Van.ViewModel
 
         public string Name { get; set; }
 
+        public Guid ID { get; set; }
+
         public object ViewContent { get; set; }
 
         private bool isSelected = false;

@@ -14,7 +14,7 @@ namespace Van.Model
 {
     class UserInformationModel : ModuleBase
     {
-        public override string Name => "Пользователь";
+        public override string Name => "Пользователь это круто когда много букав";
 
         public override int Num => 2;
 

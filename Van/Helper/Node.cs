@@ -11,6 +11,7 @@ namespace Van.Helper
     public class Node
     {
         public string Name { get; set; }
+        public Guid ID { get; set; }
         public ObservableCollection<Node> Nodes { get; set; }
         public string ParentName { get; set; }
         public IModule View { get; set; }

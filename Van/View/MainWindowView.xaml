@@ -11,6 +11,8 @@
         xmlns:localViewModels="clr-namespace:Van.ViewModel"
         xmlns:local="clr-namespace:Van"
         xmlns:nodes="clr-namespace:Van.Helper"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d" FontSize="14"
         Title="Привет" Height="450" Width="800" Icon="../Images/icon.ico">
 
@@ -19,28 +21,28 @@
         <Storyboard x:Key="OpenLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="255"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.3" Value="255"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseLeftMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="255"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="0"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.1" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="1"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="-255"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.3" Value="-255"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseRightMenu">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
                 <SplineDoubleKeyFrame  KeyTime="0" Value="-255"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.4" Value="1"/>
+                <SplineDoubleKeyFrame  KeyTime="0:0:0.1" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
@@ -65,7 +67,8 @@
             <dragablz:TabablzControl 
                 BorderThickness="0" 
                 ItemsSource="{Binding ViewModels}" 
-                SelectedItem="{Binding SelectedViewModel}">
+                SelectedItem="{Binding SelectedViewModel}" 
+                ClosingItemCallback="{Binding ClosingTabItemHandler}">
                 <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController />
                 </dragablz:TabablzControl.InterTabController>
@@ -73,10 +76,23 @@
                     <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
                         <ContentPresenter Content="{Binding ViewContent}" />
                     </DataTemplate>
-                </TabControl.ContentTemplate>
+                </TabControl.ContentTemplate> 
                 <dragablz:TabablzControl.HeaderItemTemplate>
                     <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
-                        <TextBlock Text="{Binding Name}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="125" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" Margin="2">
+                                <TextBlock TextAlignment="Center" Text="{Binding Name}" TextWrapping="WrapWithOverflow"/> 
+                                <Thumb Style="{DynamicResource InvisibleThumbStyle}"
+                                dragablz:DragablzItem.IsCustomThumb="True" />
+                            </Grid> 
+                            <Button Grid.Column="1" Style="{DynamicResource CustomButtonStyle}"   
+                                Content="X"
+                                Command="dragablz:TabablzControl.CloseItemCommand"/> 
+                        </Grid>
                     </DataTemplate>
                 </dragablz:TabablzControl.HeaderItemTemplate>
                 <TabControl.ItemTemplate>
@@ -113,12 +129,22 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
-                <TreeView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Nodes}">
+                <TreeView Grid.Row="1" 
+                          Grid.Column="0"
+                          ItemsSource="{Binding Nodes}"
+                          Name="LeftMenu">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
                             <TextBlock Text="{Binding Path=Name}" />
                         </HierarchicalDataTemplate>
                     </TreeView.Resources>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectedItemChanged">
+                            <i:InvokeCommandAction 
+                                Command="{Binding SetSelectedTreeViewItem}" 
+                                CommandParameter="{Binding SelectedItem, ElementName=LeftMenu}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </TreeView>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

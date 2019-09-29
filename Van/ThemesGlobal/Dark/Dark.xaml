@@ -6,14 +6,15 @@
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
                     xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
     
-    <ResourceDictionary.MergedDictionaries> 
-        <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ScrollControlStyle.xaml" />
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ScrollControlStyle.xaml" /> 
     </ResourceDictionary.MergedDictionaries>
 
 
     <Color x:Key="Black">#FFFFFFFF</Color>
     <Color x:Key="Gray">#FF424242</Color>
     <Color x:Key="WhiteGray">#FFFFFF</Color>
+    <Color x:Key="TransparentGray">#33ECECEC</Color>
     <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource Black}" />
     <SolidColorBrush x:Key="MaterialDesignForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ActionButtonForeground" Color="{StaticResource Gray}" />
@@ -21,6 +22,8 @@
     <SolidColorBrush x:Key="DarkLightForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="WindowsBackGround" Color="{StaticResource WhiteGray}" />
+    <SolidColorBrush x:Key="ButtonPreForeground" Color="{StaticResource TransparentGray}" />
+    <SolidColorBrush x:Key="ButtonAfterForeGround" Color="{StaticResource Black}" />
     
     
     <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
@@ -31,6 +34,25 @@
         <Setter Property="Foreground" Value="{StaticResource ScrollBarBackground}" />
     </Style>
 
+    <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="{StaticResource ButtonPreForeground}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonAfterForeGround}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
     
 
 
