@@ -234,6 +234,7 @@ namespace Van.ViewModel
         //    var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault(); 
         //}
 
+
         private RelayCommand setSelectedTreeViewItem;
         public RelayCommand SetSelectedTreeViewItem
         {

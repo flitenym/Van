@@ -129,23 +129,27 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
-                <TreeView Grid.Row="1" 
-                          Grid.Column="0"
+
+                <ScrollViewer Grid.Row="1" 
+                              Grid.Column="0"
+                              Style="{DynamicResource SrollViewerControl}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <TreeView 
                           ItemsSource="{Binding Nodes}"
                           Name="LeftMenu">
-                    <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
-                            <TextBlock Text="{Binding Path=Name}" />
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectedItemChanged">
-                            <i:InvokeCommandAction 
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
+                                <TextBlock Text="{Binding Path=Name}" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction 
                                 Command="{Binding SetSelectedTreeViewItem}" 
                                 CommandParameter="{Binding SelectedItem, ElementName=LeftMenu}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TreeView>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TreeView>
+                </ScrollViewer>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Command="{Binding SetSettingsView}">

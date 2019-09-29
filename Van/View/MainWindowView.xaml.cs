@@ -1,6 +1,8 @@
 ﻿using CustomControls;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using Van.Helper;
 using Van.Interfaces;
 using Van.ViewModel;
 
@@ -24,6 +26,6 @@ namespace Van.View
                 "OK",
                 param => Trace.WriteLine("Actioned: " + param),
                 win.IsMessagePanelContent);
-        } 
+        }
     }
 }
