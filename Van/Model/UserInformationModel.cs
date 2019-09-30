@@ -14,15 +14,15 @@ namespace Van.Model
 {
     class UserInformationModel : ModuleBase
     {
-        public override string Name => "Пользователь это круто когда много букав";
+        public override string Name => Types.ViewData.UserInformationName;
 
-        public override int Num => 2;
+        public override int Num => Types.ViewData.UserInformationNum;
 
-        public override Guid ID => Types.ViewID.UserInformationView;
+        public override Guid ID => Types.ViewData.UserInformationView;
 
-        public override Guid? ParentID => Types.ViewID.SettingsView;
+        public override Guid? ParentID => null;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {

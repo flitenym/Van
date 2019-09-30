@@ -14,11 +14,11 @@ namespace Van.Model
 {
     class SettingsModel : ModuleBase
     {
-        public override string Name => "Настройки";
+        public override string Name => Types.ViewData.SettingsName;
 
-        public override int Num => 0;
+        public override int Num => Types.ViewData.SettingsNum;
 
-        public override Guid ID => Types.ViewID.SettingsView;
+        public override Guid ID => Types.ViewData.SettingsView;
         public override Guid? ParentID => null;
 
         public override ModelBaseClasses modelClass => ModelBaseClasses.Settings; 

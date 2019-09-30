@@ -6,41 +6,62 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"> 
-    <Grid>
-        <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Темы" HorizontalAlignment="Center"/>
-        <ScrollViewer Style="{DynamicResource SrollViewerControl}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <StackPanel
-            VerticalAlignment="Stretch" 
-            HorizontalAlignment="Stretch" 
-            CanVerticallyScroll="True" 
-            CanHorizontallyScroll="True" 
-            Orientation="Vertical">
-                <Grid Height="200">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="45" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" VerticalAlignment="Top">
-                        <Button 
-                    x:Name="Blue"
-                    Command="{Binding ThemeAcceptor}"
-                    CommandParameter="{Binding Name, ElementName=Blue}"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Style="{DynamicResource MaterialDesignToolForegroundButton}">
-                            <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource BlueButton}"/>
-                        </Button>
-                    </Grid>
-                    <Expander Grid.Column="1" Header="Синий" materialDesign:ExpanderAssist.DownHeaderPadding="35,2,24,2">
-                        <StackPanel Orientation="Vertical" Margin="24,8,24,16">
-                            <TextBlock Text="Здесь будет показ темы"/>
-                        </StackPanel>
-                    </Expander>
-                </Grid> 
-                <TextBlock Text="Конец"/>
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/Blue/Blue.xaml" x:Name="blue" />
+                <ResourceDictionary Source="/Themes/Green/Green.xaml" x:Name="green" />
+                <ResourceDictionary Source="/Themes/Red/Red.xaml" x:Name="red" />
+                <ResourceDictionary Source="/ThemesGlobal/Dark/Dark.xaml" x:Name="dark" />
+                <ResourceDictionary Source="/ThemesGlobal/Light/Light.xaml" x:Name="light" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
+    <StackPanel>
+        <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Темы" TextAlignment="Center"/>
+        <ScrollViewer Style="{DynamicResource SrollViewerControl}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Horizontal">
+                <Button Width="45"
+                        x:Name="Blue"
+                        Command="{Binding ThemeAcceptor}"
+                        CommandParameter="{Binding Name, ElementName=Blue}"
+                        Style="{DynamicResource MaterialDesignToolForegroundButton}">
+                    <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource BlueButton}"/>
+                </Button>
+                <Button Width="45"
+                        x:Name="Green"
+                        Command="{Binding ThemeAcceptor}"
+                        CommandParameter="{Binding Name, ElementName=Green}"
+                        Style="{DynamicResource MaterialDesignToolForegroundButton}">
+                    <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource GreenButton}"/>
+                </Button>
+                <Button Width="45"
+                        x:Name="Red"
+                        Command="{Binding ThemeAcceptor}"
+                        CommandParameter="{Binding Name, ElementName=Red}"
+                        Style="{DynamicResource MaterialDesignToolForegroundButton}">
+                    <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource RedButton}"/>
+                </Button>
             </StackPanel>
         </ScrollViewer>
-    </Grid>
+        <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Темная или Светлая" TextAlignment="Center"/>
+        <StackPanel Orientation="Horizontal">
+            <Button Width="45"
+                    x:Name="Dark"
+                    Command="{Binding GlobalThemeAcceptor}"
+                    CommandParameter="{Binding Name, ElementName=Dark}"
+                    Style="{DynamicResource MaterialDesignToolForegroundButton}">
+                <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource DarkButton}"/>
+            </Button>
+            <Button Width="45"
+                    x:Name="Light"
+                    Command="{Binding GlobalThemeAcceptor}"
+                    CommandParameter="{Binding Name, ElementName=Light}"
+                    Style="{DynamicResource MaterialDesignToolForegroundButton}">
+                <materialDesign:PackIcon Kind="Drop" Width="35" Height="Auto" Foreground="{DynamicResource LightButton}"/>
+            </Button>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

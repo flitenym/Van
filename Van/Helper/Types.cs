@@ -8,11 +8,61 @@ namespace Van.Helper
 {
     public static class Types
     {
-        public static class ViewID
-        { 
-            public static readonly Guid SettingsView = new Guid("16b0e665-14c0-4f03-aa31-5d704f33ab50");
+        public static class ViewData
+        {
+            public static string SettingsName = "Настройки";
+            public static readonly Guid SettingsView = new Guid("C475B3A2-B969-4B30-B08A-F669C8B6AFF9"); 
+            public static int SettingsNum = 0;
 
-            public static readonly Guid UserInformationView = new Guid("09081992-d1bb-4fd6-b3d8-85632e6c149c");
+            public static string UserInformationName = "Пользователь";
+            public static readonly Guid UserInformationView = new Guid("2FBC16FC-D247-4965-BEDE-5C6A39F279EB");
+            public static int UserInformationNum = 0;
+
+            public static string SurvivalAnalysisMethodsName = "Методы анализа выживаемости";
+            public static readonly Guid SurvivalAnalysisMethodsView = new Guid("9F25D681-33A1-46DD-91CB-E6B771D292F0");
+            public static int SurvivalAnalysisMethodsNum = 0;
+
+            public static string NonparametricName = "Непараметрические методы";
+            public static readonly Guid NonparametricView = new Guid("5E876693-A6A3-49A8-901C-4D2436766FB5");
+            public static int NonparametricNum = 1;
+
+            public static string ParametricName = "Параметрические методы";
+            public static readonly Guid ParametricView = new Guid("2D40D7A3-817B-47E0-B7F0-AB8547586891");
+            public static int ParametricNum = 2;
+
+            public static string SemiParametricName = "Полупараметрические методы";
+            public static readonly Guid SemiParametricView = new Guid("02D7E135-792B-4475-9DFB-76C54C59DECC");
+            public static int SemiParametricNum = 3;
+
+            public static string KaplanMeierName = "Метод множительных оценок Каплана-Мейера";
+            public static readonly Guid KaplanMeierView = new Guid("74E9731B-2C66-404C-9D75-11CFA7243EB9");
+            public static int KaplanMeierNum = 4;
+
+            public static string MortalityTableName = "Таблица смертности";
+            public static readonly Guid MortalityTableView = new Guid("A7E9F714-7FB2-451C-AABD-86006C741B1E");
+            public static int MortalityTableNum = 5;
+
+            public static string LiCarterName = "Метод Ли Картера";
+            public static readonly Guid LiCarterView = new Guid("C7A5DB71-240F-46F4-B193-6E840461EB6B");
+            public static int LiCarterNum = 6;
+
+            public static string DistributionName = "Распределения";
+            public static readonly Guid DistributionView = new Guid("67528722-51C1-40AF-B6A5-124345CE267B");
+            public static int DistributionNum = 7;
+
+            public static string KoksRiskName = "Модель пропорциональных рисков Кокса";
+            public static readonly Guid KoksRiskView = new Guid("BF110F4E-BD5A-45D6-939D-61CAFA8F0896");
+            public static int KoksRiskNum = 8;
+
+            public static string ExcludingMortalityName = "Без учета причин смерти";
+            public static readonly Guid ExcludingMortalityView = new Guid("CF4D7660-96B0-4AC9-9287-E66C7BE3747A");
+            public static int ExcludingMortalityNum = 9;
+
+            public static string IncludingMortalityName = "С учетом причин смерти";
+            public static readonly Guid IncludingMortalityView = new Guid("65919B95-591D-4BE1-BBB4-E5CCB07A327D");
+            public static int IncludingMortalityNum = 10;
+
+            
         }
 
     }

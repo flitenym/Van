@@ -28,13 +28,19 @@ namespace Van.ViewModel
 
         private TabControlViewModel _selectedViewModel;
 
+        public ObservableCollection<TabControlViewModel> ViewModels { get; } = new ObservableCollection<TabControlViewModel>();
+
         #endregion
 
         public MainWindowViewModel()
         { 
             var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>();
 
-            Nodes = GetTreeViewItems(modules);
+            var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
+            LeftMenuNodes = GetTreeViewItems(leftMenu);
+
+            var rightMenu = modules.Where(x => x.modelClass == ModelBaseClasses.RightMenu).OrderBy(x => x.Num);
+            RightMenuNodes = GetTreeViewItems(rightMenu);
 
 
             var moduleViews = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
@@ -52,9 +58,9 @@ namespace Van.ViewModel
 
         public void SetViewModels(IEnumerable<ModuleBase> modules)
         { 
-            _viewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID }); 
+            ViewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID }); 
 
-            _selectedViewModel = _viewModels.FirstOrDefault();
+            _selectedViewModel = ViewModels.FirstOrDefault();
         }
 
         public TabControlViewModel SelectedViewModel
@@ -69,20 +75,28 @@ namespace Van.ViewModel
             }
         }
 
-        private readonly ObservableCollection<TabControlViewModel> _viewModels = new ObservableCollection<TabControlViewModel>();
 
-        public ObservableCollection<TabControlViewModel> ViewModels => _viewModels;
+        #region Деревья в левом и правом меню
 
-        #region Дерево в левом меню
-
-        private ObservableCollection<Node> nodeData = new ObservableCollection<Node>();
-        public ObservableCollection<Node> Nodes
+        private ObservableCollection<Node> leftNodeData = new ObservableCollection<Node>();
+        public ObservableCollection<Node> LeftMenuNodes
         {
-            get { return nodeData; }
+            get { return leftNodeData; }
             set
             {
-                nodeData = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Nodes)));
+                leftNodeData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(LeftMenuNodes)));
+            }
+        }
+
+        private ObservableCollection<Node> rightNodeData = new ObservableCollection<Node>();
+        public ObservableCollection<Node> RightMenuNodes
+        {
+            get { return rightNodeData; }
+            set
+            {
+                rightNodeData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(RightMenuNodes)));
             }
         }
 
@@ -215,25 +229,27 @@ namespace Van.ViewModel
 
         #endregion
 
-        //private RelayCommand setSettingsView;
-        //public RelayCommand SetSettingsView
-        //{
-        //    get
-        //    {
-        //        return setSettingsView ??
-        //            (setSettingsView = new RelayCommand(obj =>
-        //            {
-        //                SetSettings();
-        //            }));
-        //    }
-        //}
+        private RelayCommand setSettingsView;
+        public RelayCommand SetSettingsView
+        {
+            get
+            {
+                return setSettingsView ??
+                    (setSettingsView = new RelayCommand(obj =>
+                    {
+                        SetSettings();
+                    }));
+            }
+        }
 
-        //private void SetSettings()
-        //{ 
-        //    var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
-        //    var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault(); 
-        //}
+        private void SetSettings()
+        {
+            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+            var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
+            AddItemInTabControl(settings);
+        }
 
+        #region Добавление в ТабКонтрол
 
         private RelayCommand setSelectedTreeViewItem;
         public RelayCommand SetSelectedTreeViewItem
@@ -250,22 +266,45 @@ namespace Van.ViewModel
 
         private void AddItemInTabControl(Node node)
         {
-            var existingViewModel = _viewModels.Where(x => x.ID == node.ID).FirstOrDefault();
+            var existingViewModel = ViewModels.Where(x => x.ID == node.ID).FirstOrDefault();
             int? index = null;
             if (existingViewModel != null)
             {
-                index = _viewModels.IndexOf(existingViewModel);
+                index = ViewModels.IndexOf(existingViewModel);
             }
 
             if (index == null)
             {
-                _viewModels.Add(new TabControlViewModel { Name = node.View.Name, ViewContent = node.View.UserInterface, ID = node.ID });
+                ViewModels.Add(new TabControlViewModel { Name = node.View.Name, ViewContent = node.View.UserInterface, ID = node.ID });
             }
             else
             {
                 Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
             }
         }
+
+        private void AddItemInTabControl(IModule module)
+        {
+            var existingViewModel = ViewModels.Where(x => x.ID == module.ID).FirstOrDefault();
+            int? index = null;
+            if (existingViewModel != null)
+            {
+                index = ViewModels.IndexOf(existingViewModel);
+            }
+
+            if (index == null)
+            {
+                ViewModels.Add(new TabControlViewModel { Name = module.Name, ViewContent = module.UserInterface, ID = module.ID });
+            }
+            else
+            {
+                Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
+            }
+        }
+
+        #endregion
+
+        #region Удаление вкладки
 
         public ItemActionCallback ClosingTabItemHandler
         {
@@ -275,11 +314,12 @@ namespace Van.ViewModel
         private void ClosingTabItemHandlerImpl(ItemActionCallbackArgs<TabablzControl> args)
         {
             var viewModel = args.DragablzItem.DataContext as TabControlViewModel;
-            if (_viewModels.Count() == 1) { args.Cancel(); return; }
+            if (ViewModels.Count() == 1) { args.Cancel(); return; }
 
-            _viewModels.Remove(viewModel); 
+            ViewModels.Remove(viewModel); 
         }
 
+        #endregion
 
     }
 }

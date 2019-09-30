@@ -51,5 +51,41 @@ namespace Van.ViewModel
                 Message("Тема уже применена");
             }
         }
+
+        private RelayCommand globalThemeAcceptor;
+        public RelayCommand GlobalThemeAcceptor
+        {
+            get
+            {
+                return globalThemeAcceptor ??
+                  (globalThemeAcceptor = new RelayCommand(obj =>
+                  {
+                      if (obj != null && obj is string ThemeName)
+                      {
+                          AcceptGlobalTheme(ThemeName);
+                      }
+                  }));
+            }
+        }
+
+        public void AcceptGlobalTheme(string ThemeName)
+        {
+            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
+            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+            var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
+
+            if (win.SelectedThemeDarkOrLight != selectedTheme)
+            {
+                win.SelectedThemeDarkOrLight = selectedTheme;
+                Message("Тема изменена");
+            }
+            else
+            {
+                Message("Тема уже применена");
+            }
+        }
+
+
+
     }
 }

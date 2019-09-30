@@ -85,11 +85,69 @@
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
+    <Compile Include="Model\DistributionModel.cs" />
+    <Compile Include="Model\IncludingMortalityModel.cs" />
+    <Compile Include="Model\ExcludingMortalityModel.cs" />
+    <Compile Include="Model\MortalityTableModel.cs" />
+    <Compile Include="Model\KaplanMeierModel.cs" />
+    <Compile Include="Model\KoksRiskModel.cs" />
+    <Compile Include="Model\LiCarterModel.cs" />
+    <Compile Include="Model\SemiParametricModel.cs" />
+    <Compile Include="Model\ParametricModel.cs" />
+    <Compile Include="Model\NonparametricModel.cs" />
+    <Compile Include="Model\SurvivalAnalysisMethodsModel.cs" />
     <Compile Include="Model\UserInformationModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="ThemesGlobal\Light\Light.cs" />
+    <Compile Include="Themes\Red\Red.cs" />
+    <Compile Include="Themes\Green\Green.cs" />
+    <Compile Include="ViewModel\DistributionViewModel.cs" />
+    <Compile Include="ViewModel\LiCarterViewModel.cs" />
+    <Compile Include="ViewModel\KoksRiskViewModel.cs" />
+    <Compile Include="ViewModel\IncludingMortalityViewModel.cs" />
+    <Compile Include="ViewModel\ExcludingMortalityViewModel.cs" />
+    <Compile Include="ViewModel\MortalityTableViewModel.cs" />
+    <Compile Include="ViewModel\KaplanMeierViewModel.cs" />
+    <Compile Include="ViewModel\SemiParametricViewModel.cs" />
+    <Compile Include="ViewModel\ParametricViewModel.cs" />
+    <Compile Include="ViewModel\NonparametricViewModel.cs" />
     <Compile Include="ViewModel\TabControlViewModel.cs" />
+    <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\DistributionView.xaml.cs">
+      <DependentUpon>DistributionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\KoksRiskView.xaml.cs">
+      <DependentUpon>KoksRiskView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LiCarterView.xaml.cs">
+      <DependentUpon>LiCarterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SemiParametricView.xaml.cs">
+      <DependentUpon>SemiParametricView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ParametricView.xaml.cs">
+      <DependentUpon>ParametricView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\IncludingMortalityView.xaml.cs">
+      <DependentUpon>IncludingMortalityView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ExcludingMortalityView.xaml.cs">
+      <DependentUpon>ExcludingMortalityView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MortalityTableView.xaml.cs">
+      <DependentUpon>MortalityTableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\KaplanMeierView.xaml.cs">
+      <DependentUpon>KaplanMeierView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\NonparametricView.xaml.cs">
+      <DependentUpon>NonparametricView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SurvivalAnalysisMethodsView.xaml.cs">
+      <DependentUpon>SurvivalAnalysisMethodsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UserInformationView.xaml.cs">
       <DependentUpon>UserInformationView.xaml</DependentUpon>
     </Compile>
@@ -100,9 +158,53 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ThemesGlobal\Light\Light.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Red\Red.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Green\Green.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Blue\Blue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DistributionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\KoksRiskView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LiCarterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SemiParametricView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ParametricView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\IncludingMortalityView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ExcludingMortalityView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MortalityTableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -126,6 +228,18 @@
       <DependentUpon>MainWindowView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\KaplanMeierView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\NonparametricView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SurvivalAnalysisMethodsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\UserInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -171,8 +285,6 @@
   <ItemGroup>
     <Resource Include="Images\icon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ThemesGlobal\Light\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

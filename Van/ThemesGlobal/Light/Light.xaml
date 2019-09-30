@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-                    xmlns:local="clr-namespace:Van.ThemesGlobal.Dark"
+                    xmlns:local="clr-namespace:Van.ThemesGlobal.Light"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
                     xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
@@ -11,20 +11,20 @@
     </ResourceDictionary.MergedDictionaries>
 
 
-    <Color x:Key="Black">#000000</Color>
+    <Color x:Key="White">#f5f5f5</Color>
     <Color x:Key="Gray">#FF424242</Color>
     <Color x:Key="WhiteGray">#FFFFFF</Color>
     <Color x:Key="TransparentGray">#33ECECEC</Color>
-    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource White}" />
     <SolidColorBrush x:Key="MaterialDesignForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ActionButtonForeground" Color="{StaticResource Gray}" />
-    <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource White}" />
     <SolidColorBrush x:Key="DarkLightForeground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Gray}" />
     <SolidColorBrush x:Key="WindowsBackGround" Color="{StaticResource WhiteGray}" />
     <SolidColorBrush x:Key="ButtonPreForeground" Color="{StaticResource TransparentGray}" />
-    <SolidColorBrush x:Key="ButtonAfterForeGround" Color="{StaticResource Black}" />
-    <SolidColorBrush x:Key="DarkButton" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="ButtonAfterForeGround" Color="{StaticResource White}" />
+    <SolidColorBrush x:Key="LightButton" Color="{StaticResource White}" />
     
     
     <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
@@ -53,9 +53,7 @@
                 <Setter Property="Foreground" Value="{StaticResource ButtonAfterForeGround}"/>
             </Trigger>
         </Style.Triggers>
-    </Style>
-
-    
+    </Style> 
     
 
 
