@@ -18,32 +18,36 @@
 
     <Window.Resources>
         <!--анимация открытия меню-->
-        <Storyboard x:Key="OpenLeftMenu">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
-                <SplineDoubleKeyFrame  KeyTime="0" Value="0"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.3" Value="355"/>
-            </DoubleAnimationUsingKeyFrames>
+        <Storyboard x:Key="OpenLeftMenu"> 
+            <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="0"
+                             Duration="0:0:0.3"> 
+            </DoubleAnimation>
         </Storyboard>
         <!--анимация закрытия меню-->
-        <Storyboard x:Key="CloseLeftMenu">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridLeftMenu">
-                <SplineDoubleKeyFrame  KeyTime="0" Value="355"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.1" Value="0"/>
-            </DoubleAnimationUsingKeyFrames>
+        <Storyboard x:Key="CloseLeftMenu"> 
+            <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="-355"
+                             Duration="0:0:0.1"> 
+            </DoubleAnimation>
         </Storyboard>
         <!--анимация открытия меню-->
-        <Storyboard x:Key="OpenRightMenu">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
-                <SplineDoubleKeyFrame  KeyTime="0" Value="1"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.3" Value="-255"/>
-            </DoubleAnimationUsingKeyFrames>
+        <Storyboard x:Key="OpenRightMenu"> 
+            <DoubleAnimation Storyboard.TargetName="GridRightMenu"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="0"
+                             Duration="0:0:0.3"> 
+            </DoubleAnimation>
         </Storyboard>
         <!--анимация закрытия меню-->
         <Storyboard x:Key="CloseRightMenu">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="GridRightMenu">
-                <SplineDoubleKeyFrame  KeyTime="0" Value="-255"/>
-                <SplineDoubleKeyFrame  KeyTime="0:0:0.1" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimation Storyboard.TargetName="GridRightMenu"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="255"
+                             Duration="0:0:0.3"> 
+            </DoubleAnimation>
         </Storyboard>
     </Window.Resources>
 
@@ -123,14 +127,9 @@
         </Grid>
 
 
-        <Grid x:Name="GridLeftMenu" Background="White" Width="350" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-356,0,0,0" >
+        <Grid x:Name="GridLeftMenu" Background="White" Width="350" HorizontalAlignment="Left" VerticalAlignment="Stretch">
             <Grid.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
+                <TranslateTransform X="-355"/>
             </Grid.RenderTransform>
 
             <Grid.ColumnDefinitions>
@@ -186,19 +185,13 @@
                 <Rectangle.Effect>
                     <DropShadowEffect BlurRadius="5" Direction="-45" ShadowDepth="2"/>
                 </Rectangle.Effect>
-            </Rectangle>
-
-
+            </Rectangle> 
         </Grid>
+        
 
-        <Grid x:Name="GridRightMenu" Background="White" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,0,-256,0">
+        <Grid x:Name="GridRightMenu" Background="White" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch">
             <Grid.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
+                <TranslateTransform X="255"/>
             </Grid.RenderTransform>
 
             <Grid.ColumnDefinitions>
