@@ -70,7 +70,7 @@
 
                                 <Rectangle  x:Name="moveRectangle" Fill="Transparent" Grid.Row="0" Grid.Column="0"/>
 
-                                <StackPanel Margin="0,0,8,0" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <StackPanel x:Name="buttonsStackPanel" Margin="0,0,4,0" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <Button x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}"
                                             Content="0" />
                                     <Button x:Name="restoreButton" Style="{StaticResource WindowButtonStyle}"

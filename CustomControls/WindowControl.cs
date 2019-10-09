@@ -19,7 +19,7 @@ namespace CustomControls
         static WindowControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WindowControl),
-                new FrameworkPropertyMetadata(typeof(WindowControl)));
+                new FrameworkPropertyMetadata(typeof(WindowControl))); 
         }
 
         public WindowControl()
@@ -37,15 +37,22 @@ namespace CustomControls
 
         protected void OnStateChanged(object sender, EventArgs e)
         {
+            stateChangeWork();
+        }
+
+        public void stateChangeWork() {
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
+            StackPanel stackPanel = this.Template.FindName("buttonsStackPanel", this) as StackPanel;
 
             if (WindowState == WindowState.Maximized)
             {
-                border.Margin = new Thickness(-1,6,-1,1);
+                border.Margin = new Thickness(-1, 6, -1, 1);
+                stackPanel.Margin = new Thickness(0, 0, 8, 0);
             }
             else if (WindowState == WindowState.Normal)
             {
                 border.Margin = new Thickness(0);
+                stackPanel.Margin = new Thickness(0, 0, 4, 0);
             }
         }
 
@@ -59,18 +66,8 @@ namespace CustomControls
         protected void RestoreClick(object sender, RoutedEventArgs e)
         {
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
-
-            if (WindowState == WindowState.Normal)
-            {
-                MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
-                border.Margin = new Thickness(6);
-                WindowState = WindowState.Maximized;
-            }
-            else if (WindowState == WindowState.Maximized)
-            {
-                border.Margin = new Thickness(0);
-                WindowState = WindowState.Normal;
-            }
+            stateChangeWork();
+            WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal; 
         }
 
         protected void CloseClick(object sender, RoutedEventArgs e)
@@ -119,6 +116,7 @@ namespace CustomControls
                 }
             }
 
+            stateChangeWork();
             base.OnApplyTemplate();
         }
 
