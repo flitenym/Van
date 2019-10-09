@@ -40,12 +40,12 @@
 
     <!-- Window style -->
     <Style TargetType="{x:Type local:WindowControl}">
-        <Setter Property="WindowStyle" Value="None"/> 
+        <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="AllowsTransparency" Value="True"/>
-        <Setter Property="ResizeMode" Value="CanResizeWithGrip"/> 
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
         <Setter Property="Background" Value="{DynamicResource WindowsBackGround}"/>
-        <Setter Property="BorderThickness" Value="0"/> 
-            <Setter Property="Template">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WindowControl}">
                     <Border x:Name="PART_WindowBorder" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{DynamicResource WindowsBackGround}">
@@ -57,7 +57,7 @@
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto"/> 
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}"  
                                         VerticalAlignment="Center" HorizontalAlignment="Left"  
@@ -68,9 +68,9 @@
                                        VerticalAlignment="Center" HorizontalAlignment="Center" 
                                        Margin="36,0,0,0"/>
 
-                                <Rectangle  x:Name="moveRectangle" Fill="Transparent" Grid.Row="0" Grid.Column="0"/> 
+                                <Rectangle  x:Name="moveRectangle" Fill="Transparent" Grid.Row="0" Grid.Column="0"/>
 
-                                <StackPanel Margin="0,0,5,0" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <StackPanel Margin="0,0,8,0" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <Button x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}"
                                             Content="0" />
                                     <Button x:Name="restoreButton" Style="{StaticResource WindowButtonStyle}"
@@ -84,71 +84,75 @@
                                         <ContentPresenter/>
                                     </AdornerDecorator>
                                 </Grid>
-                                
                             </Grid>
+
                             <!-- Resize grid to be inserted here -->
-                            <Grid x:Name="resizeGrid">
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            VerticalAlignment="Top"
-            Height="2"
-            x:Name="top"
-            Margin="5,0,5,0" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            x:Name="bottom"
-            Height="5"
-            VerticalAlignment="Bottom"
-            Margin="5,0,5,0" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            x:Name="left"
-            Width="5"
-            HorizontalAlignment="Left"
-            Margin="0,5,0,5" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            x:Name="right"
-            Width="5"
-            HorizontalAlignment="Right"
-            Margin="0,5,0,5" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Width="5"
-            Height="5"
-            x:Name="bottomLeft" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            VerticalAlignment="Bottom"
-            Height="5"
-            Width="5"
-            HorizontalAlignment="Right"
-            x:Name="bottomRight" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            HorizontalAlignment="Right"
-            Width="5"
-            Height="5"
-            VerticalAlignment="Top"
-            x:Name="topRight" />
-                                <Rectangle
-            Stroke="{x:Null}"
-            Fill="Black"
-            HorizontalAlignment="Left"
-            Width="5"
-            VerticalAlignment="Top"
-            Height="5"
-            x:Name="topLeft" />
-                            </Grid>
+                            <Border BorderBrush="Gray" BorderThickness="1">
+                                <Grid  x:Name="resizeGrid">
+                                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5,20,5,5">
+                                    </Border>
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                VerticalAlignment="Top"
+                                                Height="2"
+                                                x:Name="top"
+                                                Margin="5,0,5,0" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                x:Name="bottom"
+                                                Height="5"
+                                                VerticalAlignment="Bottom"
+                                                Margin="5,0,5,0" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                x:Name="left"
+                                                Width="5"
+                                                HorizontalAlignment="Left"
+                                                Margin="0,5,0,5" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                x:Name="right"
+                                                Width="5"
+                                                HorizontalAlignment="Right"
+                                                Margin="0,5,0,5" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Bottom"
+                                                Width="5"
+                                                Height="5"
+                                                x:Name="bottomLeft" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                VerticalAlignment="Bottom"
+                                                Height="5"
+                                                Width="5"
+                                                HorizontalAlignment="Right"
+                                                x:Name="bottomRight" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                HorizontalAlignment="Right"
+                                                Width="5"
+                                                Height="5"
+                                                VerticalAlignment="Top"
+                                                x:Name="topRight" />
+                                    <Rectangle
+                                                Stroke="{x:Null}"
+                                                Fill="White"
+                                                HorizontalAlignment="Left"
+                                                Width="5"
+                                                VerticalAlignment="Top"
+                                                Height="5"
+                                                x:Name="topLeft" />
+                                </Grid> 
+                            </Border>
                         </Grid>
                     </Border>
                 </ControlTemplate>

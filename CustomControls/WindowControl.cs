@@ -41,7 +41,7 @@ namespace CustomControls
 
             if (WindowState == WindowState.Maximized)
             {
-                border.Margin = new Thickness(6);
+                border.Margin = new Thickness(-1,6,-1,1);
             }
             else if (WindowState == WindowState.Normal)
             {
