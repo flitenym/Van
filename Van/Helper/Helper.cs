@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,15 @@ namespace Van.Helper
         public static void Message(string content)
         {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            win.IsMessagePanelContent = content;
+            Task.Factory.StartNew(() => win.IsMessagePanelContent.Enqueue(
+                content,
+                "OK",
+                param => Trace.WriteLine("Actioned: " + param),
+                null,
+                false,
+                true)
+            ); 
         } 
+
     }
 }

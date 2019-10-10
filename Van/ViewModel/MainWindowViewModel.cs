@@ -10,6 +10,9 @@ using System.Collections.ObjectModel;
 using System;
 using Van.AbstractClasses;
 using Dragablz;
+using System.Messaging;
+using MaterialDesignThemes.Wpf;
+using ITheme = Van.Interfaces.ITheme;
 
 namespace Van.ViewModel
 {
@@ -33,7 +36,9 @@ namespace Van.ViewModel
         #endregion
 
         public MainWindowViewModel()
-        { 
+        {
+            isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
+
             var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>();
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
@@ -143,16 +148,7 @@ namespace Van.ViewModel
 
 
 
-        #endregion
-
-        public void SnackBar()
-        {
-            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            win.MainWindowView = (IMainWindowView)Application.Current.MainWindow;
-            if (MainWindowView == null) return;
-
-            MainWindowView.SnackBar();
-        }
+        #endregion 
 
         #region Видимость прогресс бара бесконечного
 
@@ -175,9 +171,9 @@ namespace Van.ViewModel
 
         #region Сообщение в SnackBar
 
-        public string isMessagePanelContent = string.Empty;
+        public SnackbarMessageQueue isMessagePanelContent;
 
-        public string IsMessagePanelContent
+        public SnackbarMessageQueue IsMessagePanelContent
         {
             get
             {
@@ -185,8 +181,7 @@ namespace Van.ViewModel
             }
             set
             {
-                isMessagePanelContent = value;
-                SnackBar();
+                isMessagePanelContent.IgnoreDuplicate = true; 
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsMessagePanelContent)));
             }
         }

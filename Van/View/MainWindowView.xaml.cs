@@ -11,21 +11,11 @@ namespace Van.View
     /// <summary>
     /// Логика взаимодействия для MainWindowView.xaml
     /// </summary>
-    public partial class MainWindowView : WindowControl, IMainWindowView
+    public partial class MainWindowView : WindowControl
     {
         public MainWindowView()
         {
             InitializeComponent();
-        }
-
-        public void SnackBar()
-        {
-            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            Snackbar.MessageQueue.Enqueue(
-                win.IsMessagePanelContent,
-                "OK",
-                param => Trace.WriteLine("Actioned: " + param),
-                win.IsMessagePanelContent);
         }
     }
 }

@@ -209,13 +209,12 @@
 
         </Grid>
 
-        <materialDesign:Snackbar HorizontalAlignment="Stretch"
-                                 MessageQueue="{materialDesign:MessageQueue}" 
-                                 Background="{DynamicResource MaterialDesignBackground}"
-                                 Foreground="{DynamicResource MaterialDesignForeground}" 
+        <materialDesign:Snackbar HorizontalAlignment="Stretch"  
+                                 MessageQueue="{Binding IsMessagePanelContent}"  
                                  x:Name="Snackbar" 
-                                 FontWeight="Bold" 
-                                 ActionButtonStyle="{DynamicResource ActionButton}"/>
+                                 Background="{DynamicResource MaterialDesignBackground}"
+                                 Foreground="{DynamicResource MaterialDesignForeground}"  
+                                 ActionButtonStyle="{DynamicResource ActionButton}"  />
 
     </Grid>
 </controls:WindowControl>
