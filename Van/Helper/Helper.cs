@@ -22,7 +22,12 @@ namespace Van.Helper
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
             win.IsLoadingPanelVisible = false;
         }
-        public static void Message(string content)
+        /// <summary>
+        /// Отправить сообщение через SnackBar
+        /// </summary>
+        /// <param name="content">Сообщение</param>
+        /// <param name="isNoDuplicateConsider">Если true и будет дубликаты сообщений, то они каждый все равно вызовет новое уведомление, если false то выйдет повторное сообщение 1 раз</param>
+        public static void Message(string content, bool isNoDuplicateConsider = false)
         {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
             Task.Factory.StartNew(() => win.IsMessagePanelContent.Enqueue(
@@ -31,7 +36,7 @@ namespace Van.Helper
                 param => Trace.WriteLine("Actioned: " + param),
                 null,
                 false,
-                true)
+                isNoDuplicateConsider)
             ); 
         } 
 

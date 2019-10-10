@@ -13,6 +13,7 @@ using Dragablz;
 using System.Messaging;
 using MaterialDesignThemes.Wpf;
 using ITheme = Van.Interfaces.ITheme;
+using System.Windows.Input;
 
 namespace Van.ViewModel
 {
@@ -25,13 +26,9 @@ namespace Van.ViewModel
 
         public List<ITheme> Themes { get; private set; }
 
-        public List<ITheme> DarkLightThemes { get; private set; }
+        public List<ITheme> DarkLightThemes { get; private set; } 
 
-        public IMainWindowView MainWindowView { get; set; }
-
-        private TabControlViewModel _selectedViewModel;
-
-        public ObservableCollection<TabControlViewModel> ViewModels { get; } = new ObservableCollection<TabControlViewModel>();
+        public ObservableCollection<TabControlViewModel> ViewModels { get; set; } = new ObservableCollection<TabControlViewModel>();
 
         #endregion
 
@@ -39,18 +36,15 @@ namespace Van.ViewModel
         {
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
-            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>();
+            var modules = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
 
             var rightMenu = modules.Where(x => x.modelClass == ModelBaseClasses.RightMenu).OrderBy(x => x.Num);
             RightMenuNodes = GetTreeViewItems(rightMenu);
-
-
-            var moduleViews = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
-            SetViewModels(moduleViews);
-
+             
+            SetViewModels(modules); 
 
             var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
 
@@ -63,10 +57,14 @@ namespace Van.ViewModel
 
         public void SetViewModels(IEnumerable<ModuleBase> modules)
         { 
-            ViewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID }); 
+            ViewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID });
 
-            _selectedViewModel = ViewModels.FirstOrDefault();
+            SelectedViewModel = ViewModels.FirstOrDefault();
         }
+
+        #region Выбранный таблКонтрол
+
+        private TabControlViewModel _selectedViewModel;
 
         public TabControlViewModel SelectedViewModel
         {
@@ -80,6 +78,7 @@ namespace Van.ViewModel
             }
         }
 
+        #endregion
 
         #region Деревья в левом и правом меню
 
@@ -145,8 +144,6 @@ namespace Van.ViewModel
 
             return nodes;
         }
-
-
 
         #endregion 
 
@@ -224,6 +221,8 @@ namespace Van.ViewModel
 
         #endregion
 
+        #region Вызов настроек
+
         private RelayCommand setSettingsView;
         public RelayCommand SetSettingsView
         {
@@ -241,8 +240,10 @@ namespace Van.ViewModel
         {
             var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
             var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
-            AddItemInTabControl(settings);
+            AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID);
         }
+
+        #endregion
 
         #region Добавление в ТабКонтрол
 
@@ -254,14 +255,15 @@ namespace Van.ViewModel
                 return setSelectedTreeViewItem ??
                     (setSelectedTreeViewItem = new RelayCommand(obj =>
                     {
-                        AddItemInTabControl((Node)obj); 
+                        var Node = (Node)obj;
+                        AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID); 
                     }));
             }
         }
 
-        private void AddItemInTabControl(Node node)
+        private void AddItemInTabControl(string name, UserControl userInterface, Guid id)
         {
-            var existingViewModel = ViewModels.Where(x => x.ID == node.ID).FirstOrDefault();
+            var existingViewModel = ViewModels.Where(x => x.ID == id).FirstOrDefault();
             int? index = null;
             if (existingViewModel != null)
             {
@@ -270,32 +272,15 @@ namespace Van.ViewModel
 
             if (index == null)
             {
-                ViewModels.Add(new TabControlViewModel { Name = node.View.Name, ViewContent = node.View.UserInterface, ID = node.ID });
+                var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id };
+                ViewModels.Add(TabControlViewModel);
+                SelectedViewModel = TabControlViewModel;
             }
             else
             {
                 Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
             }
-        }
-
-        private void AddItemInTabControl(IModule module)
-        {
-            var existingViewModel = ViewModels.Where(x => x.ID == module.ID).FirstOrDefault();
-            int? index = null;
-            if (existingViewModel != null)
-            {
-                index = ViewModels.IndexOf(existingViewModel);
-            }
-
-            if (index == null)
-            {
-                ViewModels.Add(new TabControlViewModel { Name = module.Name, ViewContent = module.UserInterface, ID = module.ID });
-            }
-            else
-            {
-                Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
-            }
-        }
+        } 
 
         #endregion
 
@@ -315,6 +300,5 @@ namespace Van.ViewModel
         }
 
         #endregion
-
     }
 }

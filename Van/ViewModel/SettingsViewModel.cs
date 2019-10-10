@@ -42,7 +42,7 @@ namespace Van.ViewModel
             var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
-            if (win.SelectedTheme != selectedTheme)
+            if (win.SelectedTheme.UriPath != selectedTheme.UriPath)
             {
                 win.SelectedTheme = selectedTheme;
                 Message("Тема изменена");
@@ -74,7 +74,7 @@ namespace Van.ViewModel
             var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
-            if (win.SelectedThemeDarkOrLight != selectedTheme)
+            if (win.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
             {
                 win.SelectedThemeDarkOrLight = selectedTheme;
                 Message("Тема изменена");
