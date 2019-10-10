@@ -9,10 +9,18 @@
                 <ControlTemplate TargetType="{x:Type ButtonBase}">
                     <Border
                             x:Name="Chrome"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Margin="0"
-                            Background="{TemplateBinding Background}"
+                            BorderBrush="Black"
+                            Margin="0" 
                             SnapsToDevicePixels="True">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#2600AEFF" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <ContentPresenter
                                 ContentTemplate="{TemplateBinding ContentTemplate}"
                                 Content="{TemplateBinding Content}"
@@ -28,9 +36,54 @@
         </Setter>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontFamily" Value="Webdings"/>
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="Foreground" Value="Black" />
-        <Setter Property="Margin" Value="0,2,4,0"/>
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Margin" Value="0,2,1,0"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="LightBlue" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="WindowButtonCloseStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border
+                            x:Name="Chrome"
+                            BorderBrush="Black"
+                            Margin="0" 
+                            SnapsToDevicePixels="True">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#26FF0000" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <ContentPresenter
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Content="{TemplateBinding Content}"
+                                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontFamily" Value="Webdings"/>
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Width" Value="25" />
+        <Setter Property="Margin" Value="0,2,1,0"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="LightBlue" />
@@ -73,9 +126,8 @@
                                 <StackPanel x:Name="buttonsStackPanel" Margin="0,0,4,0" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <Button x:Name="minimizeButton" Style="{StaticResource WindowButtonStyle}"
                                             Content="0" />
-                                    <Button x:Name="restoreButton" Style="{StaticResource WindowButtonStyle}"
-                                            Content="1" />
-                                    <Button x:Name="closeButton" Style="{StaticResource WindowButtonStyle}"
+                                    <Button x:Name="restoreButton" Style="{StaticResource WindowButtonStyle}"/>
+                                    <Button x:Name="closeButton" Style="{StaticResource WindowButtonCloseStyle}"
                                             Content="r" />
                                 </StackPanel>
 
@@ -89,7 +141,7 @@
                             <!-- Resize grid to be inserted here -->
                             <Border BorderBrush="Gray" BorderThickness="1">
                                 <Grid  x:Name="resizeGrid">
-                                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5,20,5,5">
+                                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5,22,5,5">
                                     </Border>
                                     <Rectangle
                                                 Stroke="{x:Null}"
@@ -151,27 +203,11 @@
                                                 VerticalAlignment="Top"
                                                 Height="5"
                                                 x:Name="topLeft" />
-                                </Grid> 
+                                </Grid>
                             </Border>
                         </Grid>
                     </Border>
                 </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Separator style-->
-    <Style x:Key="VerticalSeparatorStyle"  TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Type Separator}}">
-        <Setter Property="Margin" Value="6,0,6,0"/> 
-        <Setter Property="LayoutTransform">
-            <Setter.Value>
-                <TransformGroup>
-                    <TransformGroup.Children>
-                        <TransformCollection>
-                            <RotateTransform Angle="90"/>
-                        </TransformCollection>
-                    </TransformGroup.Children>
-                </TransformGroup>
             </Setter.Value>
         </Setter>
     </Style>

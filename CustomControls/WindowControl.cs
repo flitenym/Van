@@ -43,16 +43,19 @@ namespace CustomControls
         public void stateChangeWork() {
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
             StackPanel stackPanel = this.Template.FindName("buttonsStackPanel", this) as StackPanel;
-
+            Button restoreButton = this.Template.FindName("restoreButton", this) as Button;
+            
             if (WindowState == WindowState.Maximized)
             {
-                border.Margin = new Thickness(-1, 6, -1, 1);
+                border.Margin = new Thickness(-1, 6, -1, -1);
                 stackPanel.Margin = new Thickness(0, 0, 8, 0);
+                restoreButton.Content = 2;
             }
             else if (WindowState == WindowState.Normal)
             {
                 border.Margin = new Thickness(0);
                 stackPanel.Margin = new Thickness(0, 0, 4, 0);
+                restoreButton.Content = 1;
             }
         }
 
@@ -64,8 +67,7 @@ namespace CustomControls
         }
 
         protected void RestoreClick(object sender, RoutedEventArgs e)
-        {
-            Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
+        { 
             stateChangeWork();
             WindowState = WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal; 
         }

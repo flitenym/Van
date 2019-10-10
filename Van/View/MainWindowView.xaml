@@ -22,7 +22,7 @@
             <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="0"
-                             Duration="0:0:0.3"> 
+                             Duration="0:0:0.35"> 
             </DoubleAnimation>
         </Storyboard>
         <!--анимация закрытия меню-->
@@ -30,7 +30,7 @@
             <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="-355"
-                             Duration="0:0:0.1"> 
+                             Duration="0:0:0.35"> 
             </DoubleAnimation>
         </Storyboard>
         <!--анимация открытия меню-->
@@ -67,7 +67,7 @@
     </Window.Triggers>
 
     <Grid>
-        <dockablz:Layout Margin="15,0,15,0">
+        <dockablz:Layout Margin="20,0,20,0">
             <dragablz:TabablzControl 
                 BorderThickness="0" 
                 ItemsSource="{Binding ViewModels}" 
@@ -119,10 +119,10 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
 
-        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="15">
+        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="20">
             <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronRight" Foreground="{DynamicResource DarkLightForeground}"/>
         </Grid>
-        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="15" >
+        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="20" >
             <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronLeft" Foreground="{DynamicResource DarkLightForeground}"/>
         </Grid>
 
