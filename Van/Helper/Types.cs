@@ -10,13 +10,27 @@ namespace Van.Helper
     {
         public static class ViewData
         {
+            #region Настройки
+
             public static string SettingsName = "Настройки";
             public static readonly Guid SettingsView = new Guid("C475B3A2-B969-4B30-B08A-F669C8B6AFF9"); 
             public static int SettingsNum = 0;
 
+            #endregion
+
+            #region Правое меню
+
+            public static string MainMenuName = "Главное меню";
+            public static readonly Guid MainMenuView = new Guid("C7ECA40A-DACF-4524-B0F7-443860448FFA");
+            public static int MainMenuNum = 0;
+
             public static string UserInformationName = "Пользователь";
             public static readonly Guid UserInformationView = new Guid("2FBC16FC-D247-4965-BEDE-5C6A39F279EB");
-            public static int UserInformationNum = 0;
+            public static int UserInformationNum = 1;
+
+            #endregion
+
+            #region Левое меню
 
             public static string SurvivalAnalysisMethodsName = "Методы анализа выживаемости";
             public static readonly Guid SurvivalAnalysisMethodsView = new Guid("9F25D681-33A1-46DD-91CB-E6B771D292F0");
@@ -62,8 +76,7 @@ namespace Van.Helper
             public static readonly Guid IncludingMortalityView = new Guid("65919B95-591D-4BE1-BBB4-E5CCB07A327D");
             public static int IncludingMortalityNum = 10;
 
-            
-        }
-
+            #endregion 
+        } 
     }
 }

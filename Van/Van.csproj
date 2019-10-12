@@ -35,7 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
@@ -86,6 +87,7 @@
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
+    <Compile Include="Model\MainMenuModel.cs" />
     <Compile Include="Model\DistributionModel.cs" />
     <Compile Include="Model\IncludingMortalityModel.cs" />
     <Compile Include="Model\ExcludingMortalityModel.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="ThemesGlobal\Light\Light.cs" />
     <Compile Include="Themes\Red\Red.cs" />
     <Compile Include="Themes\Green\Green.cs" />
+    <Compile Include="ViewModel\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\DistributionViewModel.cs" />
     <Compile Include="ViewModel\LiCarterViewModel.cs" />
     <Compile Include="ViewModel\KoksRiskViewModel.cs" />
@@ -116,6 +119,9 @@
     <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\MainMenuView.xaml.cs">
+      <DependentUpon>MainMenuView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DistributionView.xaml.cs">
       <DependentUpon>DistributionView.xaml</DependentUpon>
     </Compile>
@@ -174,6 +180,10 @@
     <Page Include="Themes\Blue\Blue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainMenuView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DistributionView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -286,6 +296,5 @@
   <ItemGroup>
     <Resource Include="Images\icon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

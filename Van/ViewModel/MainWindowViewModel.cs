@@ -30,13 +30,15 @@ namespace Van.ViewModel
 
         public ObservableCollection<TabControlViewModel> ViewModels { get; set; } = new ObservableCollection<TabControlViewModel>();
 
+        private IEnumerable<ModuleBase> modules { get; set; }
+
         #endregion
 
         public MainWindowViewModel()
         {
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
-            var modules = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
+            modules = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
@@ -44,7 +46,7 @@ namespace Van.ViewModel
             var rightMenu = modules.Where(x => x.modelClass == ModelBaseClasses.RightMenu).OrderBy(x => x.Num);
             RightMenuNodes = GetTreeViewItems(rightMenu);
              
-            SetViewModels(modules); 
+            SetViewModels(); 
 
             var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
 
@@ -55,11 +57,17 @@ namespace Van.ViewModel
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault(); 
         }
 
-        public void SetViewModels(IEnumerable<ModuleBase> modules)
-        { 
-            ViewModels.Add(new TabControlViewModel { Name = modules.FirstOrDefault().Name, ViewContent = modules.FirstOrDefault().UserInterface, ID = modules.FirstOrDefault().ID });
+        public void SetViewModels()
+        {
+            var mainmenu = modules.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault();
 
-            SelectedViewModel = ViewModels.FirstOrDefault();
+            mainmenu = mainmenu ?? modules.FirstOrDefault();
+
+            var tabControlViewModel = new TabControlViewModel { Name = mainmenu.Name, ViewContent = mainmenu.UserInterface, ID = mainmenu.ID };
+             
+            ViewModels.Add(tabControlViewModel); 
+
+            SelectedViewModel = tabControlViewModel;
         }
 
         #region Выбранный таблКонтрол
@@ -114,7 +122,7 @@ namespace Van.ViewModel
                     var node = new Node();
                     node.ID = module.ID;
                     node.Name = module.Name;
-                    node.ParentName = string.Empty;
+                    node.ParentName = string.Empty; 
                     node.View = module;
                     node.Nodes = GetNodes(modules, module.ID);
 
@@ -134,7 +142,7 @@ namespace Van.ViewModel
                     var node = new Node();
                     node.ID = module.ID;
                     node.Name = module.Name;
-                    node.ParentName = modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name;
+                    node.ParentName = modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name; 
                     node.View = module;
                     node.Nodes = GetNodes(modules, module.ID);
 
@@ -256,7 +264,11 @@ namespace Van.ViewModel
                     (setSelectedTreeViewItem = new RelayCommand(obj =>
                     {
                         var Node = (Node)obj;
-                        AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID); 
+                        if (Node != null)
+                        {
+                            AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID);
+                            Node.Selected = false;
+                        }
                     }));
             }
         }
@@ -272,13 +284,22 @@ namespace Van.ViewModel
 
             if (index == null)
             {
+                var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
+                
                 var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id };
                 ViewModels.Add(TabControlViewModel);
                 SelectedViewModel = TabControlViewModel;
+
+                if (mainmenu != null) {
+                    ViewModels.Remove(mainmenu);
+                }
             }
             else
             {
-                Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
+                if (id != Types.ViewData.MainMenuView)
+                {
+                    Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
+                }
             }
         } 
 
@@ -294,7 +315,9 @@ namespace Van.ViewModel
         private void ClosingTabItemHandlerImpl(ItemActionCallbackArgs<TabablzControl> args)
         {
             var viewModel = args.DragablzItem.DataContext as TabControlViewModel;
-            if (ViewModels.Count() == 1) { args.Cancel(); return; }
+            if (ViewModels.Count() == 1) {
+                SetViewModels(); 
+            }
 
             ViewModels.Remove(viewModel); 
         }

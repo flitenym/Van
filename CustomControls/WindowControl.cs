@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace CustomControls
     {
         public static bool restoreIfMove = false;
 
+        public string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         static WindowControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WindowControl),

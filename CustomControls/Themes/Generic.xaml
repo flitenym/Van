@@ -112,14 +112,15 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}"  
+                                <!--<Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}"  
                                         VerticalAlignment="Center" HorizontalAlignment="Left"  
                                         Margin="8,0,0,0"   
                                         Width="20"
-                                        Height="20"/>
+                                        Height="20"/>-->
+                                
                                 <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}"   
-                                       VerticalAlignment="Center" HorizontalAlignment="Center" 
-                                       Margin="36,0,0,0"/>
+                                       VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                       Margin="10,0,0,0"/> 
 
                                 <Rectangle  x:Name="moveRectangle" Fill="Transparent" Grid.Row="0" Grid.Column="0"/>
 

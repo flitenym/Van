@@ -10,11 +10,11 @@
         xmlns:localViews="clr-namespace:Van.View"
         xmlns:localViewModels="clr-namespace:Van.ViewModel"
         xmlns:local="clr-namespace:Van"
-        xmlns:nodes="clr-namespace:Van.Helper"
-        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:nodes="clr-namespace:Van.Helper" 
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d" FontSize="14"
-        Title="Анализ выживаемости" Height="450" Width="800" Icon="../Images/icon.ico">
+        Title="Анализ выживаемости"
+        Height="450" Width="800" Icon="../Images/icon.ico">
 
     <Window.Resources>
         <!--анимация открытия меню-->
@@ -49,8 +49,8 @@
                              Duration="0:0:0.3"> 
             </DoubleAnimation>
         </Storyboard>
-    </Window.Resources>
-
+    </Window.Resources> 
+    
     <Window.Triggers>
         <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource OpenLeftMenu}"/>
@@ -66,16 +66,21 @@
         </EventTrigger>
     </Window.Triggers>
 
+    <Window.InputBindings>
+        <KeyBinding Key="B" Modifiers="Control"  Command="{Binding ClosingTabItemHandler}" CommandParameter="{Binding SelectedItem, ElementName=tabablzControl}"/>
+    </Window.InputBindings>
+    
     <Grid>
         <dockablz:Layout Margin="20,0,20,0">
             <dragablz:TabablzControl 
+                Name="tabablzControl"
                 BorderThickness="0" 
                 ItemsSource="{Binding ViewModels}" 
                 SelectedItem="{Binding SelectedViewModel}" 
-                ClosingItemCallback="{Binding ClosingTabItemHandler}">
+                ClosingItemCallback="{Binding ClosingTabItemHandler}"> 
                 <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController />
-                </dragablz:TabablzControl.InterTabController>
+                </dragablz:TabablzControl.InterTabController> 
                 <TabControl.ContentTemplate>
                     <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
                         <ContentPresenter Content="{Binding ViewContent}" />
@@ -95,15 +100,15 @@
                                            TextAlignment="Center" 
                                            Text="{Binding Name}" 
                                            IsHyphenationEnabled="True"
+                                           Style="{StaticResource MaterialDesignTitleTextBlock}"
                                            TextWrapping="Wrap"/>
-                                <Thumb Style="{DynamicResource InvisibleThumbStyle}"
-                                dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
+                                <Thumb Style="{DynamicResource InvisibleThumbStyle}" dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
                             </Grid>
                             <Button VerticalAlignment="Center" 
                                     HorizontalAlignment="Right" 
-                                    Grid.Column="1" 
+                                    Grid.Column="1"
                                     Style="{DynamicResource CustomButtonStyle}"    
-                                    Command="dragablz:TabablzControl.CloseItemCommand">
+                                    Command="dragablz:TabablzControl.CloseItemCommand"> 
                                 <Button.Content>
                                     <materialDesign:PackIcon Kind="Close" />
                                 </Button.Content>
@@ -136,15 +141,20 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="32" />
             </Grid.RowDefinitions>
-                <TreeView 
-                          Grid.Row="1"
+                <TreeView Grid.Row="1"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           Style="{DynamicResource TreeViewStyle}"
-                          ItemsSource="{Binding LeftMenuNodes}" 
-                          Name="LeftMenu">
-                    <TreeView.Resources>
+                          ItemsSource="{Binding LeftMenuNodes}"
+                          Name="LeftMenu" >
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="IsExpanded" Value="{Binding Expanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /> 
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
                             <TextBlock Width="150" Text="{Binding Path=Name}" 
                                            IsHyphenationEnabled="True"
@@ -183,15 +193,20 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
-                <TreeView 
-                          Grid.Row="1"  
+                <TreeView Grid.Row="1"  
                           ItemsSource="{Binding RightMenuNodes}"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           Style="{DynamicResource TreeViewStyle}"
                           Name="RightMenu">
-                    <TreeView.Resources>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="IsExpanded" Value="{Binding Expanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
                             <TextBlock Width="150" Text="{Binding Path=Name}" 
                                            IsHyphenationEnabled="True"

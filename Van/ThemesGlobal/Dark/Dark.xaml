@@ -25,11 +25,12 @@
     <SolidColorBrush x:Key="ButtonPreForeground" Color="{StaticResource TransparentGray}" />
     <SolidColorBrush x:Key="ButtonAfterForeGround" Color="{StaticResource Black}" />
     <SolidColorBrush x:Key="DarkButton" Color="{StaticResource Black}" />
-    
-    
+
+
     <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
         <Setter Property="Background" Value="{StaticResource ScrollBarBackground}" />
     </Style>
+    
     
     <Style x:Key="SrollViewerControl" BasedOn="{StaticResource ScrollViewerStyle}" TargetType="{x:Type ScrollViewer}">
         <Setter Property="Foreground" Value="{StaticResource ScrollBarBackground}" />
