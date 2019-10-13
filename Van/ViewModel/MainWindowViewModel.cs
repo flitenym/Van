@@ -295,11 +295,8 @@ namespace Van.ViewModel
                 }
             }
             else
-            {
-                if (id != Types.ViewData.MainMenuView)
-                {
-                    Helper.Helper.Message($"Уже используется, он находится на {index + 1} месте");
-                }
+            { 
+                SelectedViewModel = existingViewModel; 
             }
         } 
 

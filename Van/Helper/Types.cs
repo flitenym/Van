@@ -28,6 +28,10 @@ namespace Van.Helper
             public static readonly Guid UserInformationView = new Guid("2FBC16FC-D247-4965-BEDE-5C6A39F279EB");
             public static int UserInformationNum = 1;
 
+            public static string DataBaseBrowsingName = "Просмотр данных в БД";
+            public static readonly Guid DataBaseBrowsingView = new Guid("12011025-144B-4BE8-96C4-DAD33B8778FC");
+            public static int DataBaseBrowsingNum = 2;
+
             #endregion
 
             #region Левое меню
@@ -48,7 +52,7 @@ namespace Van.Helper
             public static readonly Guid SemiParametricView = new Guid("02D7E135-792B-4475-9DFB-76C54C59DECC");
             public static int SemiParametricNum = 3;
 
-            public static string KaplanMeierName = "Метод множительных оценок Каплана-Мейера";
+            public static string KaplanMeierName = "Метод Каплана-Мейера";
             public static readonly Guid KaplanMeierView = new Guid("74E9731B-2C66-404C-9D75-11CFA7243EB9");
             public static int KaplanMeierNum = 4;
 

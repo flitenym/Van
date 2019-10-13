@@ -7,9 +7,10 @@
     </ResourceDictionary.MergedDictionaries>
 
 
+    
     <Color x:Key="Blue">#60ccd9</Color>
-
-    <SolidColorBrush x:Key="BlueButton" Color="{StaticResource Blue}"/>
+    
+    <SolidColorBrush x:Key="DataGridRowSelected" Color="{StaticResource Blue}" />
 
 
     <Style x:Key="ActionButton" BasedOn="{StaticResource {x:Type Button}}" TargetType="Button"> 

@@ -49,8 +49,8 @@
                              Duration="0:0:0.3"> 
             </DoubleAnimation>
         </Storyboard>
-    </Window.Resources> 
-    
+    </Window.Resources>
+
     <Window.Triggers>
         <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource OpenLeftMenu}"/>
@@ -66,15 +66,11 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Window.InputBindings>
-        <KeyBinding Key="B" Modifiers="Control"  Command="{Binding ClosingTabItemHandler}" CommandParameter="{Binding SelectedItem, ElementName=tabablzControl}"/>
-    </Window.InputBindings>
-    
     <Grid>
         <dockablz:Layout Margin="20,0,20,0">
             <dragablz:TabablzControl 
                 Name="tabablzControl"
-                BorderThickness="0" 
+                BorderThickness="0"
                 ItemsSource="{Binding ViewModels}" 
                 SelectedItem="{Binding SelectedViewModel}" 
                 ClosingItemCallback="{Binding ClosingTabItemHandler}"> 
@@ -102,7 +98,7 @@
                                            IsHyphenationEnabled="True"
                                            Style="{StaticResource MaterialDesignTitleTextBlock}"
                                            TextWrapping="Wrap"/>
-                                <Thumb Style="{DynamicResource InvisibleThumbStyle}" dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
+                                <Thumb dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
                             </Grid>
                             <Button VerticalAlignment="Center" 
                                     HorizontalAlignment="Right" 

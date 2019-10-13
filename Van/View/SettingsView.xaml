@@ -12,12 +12,23 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
-                <ResourceDictionary Source="/Themes/Blue/Blue.xaml" x:Name="blue" />
-                <ResourceDictionary Source="/Themes/Green/Green.xaml" x:Name="green" />
-                <ResourceDictionary Source="/Themes/Red/Red.xaml" x:Name="red" />
-                <ResourceDictionary Source="/ThemesGlobal/Dark/Dark.xaml" x:Name="dark" />
-                <ResourceDictionary Source="/ThemesGlobal/Light/Light.xaml" x:Name="light" />
+                <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ControlStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+
+
+            <Color x:Key="DarkButtonColor">#000000</Color>
+            <Color x:Key="BlueButtonColor">#60ccd9</Color>
+            <Color x:Key="GreenButtonColor">#00897b</Color>
+            <Color x:Key="RedButtonColor">#ff4081</Color>
+            <Color x:Key="LightButtonColor">#f5f5f5</Color>
+
+            <SolidColorBrush x:Key="BlueButton" Color="{DynamicResource BlueButtonColor}"/>
+            <SolidColorBrush x:Key="GreenButton" Color="{DynamicResource GreenButtonColor}"/>
+            <SolidColorBrush x:Key="LightButton" Color="{DynamicResource LightButtonColor}" />
+            <SolidColorBrush x:Key="DarkButton" Color="{DynamicResource DarkButtonColor}" />
+            <SolidColorBrush x:Key="RedButton" Color="{DynamicResource RedButtonColor}"/>
+
             <Style TargetType="Button" x:Key="ButtonZoom" BasedOn="{StaticResource MaterialDesignToolForegroundButton}"> 
                 <Setter Property="RenderTransform">
                     <Setter.Value>
@@ -50,7 +61,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer Style="{DynamicResource SrollViewerControl}" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
@@ -61,7 +72,7 @@
                 <RowDefinition Height="300"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource MaterialDesignDisplay1TextBlock}" Text="Темы" VerticalAlignment="Center" TextAlignment="Center"/>
-            <ScrollViewer Grid.Column="1" Grid.Row="0" Style="{DynamicResource SrollViewerControl}" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Column="1" Grid.Row="0" HorizontalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,0,20,0">
                     <Button Width="auto"
                         Height="auto"
@@ -71,7 +82,7 @@
                         Command="{Binding GlobalThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Dark}"
                         Style="{StaticResource ButtonZoom}">
-                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{DynamicResource DarkButton}"/>
+                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource DarkButton}"/>
                     </Button>
                     <Button Width="auto"
                         Height="auto"
@@ -80,7 +91,7 @@
                         Command="{Binding GlobalThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Light}"
                         Style="{StaticResource ButtonZoom}">
-                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{DynamicResource LightButton}" materialDesign:ShadowAssist.ShadowDepth="Depth4"/>
+                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource LightButton}"/>
                     </Button>
                     <Button Width="auto"
                         Height="auto"
@@ -89,7 +100,7 @@
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Blue}"
                         Style="{StaticResource ButtonZoom}">
-                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{DynamicResource BlueButton}" materialDesign:ShadowAssist.ShadowDepth="Depth4"/>
+                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource BlueButton}"/>
                     </Button>
                     <Button Width="auto"
                         Height="auto"
@@ -98,7 +109,7 @@
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Green}"
                         Style="{StaticResource ButtonZoom}">
-                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{DynamicResource GreenButton}"/>
+                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource GreenButton}"/>
                     </Button>
                     <Button Width="auto"
                         Height="auto"
@@ -107,7 +118,7 @@
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Red}"
                         Style="{StaticResource ButtonZoom}">
-                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{DynamicResource RedButton}"/>
+                        <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource RedButton}"/>
                     </Button>
                 </StackPanel>
             </ScrollViewer>
