@@ -10,8 +10,41 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />  
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="Button" x:Key="ButtonZoom" BasedOn="{StaticResource MaterialDesignToolForegroundButton}">
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform x:Name="transform"></ScaleTransform>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Button.Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard Name="zoomIn">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard Name="zoomOut">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="00:00:00.25"></DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="00:00:00.25"></DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources> 
     
@@ -36,7 +69,11 @@
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" ShowsPreview="True"/>
  
             <Grid Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" Margin="10">
-                <DataGrid Background="{x:Null}" 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="45"/> 
+                </Grid.RowDefinitions>
+                <DataGrid Grid.Row="0" Background="{x:Null}" 
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         x:Name="DataGrid" EnableRowVirtualization="True" EnableColumnVirtualization="True" ScrollViewer.CanContentScroll="True" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
@@ -56,14 +93,45 @@
                                     <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
                                     <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}"/>
                                 </Trigger>
-
                             </Style.Triggers>
                         </Style>
                         <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="Foreground" Value="{DynamicResource WindowForeground}" />
+                            <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                            <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </DataGrid.Resources>
                 </DataGrid>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Сохранить изменения"
+                        Style="{StaticResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="Check" Width="30" Height="Auto"/>
+                    </Button>
+                    <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Добавить запись в таблицу"
+                        Style="{StaticResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="Plus" Width="30" Height="Auto"/>
+                    </Button>
+                    <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Удалить выделенную запись из таблицы"
+                        Style="{StaticResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="Minus" Width="30" Height="Auto"/>
+                    </Button>
+                </StackPanel>
             </Grid> 
             
         </Grid>

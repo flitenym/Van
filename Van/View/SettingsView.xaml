@@ -79,7 +79,6 @@
                         Height="auto"
                         x:Name="Dark"
                         VerticalAlignment="Center"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth3"
                         Command="{Binding GlobalThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Dark}"
                         Style="{StaticResource ButtonZoom}">

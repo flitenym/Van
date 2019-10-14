@@ -20,6 +20,10 @@ namespace Van.DataBase
                     return Converter.ToDataTable(SQLExecutor.Get<ParametrModel>($"select * from {nameof(ParametrModel).Replace("Model", "")}"));
                 default: throw new Exception("Не найдена модель");
             }
-        } 
+        }
+
+
+
+
     }
 }
