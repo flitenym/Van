@@ -8,7 +8,7 @@ namespace Van.Helper
 {
     static class StaticReflectionHelper
     {
-        public static IEnumerable<T> CreateAllInstancesOf<T>()
+        public static IEnumerable<T> GetAllInstancesOf<T>()
         {
             return typeof(StaticReflectionHelper).Assembly.GetTypes()
                 .Where(t => typeof(T).IsAssignableFrom(t))
@@ -16,7 +16,7 @@ namespace Van.Helper
                 .Select(t => (T)Activator.CreateInstance(t));
         }
 
-        public static IEnumerable<T> CreateAllInstancesOfAbstract<T>()
+        public static IEnumerable<T> GetAllInstancesOfAbstract<T>()
         {
             return typeof(StaticReflectionHelper).Assembly.GetTypes()
                 .Where(t => typeof(T).IsAssignableFrom(t))

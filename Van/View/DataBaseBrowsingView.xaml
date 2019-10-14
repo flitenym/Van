@@ -23,20 +23,15 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
+            <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
                 <TextBlock TextAlignment="Center" Margin="20,2,20,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                     Дерево сервера
                 </TextBlock> 
-                <TreeView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableTreeView"
-                          Foreground="{DynamicResource WindowForeground}">
-                    <TreeView.ItemTemplate>  
-                        <HierarchicalDataTemplate >
-                            <TextBlock/>
-                        </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>
-                </TreeView> 
-
-            </Grid>
+                <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableListView"
+                          ItemsSource="{Binding DatabaseModels, Mode=TwoWay}" SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
+                          Foreground="{DynamicResource WindowForeground}"> 
+                </ListView>  
+            </StackPanel>
 
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" ShowsPreview="True"/>
  

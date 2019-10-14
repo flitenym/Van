@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Van.DataBase.Model
 {
+    [Database(nameof(ParametrModel))]
     public class ParametrModel
     {
         public int ID { get; set; }

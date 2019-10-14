@@ -93,6 +93,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataBase\DatabaseAttribute.cs" />
+    <Compile Include="DataBase\Helper.cs" />
     <Compile Include="DataBase\Model\OldModel.cs" />
     <Compile Include="DataBase\Model\ParametrModel.cs" />
     <Compile Include="DataBase\SQLExecutor.cs" />

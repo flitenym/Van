@@ -38,7 +38,7 @@ namespace Van.ViewModel
         {
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
-            modules = StaticReflectionHelper.CreateAllInstancesOf<ModuleBase>();
+            modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>();
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
@@ -48,7 +48,7 @@ namespace Van.ViewModel
              
             SetViewModels(); 
 
-            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
 
             Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
             SelectedTheme = this.Themes.FirstOrDefault();
@@ -246,7 +246,7 @@ namespace Van.ViewModel
 
         private void SetSettings()
         {
-            var modules = StaticReflectionHelper.CreateAllInstancesOf<IModule>().ToList();
+            var modules = StaticReflectionHelper.GetAllInstancesOf<IModule>().ToList();
             var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
             AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID);
         }

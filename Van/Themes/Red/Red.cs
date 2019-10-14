@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Van.AbstractClasses;
 using static Van.Helper.Enums;
 
-namespace Van.Themes.Green
+namespace Van.Themes.Red
 {
     class Red : ThemeBase
     {  

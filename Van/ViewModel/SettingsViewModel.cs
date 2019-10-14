@@ -13,8 +13,8 @@ using System;
 namespace Van.ViewModel
 {
     class SettingsViewModel : INotifyPropertyChanged
-    { 
-        public event PropertyChangedEventHandler PropertyChanged;
+    {
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
@@ -39,7 +39,7 @@ namespace Van.ViewModel
 
         public void AcceptTheme(string ThemeName) {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
             if (win.SelectedTheme.UriPath != selectedTheme.UriPath)
@@ -71,7 +71,7 @@ namespace Van.ViewModel
         public void AcceptGlobalTheme(string ThemeName)
         {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            var themes = StaticReflectionHelper.CreateAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
             if (win.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
