@@ -14,9 +14,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ControlStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-
-
+ 
+            <!--Данные для темы /////////Начало//////////-->
             <Color x:Key="DarkButtonColor">#000000</Color>
             <Color x:Key="BlueButtonColor">#60ccd9</Color>
             <Color x:Key="GreenButtonColor">#00897b</Color>
@@ -28,7 +27,9 @@
             <SolidColorBrush x:Key="LightButton" Color="{DynamicResource LightButtonColor}" />
             <SolidColorBrush x:Key="DarkButton" Color="{DynamicResource DarkButtonColor}" />
             <SolidColorBrush x:Key="RedButton" Color="{DynamicResource RedButtonColor}"/>
+            <!--Данные для темы /////////Конец//////////-->
 
+            
             <Style TargetType="Button" x:Key="ButtonZoom" BasedOn="{StaticResource MaterialDesignToolForegroundButton}"> 
                 <Setter Property="RenderTransform">
                     <Setter.Value>
