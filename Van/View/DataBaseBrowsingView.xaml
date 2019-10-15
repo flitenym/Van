@@ -13,38 +13,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <Style TargetType="Button" x:Key="ButtonZoom" BasedOn="{StaticResource MaterialDesignToolForegroundButton}">
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <ScaleTransform x:Name="transform"></ScaleTransform>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Button.Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <EventTrigger RoutedEvent="MouseEnter">
-                        <BeginStoryboard Name="zoomIn">
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="MouseLeave">
-                        <BeginStoryboard Name="zoomOut">
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="00:00:00.25"></DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="00:00:00.25"></DoubleAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Style.Triggers>
-            </Style>
-            
         </ResourceDictionary>
     </UserControl.Resources> 
     
@@ -80,7 +48,8 @@
                         GridLinesVisibility="None" HeadersVisibility="Column" 
                         CanUserAddRows="False" CanUserDeleteRows="False"
                         ItemsSource="{Binding TableData, Mode=TwoWay}"
-                        SelectionUnit="FullRow"
+                        ColumnWidth="*"
+                        SelectionUnit="FullRow"  
                         CanUserSortColumns="False">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridRow">
@@ -95,6 +64,32 @@
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Style.Triggers> 
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+                                    <Setter Property="Background" Value="Transparent" />
+                                </MultiTrigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value=".56"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        
+                        
                         <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                             <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
                             <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
@@ -114,15 +109,18 @@
                         Height="auto"  
                         VerticalAlignment="Center" 
                         ToolTip="Сохранить изменения"
-                        Style="{StaticResource ButtonZoom}">
+                        IsEnabled="False"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Check" Width="30" Height="Auto"/>
                     </Button>
                     <Button Width="auto"
                         Height="auto"  
-                        VerticalAlignment="Center" 
-                        Command="{Binding InsertRowCommand}"
+                        VerticalAlignment="Center"
+                        IsEnabled="False"
                         ToolTip="Добавить запись в таблицу"
-                        Style="{StaticResource ButtonZoom}">
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Plus" Width="30" Height="Auto"/>
                     </Button>
                     <Button Width="auto"
@@ -131,7 +129,8 @@
                         Command="{Binding DeleteRowCommand}"
                         CommandParameter="{Binding SelectedItem, ElementName=DataGrid}"
                         ToolTip="Удалить выделенную запись из таблицы"
-                        Style="{StaticResource ButtonZoom}">
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Minus" Width="30" Height="Auto"/>
                     </Button>
                 </StackPanel>

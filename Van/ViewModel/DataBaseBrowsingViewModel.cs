@@ -11,9 +11,9 @@ using static Van.Helper.Helper;
 using System;
 using System.Data;
 using System.Reflection;
-using Van.DataBase.Model;
 using System.Collections.ObjectModel;
 using Van.DataBase;
+using Dapper;
 
 namespace Van.ViewModel
 {
@@ -48,29 +48,21 @@ namespace Van.ViewModel
 
         public DataBaseBrowsingViewModel() {
             TableData = new DataTable();
-            DatabaseModels = new ObservableCollection<string>(GetNamesWithMyAttribute());
-            SelectedModel = databaseModels.FirstOrDefault();
-        } 
-
-        public static IEnumerable<string> GetNamesWithMyAttribute()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (Attribute.IsDefined(type, typeof(DatabaseAttribute)))
-                    yield return type.Name;
-            }
+            DatabaseModels = new ObservableCollection<string>(TablesData.GetDescriptions());
+            SelectedModel = DatabaseModels.FirstOrDefault();
         } 
 
         private string selectedModel;
+
+        private string getSelectedModelName => TablesData.GetValue(SelectedModel);
+
         public string SelectedModel
         {
             get { return selectedModel; }
             set
             {
                 selectedModel = value;
-                TableData = DataBase.Helper.GetData(selectedModel);
+                TableData = DataBase.Helper.GetData(getSelectedModelName);
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
             }
         }
@@ -105,34 +97,12 @@ namespace Van.ViewModel
                 }
             }
 
-
-
             if (!string.IsNullOrEmpty(queryConditions))
             {
-                DataBase.Helper.DeleteData(selectedModel, queryConditions);
+                DataBase.Helper.DeleteData(getSelectedModelName, queryConditions);
                 tableData.Rows.Remove(selectedItems);
             } 
         }
-
-        private RelayCommand insertRowCommand;
-        public RelayCommand InsertRowCommand
-        {
-            get
-            {
-                return insertRowCommand ??
-                  (insertRowCommand = new RelayCommand(obj =>
-                  {
-                      InsertRows(); 
-                  }));
-            }
-        }
-
-        public void InsertRows()
-        {   
-            DataBase.Helper.InsertData(selectedModel);
-            var newRow = tableData.NewRow(); 
-        }
-
 
     }
 }

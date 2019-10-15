@@ -7,8 +7,7 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Van.DataBase.Model;
+using System.Threading.Tasks; 
 
 namespace Van.DataBase
 {
@@ -33,14 +32,7 @@ namespace Van.DataBase
             {
                 var output = connection.Query(sqlCommand); 
             }
-        }
-
-        public static int Insert(string sqlCommand) {
-            using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-            {
-                return connection.Query<int>(sqlCommand).Single();
-            } 
-        }
+        } 
 
     }
 }

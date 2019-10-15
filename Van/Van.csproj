@@ -93,11 +93,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataBase\DatabaseAttribute.cs" />
     <Compile Include="DataBase\Helper.cs" />
-    <Compile Include="DataBase\Model\OldModel.cs" />
-    <Compile Include="DataBase\Model\ParametrModel.cs" />
     <Compile Include="DataBase\SQLExecutor.cs" />
+    <Compile Include="DataBase\TablesData.cs" />
     <Compile Include="Helper\Node.cs" />
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />
@@ -253,7 +251,6 @@
     </Compile>
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Helper\StaticReflectionHelper.cs" />
-    <Compile Include="Interfaces\IMainWindowView.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\ITheme.cs" />
     <Compile Include="ThemesGlobal\Dark\Dark.cs" />
@@ -302,13 +299,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Database.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="VanDataBase.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

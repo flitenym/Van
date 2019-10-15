@@ -13,7 +13,7 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <Border x:Name="rectangle"
                                 SnapsToDevicePixels="True"
-                                Background="{DynamicResource ScrollBarBackground}"
+                                Background="{DynamicResource ScrollBackground}"
                                 CornerRadius="3"
                                 Opacity="0.2"
                                 Height="{TemplateBinding Height}"
@@ -138,11 +138,11 @@
     </Style>
 
     <Style x:Key="ScrollThumbsStyle" BasedOn="{StaticResource ScrollThumbs}" TargetType="{x:Type Thumb}">
-        <Setter Property="Background" Value="{DynamicResource ScrollBarBackground}" />
+        <Setter Property="Background" Value="{DynamicResource ScrollBackground}" />
     </Style>
     
     <Style BasedOn="{StaticResource ScrollViewerStyle}" TargetType="{x:Type ScrollViewer}">
-        <Setter Property="Foreground" Value="{DynamicResource ScrollBarBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource ScrollBackground}" />
     </Style>
 
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
@@ -167,7 +167,57 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style> 
+    </Style>
 
-
+    <Style TargetType="{x:Type Button}" x:Key="ButtonZoom" >
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" /> 
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform x:Name="transform"></ScaleTransform>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Button.Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{DynamicResource DepthColor}" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard Name="zoomIn">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.2" Duration="00:00:00.25"></DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard Name="zoomOut">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="00:00:00.25"></DoubleAnimation>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="00:00:00.25"></DoubleAnimation>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger> 
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" Value="0.23"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    
 </ResourceDictionary>

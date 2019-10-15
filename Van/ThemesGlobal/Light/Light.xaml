@@ -9,29 +9,50 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ControlStyle.xaml" /> 
     </ResourceDictionary.MergedDictionaries>
-
-
-    
-    <Color x:Key="White">#f5f5f5</Color>
+ 
+    <Color x:Key="White">#fffafa</Color>
+    <Color x:Key="DarkBlue">#161a1f</Color>
+    <Color x:Key="Transparent">#00000000</Color>
+    <Color x:Key="Red">#26FF0000</Color>
     <Color x:Key="Gray">#FF424242</Color>
-    <Color x:Key="WhiteGray">#FFFFFF</Color>
-    <Color x:Key="TransparentGray">#33ECECEC</Color>
-    <Color x:Key="DDDD">#f5f5f5</Color>
-    <SolidColorBrush x:Key="MaterialDesignBackground" Color="{StaticResource White}" />
-    <SolidColorBrush x:Key="MaterialDesignForeground" Color="{StaticResource Gray}" />
-    <SolidColorBrush x:Key="ActionButtonForeground" Color="{StaticResource Gray}" />
-    <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource White}" />
-    <SolidColorBrush x:Key="DarkLightForeground" Color="{StaticResource Gray}" />
-    <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource DDDD}" />
-    <SolidColorBrush x:Key="WindowsBackGround" Color="{StaticResource WhiteGray}" />
-    <SolidColorBrush x:Key="ButtonPreForeground" Color="{StaticResource TransparentGray}" />
-    <SolidColorBrush x:Key="ButtonAfterForeGround" Color="{StaticResource White}" />
-    <SolidColorBrush x:Key="DataGridBackground" Color="#FFFFFFFF"  />
-    <SolidColorBrush x:Key="DataGridForeground" Color="#FF424242"  /> 
+    <Color x:Key="LightWhite">#f5fffa</Color>
+    <Color x:Key="LightDark">#fcfcfc</Color>
+
+    <Color x:Key="DepthColor">#161a1f</Color>
+    
+    <!-- Цвет у бордера, который отделяет от Rectangle -->
+    <SolidColorBrush x:Key="WindowBorder" Color="{StaticResource Gray}" />
+    <SolidColorBrush x:Key="WindowForeground" Color="{StaticResource DarkBlue}" />
+    <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource White}" />
+    <!-- DataGrid цвет текста и фона -->
+    <SolidColorBrush x:Key="DataGridForeground" Color="{StaticResource DarkBlue}" />
+    <SolidColorBrush x:Key="DataGridBackground" Color="{StaticResource White}" />
+    
+    <!-- Фон у кнопок перед и после нажатия -->
+    <SolidColorBrush x:Key="PreWindowButtonBackground" Color="{StaticResource Transparent}" />
+    <SolidColorBrush x:Key="AfterWindowButtonBackground" Color="{StaticResource DarkBlue}" />
+    <SolidColorBrush x:Key="AfterCloseWindowButtonBackground" Color="{StaticResource Red}" />
+    
+    <!-- Цвет у кнопки перед и после нажатия -->
+    <SolidColorBrush x:Key="PreWindowButtonForeground" Color="{StaticResource DarkBlue}" />
+    <SolidColorBrush x:Key="AfterWindowButtonForeground" Color="{StaticResource DarkBlue}" />
+
+    <!-- Фон у ScrollBar -->
+    <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Transparent}" />
+    <SolidColorBrush x:Key="ScrollBackground" Color="{StaticResource DarkBlue}" />
+
+    <!-- Фон меню слева и справа при открытии -->
+    <SolidColorBrush x:Key="LeftRightMenuBackGround" Color="{StaticResource LightDark}" />
+    <!-- Фон у выплывающего сообщения снизу -->
+    <SolidColorBrush x:Key="SnackBarBackGround" Color="{StaticResource LightDark}" />
+    <!-- Бордеры у Window, сами Rectangle -->
+    <SolidColorBrush x:Key="RectangleBackGround" Color="{StaticResource White}" /> 
+
+
 
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Foreground" Value="{StaticResource ButtonPreForeground}" />
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource PreWindowButtonForeground}" />
+        <Setter Property="Background" Value="{StaticResource PreWindowButtonBackground}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value> 
@@ -44,7 +65,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource ButtonAfterForeGround}"/>
+                <Setter Property="Foreground" Value="{StaticResource AfterWindowButtonForeground}"/>
             </Trigger>
         </Style.Triggers>
     </Style> 

@@ -28,38 +28,7 @@
             <SolidColorBrush x:Key="DarkButton" Color="{DynamicResource DarkButtonColor}" />
             <SolidColorBrush x:Key="RedButton" Color="{DynamicResource RedButtonColor}"/>
             <!--Данные для темы /////////Конец//////////-->
-
-            
-            <Style TargetType="Button" x:Key="ButtonZoom" BasedOn="{StaticResource MaterialDesignToolForegroundButton}"> 
-                <Setter Property="RenderTransform">
-                    <Setter.Value>
-                        <ScaleTransform x:Name="transform"></ScaleTransform>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Button.Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <EventTrigger RoutedEvent="MouseEnter">
-                        <BeginStoryboard Name="zoomIn">
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1.5" Duration="00:00:00.25"></DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1.5" Duration="00:00:00.25"></DoubleAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="MouseLeave">
-                        <BeginStoryboard Name="zoomOut">
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" To="1" Duration="00:00:00.25"></DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" To="1" Duration="00:00:00.25"></DoubleAnimation>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Style.Triggers>
-            </Style>
+ 
         </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -81,7 +50,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding GlobalThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Dark}"
-                        Style="{StaticResource ButtonZoom}">
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource DarkButton}"/>
                     </Button>
                     <Button Width="auto"
@@ -90,7 +59,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding GlobalThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Light}"
-                        Style="{StaticResource ButtonZoom}">
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource LightButton}"/>
                     </Button>
                     <Button Width="auto"
@@ -99,7 +68,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Blue}"
-                        Style="{StaticResource ButtonZoom}">
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource BlueButton}"/>
                     </Button>
                     <Button Width="auto"
@@ -108,7 +77,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Green}"
-                        Style="{StaticResource ButtonZoom}">
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource GreenButton}"/>
                     </Button>
                     <Button Width="auto"
@@ -117,7 +86,7 @@
                         VerticalAlignment="Center"
                         Command="{Binding ThemeAcceptor}"
                         CommandParameter="{Binding Name, ElementName=Red}"
-                        Style="{StaticResource ButtonZoom}">
+                        Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Drop" Width="50" Height="Auto" Foreground="{StaticResource RedButton}"/>
                     </Button>
                 </StackPanel>

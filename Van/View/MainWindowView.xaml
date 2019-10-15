@@ -1,20 +1,22 @@
 ﻿<controls:WindowControl x:Class="Van.View.MainWindowView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  
-        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
-        xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz" 
-        xmlns:localViews="clr-namespace:Van.View"
-        xmlns:localViewModels="clr-namespace:Van.ViewModel"
-        xmlns:local="clr-namespace:Van"
-        xmlns:nodes="clr-namespace:Van.Helper" 
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        mc:Ignorable="d" FontSize="14"
-        Title="Анализ выживаемости"
-        Height="450" Width="800" Icon="../Images/icon.ico">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls"
+            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  
+            xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+            xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz" 
+            xmlns:localViews="clr-namespace:Van.View"
+            xmlns:localViewModels="clr-namespace:Van.ViewModel"
+            xmlns:local="clr-namespace:Van"
+            xmlns:nodes="clr-namespace:Van.Helper" 
+            xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+            mc:Ignorable="d" FontSize="14"
+            Title="Анализ выживаемости"
+            Height="450" Width="800" Icon="../Images/icon.ico"
+            Foreground="{DynamicResource WindowForeground}"
+        >
 
     <Window.Resources>
         <!--анимация открытия меню-->
@@ -120,24 +122,25 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
 
-        <Grid x:Name="GridButtonLeftMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="20">
-            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronRight" Foreground="{DynamicResource DarkLightForeground}"/>
+        <Grid x:Name="GridButtonLeftMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="20">
+            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronRight" Foreground="{DynamicResource WindowForeground}"/>
         </Grid>
-        <Grid x:Name="GridButtonRightMenu" Background="#19443939" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="20" >
-            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronLeft" Foreground="{DynamicResource DarkLightForeground}"/>
+        <Grid x:Name="GridButtonRightMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="20" >
+            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronLeft" Foreground="{DynamicResource WindowForeground}"/>
         </Grid>
 
 
-        <Grid x:Name="GridLeftMenu" Background="White" Width="350" HorizontalAlignment="Left" VerticalAlignment="Stretch">
+        <Grid x:Name="GridLeftMenu" Background="{DynamicResource LeftRightMenuBackGround}" Width="350" HorizontalAlignment="Left" VerticalAlignment="Stretch">
             <Grid.RenderTransform>
                 <TranslateTransform X="-355"/>
-            </Grid.RenderTransform> 
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="32" />
+                <RowDefinition Height="5" />
             </Grid.RowDefinitions>
-                <TreeView Grid.Row="1"
+            <TreeView Grid.Row="1"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -148,16 +151,16 @@
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Setter Property="IsExpanded" Value="{Binding Expanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /> 
+                        <Setter Property="IsExpanded" Value="{Binding Expanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Style>
                 </TreeView.ItemContainerStyle>
                 <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
-                            <TextBlock Width="150" Text="{Binding Path=Name}" 
+                    <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
+                        <TextBlock Width="150" Text="{Binding Path=Name}" 
                                            IsHyphenationEnabled="True"
                                            TextWrapping="Wrap" />
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <i:InvokeCommandAction 
@@ -167,20 +170,20 @@
                 </i:Interaction.Triggers>
             </TreeView>
 
-                <StackPanel Grid.Row="2" 
+            <StackPanel Grid.Row="2" 
                             Orientation="Horizontal" 
                             HorizontalAlignment="Stretch" 
-                            VerticalAlignment="Stretch">
-                    <Button Style="{StaticResource MaterialDesignIconButton}" Height="Auto" Width="32" Command="{Binding SetSettingsView}">
-                        <Button.Content>
-                            <materialDesign:PackIcon Kind="Settings" Foreground="{DynamicResource DarkLightForeground}"/>
-                        </Button.Content>
-                    </Button>
-                </StackPanel> 
+                            VerticalAlignment="Stretch" Margin="5,0,0,0">
+                <Button Style="{DynamicResource ButtonZoom}" Height="Auto" Width="Auto" Command="{Binding SetSettingsView}">
+                    <Button.Content>
+                        <materialDesign:PackIcon Kind="Settings" Width="Auto" Height="28" Foreground="{DynamicResource PreWindowButtonForeground}"/>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
         </Grid>
-        
 
-        <Grid x:Name="GridRightMenu" Background="White" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+
+        <Grid x:Name="GridRightMenu" Background="{DynamicResource LeftRightMenuBackGround}" Width="250" HorizontalAlignment="Right" VerticalAlignment="Stretch">
             <Grid.RenderTransform>
                 <TranslateTransform X="255"/>
             </Grid.RenderTransform> 
@@ -190,7 +193,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
-                <TreeView Grid.Row="1"  
+            <TreeView Grid.Row="1"  
                           ItemsSource="{Binding RightMenuNodes}"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -204,28 +207,27 @@
                     </Style>
                 </TreeView.ItemContainerStyle>
                 <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
-                            <TextBlock Width="150" Text="{Binding Path=Name}" 
+                    <HierarchicalDataTemplate DataType="{x:Type nodes:Node}" ItemsSource="{Binding Nodes}">
+                        <TextBlock Width="150" Text="{Binding Path=Name}" 
                                            IsHyphenationEnabled="True"
                                            TextWrapping="Wrap" />
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectedItemChanged">
-                            <i:InvokeCommandAction 
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction 
                                 Command="{Binding SetSelectedTreeViewItem}" 
                                 CommandParameter="{Binding SelectedItem, ElementName=RightMenu}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TreeView>  
-
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TreeView>
         </Grid>
 
         <materialDesign:Snackbar HorizontalAlignment="Stretch"  
                                  MessageQueue="{Binding IsMessagePanelContent}"  
                                  x:Name="Snackbar" 
-                                 Background="{DynamicResource MaterialDesignBackground}"
-                                 Foreground="{DynamicResource MaterialDesignForeground}"  
+                                 Background="{DynamicResource SnackBarBackGround}"
+                                 Foreground="{DynamicResource WindowForeground}"  
                                  ActionButtonStyle="{DynamicResource MaterialDesignFlatButton}"  />
 
     </Grid>

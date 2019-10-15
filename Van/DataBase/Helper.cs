@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Van.DataBase.Model;
 using Converter = Van.Helper.Helper; 
 
 namespace Van.DataBase
@@ -37,15 +37,10 @@ namespace Van.DataBase
             return t;
         }
 
-        private static string GetTableName(string typeName)
-        {
-            return typeName.Replace("Model", "");
-        }
-
         #region Выбор
 
         private static string SelectQuery(string typeName) {
-            return $"select * from {GetTableName(typeName)}";
+            return $"select * from {typeName}";
         }
 
         public static DataTable GetData(string typeName)
@@ -59,7 +54,7 @@ namespace Van.DataBase
 
         private static string DeleteQuery(string typeName, string conditions)
         {
-            return $"delete from {GetTableName(typeName)} where {conditions}";
+            return $"delete from {typeName} where {conditions}";
         }
 
         public static void DeleteData(string typeName, string conditions)
@@ -67,22 +62,7 @@ namespace Van.DataBase
             SQLExecutor.Delete(DeleteQuery(typeName, conditions));
         }
 
-        #endregion
-
-        #region Добавление
-
-        private static string InsertQuery(string typeName)
-        {
-            return $@"INSERT INTO {GetTableName(typeName)}
-                      SELECT CAST(last_insert_rowid() as int)";
-        }
-
-        public static void InsertData(string typeName)
-        {
-            SQLExecutor.Insert(InsertQuery(typeName));
-        }
-
-        #endregion
+        #endregion 
 
     }
 }
