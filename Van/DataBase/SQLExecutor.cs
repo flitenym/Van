@@ -16,42 +16,22 @@ namespace Van.DataBase
     {
         private static string LoadConnectionString(string id = "Default") {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
-        }
+        } 
 
-        //public static DataTable GetTableInfo(string sqlCommand)
-        //{  
-        //    DataTable dt = new DataTable();
-        //    try
-        //    {
-        //        using (SQLiteConnection connection = new SQLiteConnection(DatabaseSource))
-        //        {
-        //            connection.Open();
-        //            using (SQLiteCommand cmd = new SQLiteCommand(sqlCommand, connection))
-        //            {
-        //                var dataAdapter = new SQLiteDataAdapter(cmd);
-        //                dataAdapter.Fill(dt);
-        //                connection.Close();
-        //                return dt;
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Helper.Helper.Message("Выполнить невозможно" + Environment.NewLine + ex.Message);
-        //        return null;
-        //    }
-        //    finally
-        //    {
-
-        //    }
-        //}
-
-        public static List<T> Get<T>(string sqlCommand)
+        public static IEnumerable<dynamic> Get(string sqlCommand)
         {
             using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = connection.Query<T>(sqlCommand);
-                return output.ToList();
+                var output = connection.Query(sqlCommand);
+                return output;
+            }
+        }
+
+        public static void Delete(string sqlCommand)
+        {
+            using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = connection.Query(sqlCommand); 
             }
         }
 

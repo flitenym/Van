@@ -127,6 +127,8 @@
                     <Button Width="auto"
                         Height="auto"  
                         VerticalAlignment="Center" 
+                        Command="{Binding DeleteRowCommand}"
+                        CommandParameter="{Binding SelectedItem, ElementName=DataGrid}"
                         ToolTip="Удалить выделенную запись из таблицы"
                         Style="{StaticResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Minus" Width="30" Height="Auto"/>

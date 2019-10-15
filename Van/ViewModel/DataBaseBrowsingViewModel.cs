@@ -70,12 +70,49 @@ namespace Van.ViewModel
             set
             {
                 selectedModel = value;
-                TableData = DataBase.Helper.GetDataByName(selectedModel);
+                TableData = DataBase.Helper.GetData(selectedModel);
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
             }
         }
 
+        private RelayCommand deleteRowCommand;
+        public RelayCommand DeleteRowCommand
+        {
+            get
+            {
+                return deleteRowCommand ??
+                  (deleteRowCommand = new RelayCommand(obj =>
+                  {
+                      if (obj != null && ((DataRowView)obj).Row is DataRow selectedItem)
+                      {
+                          DeleteRows(selectedItem);
+                      }
+                  }));
+            }
+        }
+
+        public void DeleteRows(DataRow selectedItems)
+        {
+            var index = tableData.Rows.IndexOf(selectedItems);
+
+            string queryConditions = string.Empty;
+
+            for (int i = 0; i < selectedItems.Table.Columns.Count; i++) { 
+                string columnName = selectedItems.Table.Columns[i].ColumnName;
+                if (columnName.ToLower().Trim() == "id") {
+                    var rowValue = tableData.Rows[index].ItemArray[i];
+                    queryConditions = $"{columnName} = {rowValue}";
+                }
+            }
 
 
+
+            if (!string.IsNullOrEmpty(queryConditions))
+            {
+                DataBase.Helper.DeleteData(selectedModel, queryConditions);
+                tableData.Rows.Remove(selectedItems);
+            }
+
+        }
     }
 }
