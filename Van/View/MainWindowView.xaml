@@ -142,6 +142,7 @@
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           Style="{DynamicResource TreeViewStyle}"
+                          Margin="0,0,10,0"
                           ItemsSource="{Binding LeftMenuNodes}"
                           Name="LeftMenu" >
                 <TreeView.ItemContainerStyle>

@@ -50,7 +50,7 @@ namespace Van.DataBase
         {
             using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = connection.Query<T>(sqlCommand, new DynamicParameters());
+                var output = connection.Query<T>(sqlCommand);
                 return output.ToList();
             }
         }
