@@ -69,6 +69,20 @@ namespace Van.DataBase
 
         #endregion
 
+        #region Добавление
+
+        private static string InsertQuery(string typeName)
+        {
+            return $@"INSERT INTO {GetTableName(typeName)}
+                      SELECT CAST(last_insert_rowid() as int)";
+        }
+
+        public static void InsertData(string typeName)
+        {
+            SQLExecutor.Insert(InsertQuery(typeName));
+        }
+
+        #endregion
 
     }
 }

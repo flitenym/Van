@@ -35,5 +35,12 @@ namespace Van.DataBase
             }
         }
 
+        public static int Insert(string sqlCommand) {
+            using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+            {
+                return connection.Query<int>(sqlCommand).Single();
+            } 
+        }
+
     }
 }

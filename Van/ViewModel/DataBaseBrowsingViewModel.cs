@@ -111,8 +111,28 @@ namespace Van.ViewModel
             {
                 DataBase.Helper.DeleteData(selectedModel, queryConditions);
                 tableData.Rows.Remove(selectedItems);
-            }
-
+            } 
         }
+
+        private RelayCommand insertRowCommand;
+        public RelayCommand InsertRowCommand
+        {
+            get
+            {
+                return insertRowCommand ??
+                  (insertRowCommand = new RelayCommand(obj =>
+                  {
+                      InsertRows(); 
+                  }));
+            }
+        }
+
+        public void InsertRows()
+        {   
+            DataBase.Helper.InsertData(selectedModel);
+            var newRow = tableData.NewRow(); 
+        }
+
+
     }
 }

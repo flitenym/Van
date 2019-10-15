@@ -120,6 +120,7 @@
                     <Button Width="auto"
                         Height="auto"  
                         VerticalAlignment="Center" 
+                        Command="{Binding InsertRowCommand}"
                         ToolTip="Добавить запись в таблицу"
                         Style="{StaticResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Plus" Width="30" Height="Auto"/>
