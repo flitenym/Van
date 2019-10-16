@@ -48,8 +48,9 @@
                         GridLinesVisibility="None" HeadersVisibility="Column" 
                         CanUserAddRows="False" CanUserDeleteRows="False"
                         ItemsSource="{Binding TableData, Mode=TwoWay}"
-                        ColumnWidth="*"
                         SelectionUnit="FullRow"  
+                        ColumnWidth="*"
+                        MinColumnWidth="100"
                         CanUserSortColumns="False">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridRow">
