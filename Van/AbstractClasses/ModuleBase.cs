@@ -5,7 +5,7 @@ using static Van.Helper.Enums;
 
 namespace Van.AbstractClasses
 {
-    abstract class ModuleBase : IModule
+    public abstract class ModuleBase
     {
         private UserControl view;
 
@@ -15,12 +15,13 @@ namespace Van.AbstractClasses
 
         public abstract int Num { get; }
 
+        public abstract bool IsActive { get; }
+
         public abstract Guid ID { get; }
 
         public abstract Guid? ParentID { get; }
 
         public abstract ModelBaseClasses modelClass { get; }
-
 
         public UserControl UserInterface
         {

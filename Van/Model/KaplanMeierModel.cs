@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.KaplanMeierNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.KaplanMeierView;
 
         public override Guid? ParentID => Types.ViewData.NonparametricView;

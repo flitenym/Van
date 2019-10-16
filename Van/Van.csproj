@@ -101,6 +101,7 @@
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Model\DataBaseBrowsingModel.cs" />
+    <Compile Include="Model\TestModel.cs" />
     <Compile Include="Model\MainMenuModel.cs" />
     <Compile Include="Model\DistributionModel.cs" />
     <Compile Include="Model\IncludingMortalityModel.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Themes\Red\Red.cs" />
     <Compile Include="Themes\Green\Green.cs" />
     <Compile Include="ViewModel\DataBaseBrowsingViewModel.cs" />
+    <Compile Include="ViewModel\TestViewModel.cs" />
     <Compile Include="ViewModel\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\DistributionViewModel.cs" />
     <Compile Include="ViewModel\LiCarterViewModel.cs" />
@@ -134,6 +136,9 @@
     <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\TestView.xaml.cs">
+      <DependentUpon>TestView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainMenuView.xaml.cs">
       <DependentUpon>MainMenuView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +204,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\TestView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\MainMenuView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -251,7 +260,6 @@
     </Compile>
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Helper\StaticReflectionHelper.cs" />
-    <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\ITheme.cs" />
     <Compile Include="ThemesGlobal\Dark\Dark.cs" />
     <Compile Include="Themes\Blue\Blue.cs" />

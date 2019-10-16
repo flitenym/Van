@@ -18,7 +18,10 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.SettingsNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.SettingsView;
+
         public override Guid? ParentID => null;
 
         public override ModelBaseClasses modelClass => ModelBaseClasses.Settings; 

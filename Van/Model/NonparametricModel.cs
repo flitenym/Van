@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.NonparametricNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.NonparametricView;
 
         public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethodsView;

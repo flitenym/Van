@@ -14,10 +14,6 @@ namespace Van.ViewModel
 {
     class UserInformationViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        } 
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

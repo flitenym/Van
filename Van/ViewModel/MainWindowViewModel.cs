@@ -38,7 +38,7 @@ namespace Van.ViewModel
         {
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
-            modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>();
+            modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x=>x.IsActive);
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
@@ -112,11 +112,11 @@ namespace Van.ViewModel
             }
         }
 
-        public ObservableCollection<Node> GetTreeViewItems(IEnumerable<IModule> modules) {
+        public ObservableCollection<Node> GetTreeViewItems(IEnumerable<ModuleBase> items) {
 
             var nodes = new ObservableCollection<Node>();
 
-            foreach (var module in modules) {
+            foreach (var module in items) {
                 if (module.ParentID == null)
                 {
                     var node = new Node();
@@ -124,7 +124,7 @@ namespace Van.ViewModel
                     node.Name = module.Name;
                     node.ParentName = string.Empty; 
                     node.View = module;
-                    node.Nodes = GetNodes(modules, module.ID);
+                    node.Nodes = GetNodes(module.ID);
 
                     nodes.Add(node);
                 }
@@ -133,7 +133,7 @@ namespace Van.ViewModel
             return nodes;
         }
 
-        public ObservableCollection<Node> GetNodes(IEnumerable<IModule> modules, Guid moduleID) {
+        public ObservableCollection<Node> GetNodes(Guid moduleID) {
             var nodes = new ObservableCollection<Node>();
 
             foreach (var module in modules) {
@@ -144,7 +144,7 @@ namespace Van.ViewModel
                     node.Name = module.Name;
                     node.ParentName = modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name; 
                     node.View = module;
-                    node.Nodes = GetNodes(modules, module.ID);
+                    node.Nodes = GetNodes(module.ID);
 
                     nodes.Add(node);
                 }
@@ -246,7 +246,6 @@ namespace Van.ViewModel
 
         private void SetSettings()
         {
-            var modules = StaticReflectionHelper.GetAllInstancesOf<IModule>().ToList();
             var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
             AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID);
         }

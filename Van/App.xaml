@@ -74,7 +74,7 @@
                                            x:Name="PART_Thumb"
                                            Style="{StaticResource MaterialDesignInvisibleThumbStyle}" />
                                                 <Button Grid.Column="1"
-                                            Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}"                                            
+                                            Style="{StaticResource MaterialDesignCloseItemCommandButtonStyle}"
                                             Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"
                                             CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                                                     <Button.Visibility>

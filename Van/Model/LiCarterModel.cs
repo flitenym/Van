@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.LiCarterNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.LiCarterView;
 
         public override Guid? ParentID => Types.ViewData.ParametricView;

@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.KoksRiskNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.KoksRiskView;
 
         public override Guid? ParentID => Types.ViewData.SemiParametricView;

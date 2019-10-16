@@ -36,7 +36,7 @@
     
     <!-- Цвет у кнопки перед и после нажатия -->
     <SolidColorBrush x:Key="PreWindowButtonForeground" Color="{StaticResource White}" />
-    <SolidColorBrush x:Key="AfterWindowButtonForeground" Color="{StaticResource White}" />
+    <SolidColorBrush x:Key="AfterWindowButtonForeground" Color="{StaticResource DarkBlue}" />
 
     <!-- Фон у ScrollBar -->
     <SolidColorBrush x:Key="ScrollBarBackground" Color="{StaticResource Transparent}" />

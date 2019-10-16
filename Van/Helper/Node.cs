@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Van.Interfaces;
+using Van.AbstractClasses;
 
 namespace Van.Helper
 {
@@ -16,7 +16,7 @@ namespace Van.Helper
         public Guid ID { get; set; }
         public ObservableCollection<Node> Nodes { get; set; }
         public string ParentName { get; set; }
-        public IModule View { get; set; }
+        public ModuleBase View { get; set; }
 
         private bool selected = false;
         public bool Selected

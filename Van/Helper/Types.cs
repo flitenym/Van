@@ -80,6 +80,10 @@ namespace Van.Helper
             public static readonly Guid IncludingMortalityView = new Guid("65919B95-591D-4BE1-BBB4-E5CCB07A327D");
             public static int IncludingMortalityNum = 10;
 
+            public static string TestName = "Тестирование";
+            public static readonly Guid TestView = new Guid("842240AA-932A-471A-91D9-29F92C87CCDB");
+            public static int TestNum = 11;
+
             #endregion 
         } 
     }

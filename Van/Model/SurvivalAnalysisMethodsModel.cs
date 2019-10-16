@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.SurvivalAnalysisMethodsNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.SurvivalAnalysisMethodsView;
 
         public override Guid? ParentID => null;

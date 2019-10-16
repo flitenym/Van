@@ -13,7 +13,8 @@ using System;
 namespace Van.ViewModel
 {
     class TabControlViewModel : INotifyPropertyChanged
-    { 
+    {
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public string Name { get; set; }
 
@@ -35,11 +36,5 @@ namespace Van.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsSelected)));
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        } 
     }
 }

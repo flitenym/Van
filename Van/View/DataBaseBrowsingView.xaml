@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
-                <TextBlock TextAlignment="Center" Margin="20,2,20,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <TextBlock TextAlignment="Center" Margin="20,5,20,10" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                     Дерево сервера
                 </TextBlock> 
                 <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableListView"
@@ -57,11 +57,9 @@
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter Property="Background" Value="{DynamicResource DataGridRowSelected}" />
-                                    <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}"/>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="False">
                                     <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
-                                    <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -81,22 +79,19 @@
                                         <Condition Property="IsSelected" Value="True"/>
                                         <Condition Property="Selector.IsSelectionActive" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
                                     <Setter Property="Background" Value="Transparent" />
                                 </MultiTrigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Opacity" Value=".56"/>
                                 </Trigger>
                             </Style.Triggers>
-                        </Style>
-                        
-                        
+                        </Style> 
                         <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                             <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
                             <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />

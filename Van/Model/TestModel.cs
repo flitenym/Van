@@ -12,23 +12,23 @@ using static Van.Helper.Enums;
 
 namespace Van.Model
 {
-    class UserInformationModel : ModuleBase
+    class TestModel : ModuleBase
     {
-        public override string Name => Types.ViewData.UserInformationName;
+        public override string Name => Types.ViewData.TestName;
 
-        public override int Num => Types.ViewData.UserInformationNum;
+        public override int Num => Types.ViewData.TestNum;
 
         public override bool IsActive => true;
 
-        public override Guid ID => Types.ViewData.UserInformationView;
+        public override Guid ID => Types.ViewData.TestView;
 
         public override Guid? ParentID => null;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu; 
+        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {
-            return new UserInformationView() { DataContext = new UserInformationViewModel() };
+            return new TestView() { DataContext = new TestViewModel() };
         }
 
     }

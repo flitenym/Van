@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.MortalityTableNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.MortalityTableView;
 
         public override Guid? ParentID => Types.ViewData.NonparametricView;

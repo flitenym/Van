@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.MainMenuNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.MainMenuView;
 
         public override Guid? ParentID => null;

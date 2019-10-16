@@ -18,6 +18,8 @@ namespace Van.Model
 
         public override int Num => Types.ViewData.DataBaseBrowsingNum;
 
+        public override bool IsActive => true;
+
         public override Guid ID => Types.ViewData.DataBaseBrowsingView;
 
         public override Guid? ParentID => null;
