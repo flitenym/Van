@@ -47,6 +47,9 @@
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.0.30\lib\net461\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper.Contrib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.2.0.30\lib\net461\Dapper.Contrib.dll</HintPath>
+    </Reference>
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
     </Reference>
@@ -93,9 +96,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataBase\Helper.cs" />
+    <Compile Include="DataBase\ModelClass.cs" />
+    <Compile Include="DataBase\Models\Parametrs.cs" />
+    <Compile Include="DataBase\Models\Olds.cs" />
+    <Compile Include="DataBase\ModelTitles.cs" />
     <Compile Include="DataBase\SQLExecutor.cs" />
-    <Compile Include="DataBase\TablesData.cs" />
     <Compile Include="Helper\Node.cs" />
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />

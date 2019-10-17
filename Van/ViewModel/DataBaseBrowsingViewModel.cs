@@ -19,7 +19,14 @@ namespace Van.ViewModel
 {
     class DataBaseBrowsingViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler PropertyChanged = delegate { }; 
+
+        public DataBaseBrowsingViewModel()
+        { 
+            TableData = new DataTable();
+            DatabaseModels = new ObservableCollection<ModelClass>(StaticReflectionHelper.GetAllInstancesOf<ModelClass>());
+            SelectedModel = DatabaseModels.FirstOrDefault();
+        }
 
         private DataTable tableData;
 
@@ -34,9 +41,9 @@ namespace Van.ViewModel
             }
         }
 
-        private ObservableCollection<string> databaseModels = new ObservableCollection<string>();
+        private ObservableCollection<ModelClass> databaseModels = new ObservableCollection<ModelClass>();
 
-        public ObservableCollection<string> DatabaseModels
+        public ObservableCollection<ModelClass> DatabaseModels
         {
             get { return databaseModels; }
             set
@@ -44,25 +51,19 @@ namespace Van.ViewModel
                 databaseModels = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(DatabaseModels)));
             }
-        }
-
-        public DataBaseBrowsingViewModel() {
-            TableData = new DataTable();
-            DatabaseModels = new ObservableCollection<string>(TablesData.GetDescriptions());
-            SelectedModel = DatabaseModels.FirstOrDefault();
         } 
 
-        private string selectedModel;
+        private ModelClass selectedModel;
 
-        private string getSelectedModelName => TablesData.GetValue(SelectedModel);
+        private string SelectedModelName => SelectedModel.GetType().Name;
 
-        public string SelectedModel
+        public ModelClass SelectedModel
         {
             get { return selectedModel; }
             set
             {
                 selectedModel = value;
-                TableData = DataBase.Helper.GetData(getSelectedModelName);
+                TableData = SQLExecutor.SelectExecutor(SelectedModelName);
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
             }
         }
@@ -85,23 +86,56 @@ namespace Van.ViewModel
 
         public void DeleteRows(DataRow selectedItems)
         {
-            var index = tableData.Rows.IndexOf(selectedItems);
-
-            string queryConditions = string.Empty;
-
+            var index = TableData.Rows.IndexOf(selectedItems);
+            int ID = -1;
             for (int i = 0; i < selectedItems.Table.Columns.Count; i++) { 
                 string columnName = selectedItems.Table.Columns[i].ColumnName;
                 if (columnName.ToLower().Trim() == "id") {
-                    var rowValue = tableData.Rows[index].ItemArray[i];
-                    queryConditions = $"{columnName} = {rowValue}";
+                    ID = (int?)TableData.Rows[index].ItemArray[i] ?? -1;
+                    break;
                 }
             }
 
-            if (!string.IsNullOrEmpty(queryConditions))
+            if (ID != -1)
             {
-                DataBase.Helper.DeleteData(getSelectedModelName, queryConditions);
-                tableData.Rows.Remove(selectedItems);
+                SQLExecutor.DeleteExecutor(SelectedModelName, ID);
+                TableData.Rows.Remove(selectedItems);
+                Message("Удаление успешно");
+            }
+            else {
+                Message("Удаление произошло неудачно");
             } 
+        }
+
+        private RelayCommand insertRowCommand;
+        public RelayCommand InsertRowCommand
+        {
+            get
+            {
+                return insertRowCommand ??
+                  (insertRowCommand = new RelayCommand(x =>
+                  { 
+                        InsertRows(); 
+                  }));
+            }
+        }
+
+        public void InsertRows()
+        {
+            var newRow = TableData.NewRow();
+            var ID = SQLExecutor.InsertExecutor(SelectedModelName, SelectedModel); 
+
+            if (ID != -1)
+            {
+                newRow["ID"] = ID; 
+                TableData.Rows.Add(newRow);
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
+                Message("Добавление успешно");
+            }
+            else
+            {
+                Message("Добавление произошло неудачно");
+            }
         }
 
     }

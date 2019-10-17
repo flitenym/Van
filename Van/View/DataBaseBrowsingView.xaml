@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
              xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls" 
              mc:Ignorable="d" 
+             xmlns:database="clr-namespace:Van.DataBase" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -29,8 +30,16 @@
                     Дерево сервера
                 </TextBlock> 
                 <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableListView"
-                          ItemsSource="{Binding DatabaseModels, Mode=TwoWay}" SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
-                          Foreground="{DynamicResource WindowForeground}"> 
+                          ItemsSource="{Binding DatabaseModels, Mode=TwoWay}" 
+                          SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
+                          Foreground="{DynamicResource WindowForeground}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Width="150" Text="{Binding Path=TableTitle}" 
+                                           IsHyphenationEnabled="True"
+                                           TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>  
             </StackPanel>
 
@@ -112,8 +121,8 @@
                     </Button>
                     <Button Width="auto"
                         Height="auto"  
-                        VerticalAlignment="Center"
-                        IsEnabled="False"
+                        VerticalAlignment="Center" 
+                        Command="{Binding InsertRowCommand}"
                         ToolTip="Добавить запись в таблицу"
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource ButtonZoom}">
