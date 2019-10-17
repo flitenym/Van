@@ -7,10 +7,12 @@
     </ResourceDictionary.MergedDictionaries>
 
 
-    
+
     <Color x:Key="Red">#ff4081</Color>
- 
+    <Color x:Key="LightWhite">#f5fffa</Color>
+
     <SolidColorBrush x:Key="DataGridRowSelected" Color="{StaticResource Red}" />
+    <SolidColorBrush x:Key="AfterCloseWindowButtonForeground" Color="{StaticResource LightWhite}" />
 
 
     <Style x:Key="ActionButton" BasedOn="{StaticResource {x:Type Button}}" TargetType="Button"> 

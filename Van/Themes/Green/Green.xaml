@@ -11,7 +11,7 @@
     <Color x:Key="Green">#00897b</Color>
     
     <SolidColorBrush x:Key="DataGridRowSelected" Color="{StaticResource Green}" />
-
+    <SolidColorBrush x:Key="AfterCloseWindowButtonForeground" Color="{StaticResource Green}" />
 
     <Style x:Key="ActionButton" BasedOn="{StaticResource {x:Type Button}}" TargetType="Button"> 
         <Setter Property="Foreground" Value="{DynamicResource ActionButtonForeground}" /> 

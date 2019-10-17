@@ -86,7 +86,7 @@
         <Setter Property="Margin" Value="0,2,1,0"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource AfterWindowButtonForeground}" />
+                <Setter Property="Foreground" Value="{DynamicResource AfterCloseWindowButtonForeground}" />
             </Trigger>
         </Style.Triggers>
     </Style>
