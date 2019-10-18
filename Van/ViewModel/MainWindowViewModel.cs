@@ -36,6 +36,7 @@ namespace Van.ViewModel
 
         public MainWindowViewModel()
         {
+
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
             modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x=>x.IsActive);
@@ -55,6 +56,7 @@ namespace Van.ViewModel
              
             DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault(); 
+
         }
 
         public void SetViewModels()

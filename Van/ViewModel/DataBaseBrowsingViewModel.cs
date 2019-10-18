@@ -144,6 +144,21 @@ namespace Van.ViewModel
 
         public void InsertRows()
         {
+            var changes = TableData.GetChanges();
+
+            if (changes != null && changes.Rows.Count != 0)
+            {
+                foreach (DataRow row in changes.Rows)
+                {
+                    if (int.TryParse(row["ID"].ToString(), out int IDChangeRow))
+                    {
+                        SQLExecutor.UpdateExecutor(SelectedModelName, row, IDChangeRow);
+                    }
+                }
+                TableData.AcceptChanges();
+                Message("Внесенные изменения сохранены");  
+            }
+
             var newRow = TableData.NewRow();
             var ID = SQLExecutor.InsertExecutor(SelectedModelName, SelectedModel); 
 
@@ -152,7 +167,7 @@ namespace Van.ViewModel
                 newRow["ID"] = ID; 
                 TableData.Rows.Add(newRow);
                 TableData.AcceptChanges();
-                Message("Добавление успешно");
+                Message("Добавление новой строки успешно");
             }
             else
             {
