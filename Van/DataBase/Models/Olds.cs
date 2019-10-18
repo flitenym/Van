@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Van.DataBase.Models
 {
+    [ModelTitle(TableTitle = "Возраста")]
     public class Olds : ModelClass
     {
         [Write(false)]
@@ -14,13 +15,5 @@ namespace Van.DataBase.Models
         [Key]
         public int ID { get; set; }
         public int? Old { get; set; }
-
-        [Write(false)]
-        [Computed]
-        public string TableName => nameof(Olds);
-
-        [Write(false)]
-        [Computed]
-        public string TableTitle => "Возраст";
     }
 }

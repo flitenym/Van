@@ -181,7 +181,7 @@ namespace Van.DataBase
             T obj = new T();
             foreach (PropertyInfo property in typeof(T).GetProperties())
             {
-                if (row.Table.Columns.Contains(property.Name) && property.CanWrite)
+                if (row.Table.Columns.Contains(property.Name) && property.CanWrite && property.DeclaringType != typeof(ModelClass))
                 {
                     property.SetValue(obj, row[property.Name]);
                 }

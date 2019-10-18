@@ -31,8 +31,13 @@ namespace Van.View
             if (e.PropertyName == "ID")
             {
                 e.Column.IsReadOnly = true;
-                e.Column.Width = ((DataGrid)sender).MinWidth;
+                e.Column.Width = ((DataGrid)sender).MinWidth; 
             }
+
+            if (e.PropertyName == "Title")
+            {
+                e.Column.Visibility = Visibility.Collapsed;
+            } 
         } 
     }
 }

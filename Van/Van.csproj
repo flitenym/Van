@@ -96,6 +96,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataBase\ModelTitleAttribute.cs" />
     <Compile Include="DataBase\ModelClass.cs" />
     <Compile Include="DataBase\Models\Parametrs.cs" />
     <Compile Include="DataBase\Models\Olds.cs" />

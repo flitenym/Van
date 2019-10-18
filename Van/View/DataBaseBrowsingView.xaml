@@ -35,7 +35,7 @@
                           Foreground="{DynamicResource WindowForeground}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Width="150" Text="{Binding Path=TableTitle}" 
+                            <TextBlock Width="150" Text="{Binding Path= Title}" 
                                            IsHyphenationEnabled="True"
                                            TextWrapping="Wrap" />
                         </DataTemplate>
@@ -133,7 +133,7 @@
                         Height="auto"  
                         VerticalAlignment="Center" 
                         Command="{Binding DeleteRowCommand}"
-                        CommandParameter="{Binding SelectedItem, ElementName=DataGrid}"
+                        CommandParameter="{Binding SelectedItems, ElementName=DataGrid}"
                         ToolTip="Удалить выделенную запись из таблицы"
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource ButtonZoom}">

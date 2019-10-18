@@ -1,12 +1,8 @@
-﻿using Dapper.Contrib.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dapper.Contrib.Extensions; 
 
 namespace Van.DataBase.Models
 {
+    [ModelTitle(TableTitle = "Параметры")]
     public class Parametrs : ModelClass
     {
         [Write(false)]
@@ -14,13 +10,5 @@ namespace Van.DataBase.Models
         [Key]
         public int ID { get; set; }
         public string Name { get; set; }
-
-        [Write(false)]
-        [Computed]
-        public string TableName => nameof(Parametrs);
-
-        [Write(false)]
-        [Computed]
-        public string TableTitle => "Параметры"; 
     }
 }
