@@ -51,6 +51,7 @@
                     <RowDefinition Height="45"/> 
                 </Grid.RowDefinitions>
                 <DataGrid Grid.Row="0" Background="{x:Null}" 
+                        AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                         x:Name="DataGrid" EnableRowVirtualization="True" EnableColumnVirtualization="True" ScrollViewer.CanContentScroll="True" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
@@ -114,7 +115,7 @@
                         Height="auto"  
                         VerticalAlignment="Center" 
                         ToolTip="Сохранить изменения"
-                        IsEnabled="False"
+                        Command="{Binding UpdateRowCommand}"
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Check" Width="30" Height="Auto"/>

@@ -24,6 +24,15 @@ namespace Van.View
         public DataBaseBrowsingView()
         {
             InitializeComponent();
+        }
+
+        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName == "ID")
+            {
+                e.Column.IsReadOnly = true;
+                e.Column.Width = ((DataGrid)sender).MinWidth;
+            }
         } 
     }
 }

@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Van.DataBase.Models;
@@ -137,25 +138,27 @@ namespace Van.DataBase
             }
         }
 
-        public static void UpdateExecutor(string tableName, dynamic item, int ID)
+        public static void UpdateExecutor(string tableName, DataRow row, int ID)
         {
             switch (tableName)
             {
-                case nameof(Olds): Update(UpdateQuery(tableName, ID), item); break;
-                case nameof(Parametrs): Update(UpdateQuery(tableName, ID), item); break;
+                case nameof(Olds): Update(UpdateQuery(tableName, ID), row.ToObject<Olds>()); break;
+                case nameof(Parametrs): Update(UpdateQuery(tableName, ID), row.ToObject<Parametrs>()); break;
                 default: throw new Exception("Не верная таблица");
             }
-        }
+        } 
 
-        public static void Update(string query, dynamic item)
+        public static void Update(string query, object item)
         {
             using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
             {
-                db.Execute(query, new { item });
+                db.Execute(query, item);
             }
         }
 
-        #endregion 
+        #endregion
+
+        #region Helper Methods
 
         public static DataTable ToDataTable<T>(this IList<T> data)
         {
@@ -172,6 +175,22 @@ namespace Van.DataBase
             }
             return table;
         }
+
+        public static T ToObject<T>(this DataRow row) where T : new()
+        {
+            T obj = new T();
+            foreach (PropertyInfo property in typeof(T).GetProperties())
+            {
+                if (row.Table.Columns.Contains(property.Name) && property.CanWrite)
+                {
+                    property.SetValue(obj, row[property.Name]);
+                }
+            }
+
+            return obj;
+        }
+
+        #endregion
 
     }
 }

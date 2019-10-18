@@ -36,7 +36,7 @@ namespace Van.ViewModel
             set
             {
                 if (value == null) return;
-                tableData = value; 
+                tableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
             }
         }
@@ -64,6 +64,7 @@ namespace Van.ViewModel
             {
                 selectedModel = value;
                 TableData = SQLExecutor.SelectExecutor(SelectedModelName);
+                TableData.AcceptChanges();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
             }
         }
@@ -129,12 +130,36 @@ namespace Van.ViewModel
             {
                 newRow["ID"] = ID; 
                 TableData.Rows.Add(newRow);
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
+                TableData.AcceptChanges();
                 Message("Добавление успешно");
             }
             else
             {
                 Message("Добавление произошло неудачно");
+            }
+        }
+
+        private RelayCommand updateRowCommand;
+        public RelayCommand UpdateRowCommand
+        {
+            get
+            {
+                return updateRowCommand ??
+                  (updateRowCommand = new RelayCommand(x =>
+                  {
+                      UpdateRows();
+                  }));
+            }
+        }
+
+        public void UpdateRows()
+        {
+            var tableData = TableData.GetChanges();
+
+            foreach (DataRow row in tableData.Rows) { 
+                if (int.TryParse(row["ID"].ToString(), out int ID)){
+                    SQLExecutor.UpdateExecutor(SelectedModelName, row, ID); 
+                }
             }
         }
 
