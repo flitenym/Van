@@ -9,6 +9,7 @@ using System.Windows;
 using Van.Interfaces;
 using Van.Helper;
 using Van.ViewModel;
+using Van.Windows;
 
 namespace Van
 {
@@ -19,19 +20,28 @@ namespace Van
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var mainWindow = new MainWindowView();
+            var splashScreen = new SplashScreenWindow();
+            this.MainWindow = splashScreen;
+            splashScreen.Show();
 
-            var vm = new MainWindowViewModel();
-
-            mainWindow.DataContext = vm;
-
-            mainWindow.Closing += (s, args) =>
-            { 
-                if (vm.SelectedTheme != null)
-                    vm.SelectedTheme.Deactivate();
-            };
-
-            mainWindow.Show();
+            Task.Factory.StartNew(() =>
+            {  
+                this.Dispatcher.Invoke(async () =>
+                { 
+                    await Task.Delay(TimeSpan.FromSeconds(1.5));  
+                    var mainWindow = new MainWindowView();
+                    var vm = new MainWindowViewModel(); 
+                    mainWindow.DataContext = vm;
+                    this.MainWindow = mainWindow; 
+                    mainWindow.Show();
+                    splashScreen.Close();
+                    mainWindow.Closing += (s, args) =>
+                    {
+                        if (vm.SelectedTheme != null)
+                            vm.SelectedTheme.Deactivate();
+                    }; 
+                });
+            }); 
         }
     }
 }

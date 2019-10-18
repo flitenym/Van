@@ -13,8 +13,9 @@
             xmlns:nodes="clr-namespace:Van.Helper" 
             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
             mc:Ignorable="d" FontSize="14"
+            WindowStartupLocation="CenterScreen"
             Title="Анализ выживаемости"
-            Height="450" Width="800" Icon="../Images/icon.ico"
+            Height="720" Width="1024" Icon="../Images/icon.ico"
             Foreground="{DynamicResource WindowForeground}"
         >
 
