@@ -48,7 +48,8 @@
             <Grid Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" Margin="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="45"/> 
+                    <RowDefinition Height="45"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <DataGrid Grid.Row="0" Background="{x:Null}" 
                         AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"

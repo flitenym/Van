@@ -99,7 +99,7 @@
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="contentPresenter" Property="Opacity" Value="1"/>
                                     <Setter TargetName="SelectionHighlightBorder" Property="Visibility" Value="Visible" />
-                                </Trigger>
+                                </Trigger> 
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

@@ -1,20 +1,14 @@
-﻿using Van.Interfaces;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Van.Helper;
-using System.Runtime.CompilerServices;
-using static Van.Helper.Helper;
-using System;
-using System.Data;
-using System.Reflection;
-using System.Collections.ObjectModel;
-using Van.DataBase;
-using Dapper;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using Van.DataBase;
+using Van.Helper;
+using static Van.Helper.Helper;
 
 namespace Van.ViewModel
 {
@@ -75,14 +69,23 @@ namespace Van.ViewModel
             get { return selectedModel; }
             set
             {
-                selectedModel = value;
-                TableData = SQLExecutor.SelectExecutor(SelectedModelName);
-                TableData.AcceptChanges();
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
+                selectedModel = value;  
+                Task.Factory.StartNew(() =>
+                    Select()
+                );
             }
         }
 
+        private void Select() {
+            Loading(true); 
+            TableData = SQLExecutor.SelectExecutor(SelectedModelName);
+            TableData.AcceptChanges();
+            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
+            Loading(false);
+        }
+
         private RelayCommand deleteRowCommand;
+
         public RelayCommand DeleteRowCommand
         {
             get
@@ -93,40 +96,47 @@ namespace Van.ViewModel
                       if (obj != null)
                       {
                           IList selectedItemsList = (IList)obj;
-                          var selectedItemsCollection = selectedItemsList.Cast<DataRowView>(); 
-                          DeleteRows(selectedItemsCollection.ToList());
+                          var selectedItemsCollection = selectedItemsList.Cast<DataRowView>();  
+                          Task.Factory.StartNew(() =>
+                              DeleteRows(selectedItemsCollection.ToList())
+                          );
                       }
                   }));
             }
         }
 
         public void DeleteRows(IList<DataRowView> selectedItems)
-        {
+        { 
+            Loading(true);
             if (selectedItems.Count() == 0) {
                 Message("Нет выделенных строк");
+                Loading(false);
                 return;
             }
-            foreach (var selectedItem in selectedItems) {
-                var index = TableData.Rows.IndexOf(selectedItem.Row);
-                int ID = -1;
+            List<int> IDs = new List<int>();
+
+            foreach (var selectedItem in selectedItems) { 
                 for (int i = 0; i < selectedItem.Row.Table.Columns.Count; i++)
                 {
                     string columnName = selectedItem.Row.Table.Columns[i].ColumnName;
                     if (columnName.ToLower().Trim() == "id")
                     {
-                        ID = (int?)TableData.Rows[index].ItemArray[i] ?? -1;
+                        IDs.Add((int?)selectedItem.Row.ItemArray[i] ?? -1);
                         break;
                     }
-                }
-                 
-                SQLExecutor.DeleteExecutor(SelectedModelName, ID); 
+                } 
             }
+
+            IDs.RemoveAll(x => x == -1); 
+            SQLExecutor.DeleteExecutor(SelectedModelName, IDs);
 
             foreach (var selectedItem in selectedItems) {
                 TableData.Rows.Remove(selectedItem.Row);
             }
+            TableData.AcceptChanges();
+            Message("Удаление успешно");
+            Loading(false);
 
-            Message("Удаление успешно"); 
         }
 
         private RelayCommand insertRowCommand;
@@ -156,7 +166,7 @@ namespace Van.ViewModel
                     }
                 }
                 TableData.AcceptChanges();
-                Message("Внесенные изменения сохранены");  
+                Message("Внесенные изменения сохранены");
             }
 
             var newRow = TableData.NewRow();
@@ -183,7 +193,9 @@ namespace Van.ViewModel
                 return updateRowCommand ??
                   (updateRowCommand = new RelayCommand(x =>
                   {
-                      UpdateRows();
+                      Task.Factory.StartNew(() =>
+                          UpdateRows()
+                      );
                   }));
             }
         }
@@ -196,14 +208,15 @@ namespace Van.ViewModel
                 Message("Изменения не найдены");
                 return;
             }
-
+            Loading(true);
             foreach (DataRow row in tableData.Rows) { 
                 if (int.TryParse(row["ID"].ToString(), out int ID)){
                     SQLExecutor.UpdateExecutor(SelectedModelName, row, ID); 
                 }
-            }
+            } 
             TableData.AcceptChanges();
             Message("Изменения сохранены");
+            Loading(false);
         }
 
     }

@@ -22,7 +22,7 @@
             </ResourceDictionary.MergedDictionaries> 
         </ResourceDictionary>
     </Window.Resources>
-    <Border Margin="5" MouseDown="Border_MouseDown">
+    <Border Margin="5" MouseDown="Border_MouseDown" BorderBrush="Black" BorderThickness="1">
         <Border BorderBrush="#424242" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>

@@ -65,28 +65,28 @@ namespace Van.DataBase
 
         #endregion
 
-        #region Delete
+        #region Delete 
 
-        public static string DeleteQuery(string tableName, int ID)
+        public static string DeleteQuery(string tableName)
         {
             return $@"DELETE FROM {tableName} WHERE ID = @ID";
         }
 
-        public static void DeleteExecutor(string tableName, int ID)
+        public static void DeleteExecutor(string tableName, List<int> IDs)
         {
             switch (tableName)
             {
-                case nameof(Olds): Delete(DeleteQuery(tableName, ID), ID); break;
-                case nameof(Parametrs): Delete(DeleteQuery(tableName, ID), ID); break;
+                case nameof(Olds): Delete(tableName, IDs); break;
+                case nameof(Parametrs): Delete(tableName, IDs); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
 
-        public static void Delete(string query, int ID)
+        public static void Delete(string tableName, List<int> IDs)
         {
             using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
-            {
-                db.Execute(query, new { ID });
+            { 
+                db.Execute(DeleteQuery(tableName), IDs.Select(x => new { Id = x }).ToArray()); 
             }
         }
 

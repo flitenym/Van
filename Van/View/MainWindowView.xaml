@@ -52,6 +52,18 @@
                              Duration="0:0:0.3"> 
             </DoubleAnimation>
         </Storyboard>
+        <Storyboard x:Key="ShowLoadPanel">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             To="0"
+                             Duration="0:0:0.3">
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="HideLoadPanel">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             To="5"
+                             Duration="0:0:0.3">
+            </DoubleAnimation>
+        </Storyboard>
     </Window.Resources>
 
     <Window.Triggers>
@@ -85,8 +97,8 @@
                         <ContentPresenter Content="{Binding ViewContent}" />
                     </DataTemplate>
                 </TabControl.ContentTemplate>
-                <dragablz:TabablzControl.HeaderItemTemplate>
-                    <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
+                <dragablz:TabablzControl.HeaderItemTemplate> 
+                        <DataTemplate DataType="{x:Type localViewModels:TabControlViewModel}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="190" />
@@ -102,7 +114,10 @@
                                            Style="{StaticResource MaterialDesignTitleTextBlock}"
                                            TextWrapping="Wrap"/>
                                 <Thumb dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
-                            </Grid>
+                                <Grid.InputBindings>
+                                    <MouseBinding MouseAction="MiddleClick" Command="dragablz:TabablzControl.CloseItemCommand"/>
+                                </Grid.InputBindings>
+                            </Grid>  
                             <Button VerticalAlignment="Center" 
                                     HorizontalAlignment="Right" 
                                     Grid.Column="1"
@@ -230,6 +245,27 @@
                                  Background="{DynamicResource SnackBarBackGround}"
                                  Foreground="{DynamicResource WindowForeground}"  
                                  ActionButtonStyle="{DynamicResource MaterialDesignFlatButton}"  />
+
+        <Grid x:Name="GridLoading" VerticalAlignment="Bottom" Height="5" Background="Black">
+            <Grid.RenderTransform>
+                <TranslateTransform Y="5"/>
+            </Grid.RenderTransform>
+            <Grid.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsLoadingPanelVisible}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShowLoadPanel}"/>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource HideLoadPanel}"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <ProgressBar IsIndeterminate="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="5"/> 
+        </Grid>
 
     </Grid>
 </controls:WindowControl>
