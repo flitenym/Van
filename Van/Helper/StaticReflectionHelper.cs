@@ -23,5 +23,12 @@ namespace Van.Helper
                 .Where(t => t.IsAbstract && t.IsClass)
                 .Select(t => (T)Activator.CreateInstance(t));
         }
+
+        public static Type GetClassByName(string name)
+        {
+            return typeof(StaticReflectionHelper).Assembly.GetTypes()
+                .Where(t => t.Name == name).FirstOrDefault();
+        }
+
     }
 }

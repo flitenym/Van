@@ -321,5 +321,6 @@ namespace Van.ViewModel
         }
 
         #endregion
+
     }
 }

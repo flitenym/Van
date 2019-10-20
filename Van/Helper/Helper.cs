@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -40,6 +41,18 @@ namespace Van.Helper
                 false,
                 isNoDuplicateConsider)
             );
+            }));
+        }
+
+        /// <summary>
+        /// Логирование
+        /// </summary>
+        public static async void LogMessage(string name, string title)
+        {
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                OperationViewModel operationViewModel = (OperationViewModel)Activator.CreateInstance(StaticReflectionHelper.GetClassByName(nameof(OperationViewModel)));
+                operationViewModel.OperationsData = new ObservableCollection<OperationData>() { new OperationData(name, title) }; 
             }));
         }
 

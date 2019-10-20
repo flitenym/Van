@@ -32,6 +32,10 @@ namespace Van.Helper
             public static readonly Guid DataBaseBrowsingView = new Guid("12011025-144B-4BE8-96C4-DAD33B8778FC");
             public static int DataBaseBrowsingNum = 2;
 
+            public static string OperationName = "Информация об операциях";
+            public static readonly Guid OperationView = new Guid("8FACE0E4-E0CA-436B-879D-ED21181ABE0F");
+            public static int OperationNum = 3;
+
             #endregion
 
             #region Левое меню

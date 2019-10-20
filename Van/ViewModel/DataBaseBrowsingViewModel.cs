@@ -77,7 +77,7 @@ namespace Van.ViewModel
         }
 
         private void Select() {
-            Loading(true); 
+            Loading(true);
             TableData = SQLExecutor.SelectExecutor(SelectedModelName);
             TableData.AcceptChanges();
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));

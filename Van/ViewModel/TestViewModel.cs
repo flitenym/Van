@@ -9,62 +9,181 @@ using Van.Helper;
 using System.Runtime.CompilerServices;
 using static Van.Helper.Helper;
 using System;
+using Van.Methods;
+using System.Threading.Tasks;
 
 namespace Van.ViewModel
 {
     class TestViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        
+        
 
-        public void VeibullaDistribution()
-        {
-            double r = 5.0;
-            double gamma = 5.0;
+        #region Weibull
 
-            var t = new List<double>();
-            var delta = new List<double>();
-
-            int n = t.Count();
-
-            double first = r / gamma;
-
-            double second = 0.0;
-
-            for (int i = 0; i < n; i++)
-            {
-                second += Math.Log(t[i]) * delta[i];
-            }
-
-            double third = 0.0;
-
-            for (int i = 0; i < n; i++)
-            {
-                third += Math.Pow(t[i], gamma);
-            }
-
-            double fourth = 0.0;
-
-            for (int i = 0; i < n; i++)
-            {
-                fourth += Math.Pow(t[i], gamma) * Math.Log(t[i]);
-            }
-
-            double five = (r / third) * fourth;
-
-            double six = first + second - five;
+        public void Weibull() {
+            Loading(true);
+            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            double epsilon = 0.01;
+            Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
+            WeibullValue = weibull.lambda();
+            Loading(false);
         }
 
-        public double ExpDistribution()
+        private RelayCommand calculateWeibullCommand;
+        public RelayCommand CalculateWeibullCommand
         {
-            double r = 5.0; 
-
-            var t = new List<double>();
-
-            return  r / t.Sum(); 
+            get
+            {
+                return calculateWeibullCommand ??
+                  (calculateWeibullCommand = new RelayCommand(x =>
+                  {
+                        Task.Factory.StartNew(() =>
+                              Weibull()
+                        ); 
+                  }));
+            }
         }
 
+        private double weibullValue = 0;
 
+        public double WeibullValue
+        {
+            get { return weibullValue; }
+            set
+            {
+                weibullValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(WeibullValue)));
+            }
+        }
 
+        #endregion
 
-    } 
+        #region Exponential
+
+        public void Exponential()
+        {
+            Loading(true);
+            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            Exponential exponential = new Exponential(t, delta);
+            ExponentialValue = exponential.lambda();
+            Loading(false);
+        }
+
+        private RelayCommand calculateExponentialCommand;
+        public RelayCommand CalculateExponentialCommand
+        {
+            get
+            {
+                return calculateExponentialCommand ??
+                  (calculateExponentialCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                            Exponential()
+                      );
+                  }));
+            }
+        }
+
+        private double exponentialValue = 0;
+
+        public double ExponentialValue
+        {
+            get { return exponentialValue; }
+            set
+            {
+                exponentialValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ExponentialValue)));
+            }
+        }
+
+        #endregion
+
+        #region Relay
+
+        public void Relay()
+        {
+            Loading(true);
+            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            Relay relay = new Relay(t, delta);
+            RelayValue = relay.lambda();
+            Loading(false);
+        }
+
+        private RelayCommand calculateRelayCommand;
+        public RelayCommand CalculateRelayCommand
+        {
+            get
+            {
+                return calculateRelayCommand ??
+                  (calculateRelayCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                            Relay()
+                      );
+                  }));
+            }
+        }
+
+        private double relayValue = 0;
+
+        public double RelayValue
+        {
+            get { return relayValue; }
+            set
+            {
+                relayValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(RelayValue)));
+            }
+        }
+
+        #endregion
+
+        #region Gompertz
+
+        public void Gompertz()
+        {
+            Loading(true);
+            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            double epsilon = 0.01;
+            Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
+            GompertzValue = gompertz.lambda();
+            Loading(false);
+        }
+
+        private RelayCommand calculateGompertzCommand;
+        public RelayCommand CalculateGompertzCommand
+        {
+            get
+            {
+                return calculateGompertzCommand ??
+                  (calculateGompertzCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                            Gompertz()
+                      );
+                  }));
+            }
+        }
+
+        private double gompertzValue = 0;
+
+        public double GompertzValue
+        {
+            get { return gompertzValue; }
+            set
+            {
+                gompertzValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(GompertzValue)));
+            }
+        }
+
+        #endregion
+
+    }
 }

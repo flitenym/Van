@@ -4,9 +4,105 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
              xmlns:controls="clr-namespace:CustomControls;assembly=CustomControls" 
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"> 
-    <Grid>
-        <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Распределения" HorizontalAlignment="Center"/> 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries> 
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" /> 
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid Margin="10,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Вейбулла:" HorizontalAlignment="Left"/>
+            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding WeibullValue}" Foreground="{DynamicResource WindowForeground}" />
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Вычислить"
+                        Command="{Binding CalculateWeibullCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Экспоненциальное распределение:" HorizontalAlignment="Left"/>
+            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding ExponentialValue}" Foreground="{DynamicResource WindowForeground}"/>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Вычислить"
+                        Command="{Binding CalculateExponentialCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Рэлея:" HorizontalAlignment="Left"/>
+            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding RelayValue}" Foreground="{DynamicResource WindowForeground}"/>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Вычислить"
+                        Command="{Binding CalculateRelayCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Гомпертца:" HorizontalAlignment="Left"/>
+            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding GompertzValue}" Foreground="{DynamicResource WindowForeground}"/>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        ToolTip="Вычислить"
+                        Command="{Binding CalculateGompertzCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
     </Grid>
+
 </UserControl>

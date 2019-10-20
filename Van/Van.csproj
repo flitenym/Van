@@ -102,10 +102,15 @@
     <Compile Include="DataBase\Models\Olds.cs" />
     <Compile Include="DataBase\ModelTitles.cs" />
     <Compile Include="DataBase\SQLExecutor.cs" />
+    <Compile Include="Helper\OperationData.cs" />
     <Compile Include="Helper\Node.cs" />
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
+    <Compile Include="Methods\Relay.cs" />
+    <Compile Include="Methods\Exponential.cs" />
+    <Compile Include="Methods\Gompertz.cs" />
+    <Compile Include="Methods\Weibull.cs" />
     <Compile Include="Model\DataBaseBrowsingModel.cs" />
     <Compile Include="Model\TestModel.cs" />
     <Compile Include="Model\MainMenuModel.cs" />
@@ -120,6 +125,7 @@
     <Compile Include="Model\ParametricModel.cs" />
     <Compile Include="Model\NonparametricModel.cs" />
     <Compile Include="Model\SurvivalAnalysisMethodsModel.cs" />
+    <Compile Include="Model\OperationModel.cs" />
     <Compile Include="Model\UserInformationModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="ThemesGlobal\Light\Light.cs" />
@@ -140,6 +146,7 @@
     <Compile Include="ViewModel\NonparametricViewModel.cs" />
     <Compile Include="ViewModel\TabControlViewModel.cs" />
     <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
+    <Compile Include="ViewModel\OperationViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="View\TestView.xaml.cs">
@@ -183,6 +190,9 @@
     </Compile>
     <Compile Include="View\SurvivalAnalysisMethodsView.xaml.cs">
       <DependentUpon>SurvivalAnalysisMethodsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OperationView.xaml.cs">
+      <DependentUpon>OperationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserInformationView.xaml.cs">
       <DependentUpon>UserInformationView.xaml</DependentUpon>
@@ -286,6 +296,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\SurvivalAnalysisMethodsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\OperationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
