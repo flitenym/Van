@@ -21,7 +21,7 @@
 
     <Window.Resources>
         <!--анимация открытия меню-->
-        <Storyboard x:Key="OpenLeftMenu"> 
+        <Storyboard x:Key="OpenLeftMenu" Timeline.DesiredFrameRate="60"> 
             <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="0"
@@ -29,7 +29,7 @@
             </DoubleAnimation>
         </Storyboard>
         <!--анимация закрытия меню-->
-        <Storyboard x:Key="CloseLeftMenu"> 
+        <Storyboard x:Key="CloseLeftMenu"  Timeline.DesiredFrameRate="60"> 
             <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="-355"
@@ -37,7 +37,7 @@
             </DoubleAnimation>
         </Storyboard>
         <!--анимация открытия меню-->
-        <Storyboard x:Key="OpenRightMenu"> 
+        <Storyboard x:Key="OpenRightMenu"  Timeline.DesiredFrameRate="60"> 
             <DoubleAnimation Storyboard.TargetName="GridRightMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="0"
@@ -45,20 +45,20 @@
             </DoubleAnimation>
         </Storyboard>
         <!--анимация закрытия меню-->
-        <Storyboard x:Key="CloseRightMenu">
+        <Storyboard x:Key="CloseRightMenu" Timeline.DesiredFrameRate="60">
             <DoubleAnimation Storyboard.TargetName="GridRightMenu"
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
                              To="255"
                              Duration="0:0:0.3"> 
             </DoubleAnimation>
         </Storyboard>
-        <Storyboard x:Key="ShowLoadPanel">
+        <Storyboard x:Key="ShowLoadPanel" Timeline.DesiredFrameRate="60">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                              To="0"
                              Duration="0:0:0.3">
             </DoubleAnimation>
         </Storyboard>
-        <Storyboard x:Key="HideLoadPanel">
+        <Storyboard x:Key="HideLoadPanel" Timeline.DesiredFrameRate="60">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
                              To="5"
                              Duration="0:0:0.3">

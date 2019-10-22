@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Van.ViewModel;
 
 namespace Van.Windows
 {
@@ -22,6 +23,7 @@ namespace Van.Windows
         public SplashScreenWindow()
         {
             InitializeComponent(); 
+            this.DataContext = new SplashScreenWindowViewModel();
         } 
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)

@@ -22,8 +22,8 @@
             </ResourceDictionary.MergedDictionaries> 
         </ResourceDictionary>
     </Window.Resources>
-    <Border Margin="5" MouseDown="Border_MouseDown" BorderBrush="Black" BorderThickness="1">
-        <Border BorderBrush="#424242" BorderThickness="1">
+    <Border MouseDown="Border_MouseDown" BorderBrush="Black" BorderThickness="1">
+        <Border  Margin="2"  BorderBrush="#424242" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -31,7 +31,7 @@
                 </Grid.RowDefinitions>
                 <Grid Background="#FF29878B" Grid.Row="0" Grid.RowSpan="2" />
                 <TextBlock Text="Van" FontWeight="Thin" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50" FontFamily="Stencil" Foreground="White" />
-                <TextBlock Text="version 1.0.0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" Margin="60,80,0,0" Foreground="White"/>
+                <TextBlock Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" Margin="60,80,0,0" Foreground="White"/>
                 <ProgressBar Grid.Row="1" IsIndeterminate="True" />
             </Grid>
         </Border>
