@@ -23,17 +23,19 @@
         </ResourceDictionary>
     </Window.Resources>
     <Border MouseDown="Border_MouseDown" BorderBrush="Black" BorderThickness="1">
-        <Border  Margin="2"  BorderBrush="#424242" BorderThickness="1">
-            <Grid>
+        <Border  Margin="2"  BorderBrush="#424242" BorderThickness="1"> 
+            <Grid Background="#FF29878B" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="8" />
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="8"/>
                 </Grid.RowDefinitions>
-                <Grid Background="#FF29878B" Grid.Row="0" Grid.RowSpan="2" />
-                <TextBlock Text="Van" FontWeight="Thin" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50" FontFamily="Stencil" Foreground="White" />
-                <TextBlock Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" Margin="60,80,0,0" Foreground="White"/>
-                <ProgressBar Grid.Row="1" IsIndeterminate="True" />
-            </Grid>
+                <TextBlock Grid.Row="1" Text="Van" FontWeight="Thin" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="50"  FontFamily="Stencil" Foreground="White" />
+                <TextBlock Grid.Row="2" Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"  Foreground="White"/>
+                <ProgressBar Grid.Row="4" IsIndeterminate="True" />
+            </Grid> 
         </Border>
     </Border>
 </Window>

@@ -36,6 +36,10 @@ namespace Van.Helper
             public static readonly Guid OperationView = new Guid("8FACE0E4-E0CA-436B-879D-ED21181ABE0F");
             public static int OperationNum = 3;
 
+            public static string AboutName = "О программе";
+            public static readonly Guid AboutView = new Guid("3AA9A8D3-9378-4903-B9D1-A62E31ABB51E");
+            public static int AboutNum = 4;
+
             #endregion
 
             #region Левое меню

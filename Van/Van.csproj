@@ -104,6 +104,8 @@
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.111.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
@@ -144,6 +146,7 @@
     <Compile Include="Methods\Gompertz.cs" />
     <Compile Include="Methods\Weibull.cs" />
     <Compile Include="Model\DataBaseBrowsingModel.cs" />
+    <Compile Include="Model\AboutModel.cs" />
     <Compile Include="Model\TestModel.cs" />
     <Compile Include="Model\MainMenuModel.cs" />
     <Compile Include="Model\DistributionModel.cs" />
@@ -164,6 +167,7 @@
     <Compile Include="Themes\Red\Red.cs" />
     <Compile Include="Themes\Green\Green.cs" />
     <Compile Include="ViewModel\DataBaseBrowsingViewModel.cs" />
+    <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\SplashScreenWindowViewModel.cs" />
     <Compile Include="ViewModel\TestViewModel.cs" />
     <Compile Include="ViewModel\MainMenuViewModel.cs" />
@@ -182,6 +186,9 @@
     <Compile Include="ViewModel\OperationViewModel.cs" />
     <Compile Include="ViewModel\UserInformationViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
@@ -255,6 +262,10 @@
     <Page Include="Themes\Blue\Blue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AboutView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\TestView.xaml">
       <Generator>MSBuild:Compile</Generator>
