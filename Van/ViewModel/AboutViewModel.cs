@@ -176,19 +176,29 @@ namespace Van.ViewModel
             }
         }
 
-        public void DownloadProgram()
+        public string AssemblyDirectory
         {
-            ProgramFolderWithFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Program";
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
+        public void DownloadProgram()
+        { 
+            ProgramFolderWithFilePath = AssemblyDirectory;
             TempFolderWithFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Temp";
 
-            CheckFolder(ProgramFolderWithFilePath);
             CheckFolder(TempFolderWithFilePath);
 
             client = new WebClient(); 
             IsDownload = true;
             client.OpenRead(LinkData);
             string header_contentDisposition = client.ResponseHeaders["content-disposition"];
-            string XmlDataFilename = new ContentDisposition(header_contentDisposition).FileName;
+            string XmlDataFilename = new ContentDisposition(header_contentDisposition).FileName.Replace(' ', '_');
             TempFolderWithFilePath = $@"{TempFolderWithFilePath}\{XmlDataFilename}"; 
 
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
@@ -255,28 +265,42 @@ namespace Van.ViewModel
 
                 try
                 {
-                    using (ZipArchive archive = ZipFile.Open(TempFolderWithFilePath, ZipArchiveMode.Read))
-                    {
-                        archive.ExtractToDirectory(ProgramFolderWithFilePath);
-                        ProgramFolderWithFilePath += $@"\{Assembly.GetExecutingAssembly().GetName().Name}.exe";
-                        if (File.Exists(ProgramFolderWithFilePath))
-                        {
-                            Process.Start(ProgramFolderWithFilePath);
-                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                            {
-                                Application.Current.MainWindow.Close();
-                            }));
-                        }
-                        else
-                            Message("Программа не обновлена");
+                    Process pc = new Process();
+                    pc.StartInfo.FileName = "cmd.exe";
+                    pc.StartInfo.Arguments = $"/C cd C:\\ && @ECHO OFF && ping -n 5 127.0.0.1 && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe";
+                    pc.Start();
 
-                    }
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        Application.Current.MainWindow.Close();
+                    }));
+
                 }
                 catch (Exception ex)
                 {
                     Message(ex.Message);
                 }
             }
+        }
+        
+        public Task<int> RunProcessAsync()
+        {
+            var tcs = new TaskCompletionSource<int>();
+
+            Process pc = new Process();
+            pc.StartInfo.FileName = "cmd";
+            pc.EnableRaisingEvents = true;
+            pc.StartInfo.Arguments = $"@ECHO OFF && ping -n 15 127.0.0.1 && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe";
+           
+            pc.Exited += (sender, args) =>
+            {
+                tcs.SetResult(pc.ExitCode);
+                pc.Dispose();
+            };
+
+            pc.Start();
+
+            return tcs.Task;
         }
 
         public bool CheckVersion()

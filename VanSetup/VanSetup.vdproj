@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_21186077770D473C96A4BB3D18D45424"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3573AB136F2F9A4BED4DB85300B26A24"
         "OwnerKey" = "8:_9D8D58F9D84541BB8A5E302C85EB8488"
         "MsmSig" = "8:_UNDEFINED"
@@ -153,6 +159,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F1771C5B500443B68A93A918CD09C834"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F5B16FFD7197DD11F6105918154D6904"
         "OwnerKey" = "8:_373372D737FE4C3C6ADE8D3EAF397E50"
         "MsmSig" = "8:_UNDEFINED"
@@ -278,6 +290,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -302,6 +322,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
     }
@@ -332,6 +360,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_21186077770D473C96A4BB3D18D45424"
+            {
+            "SourcePath" = "8:..\\Van\\Images\\icon.ico"
+            "TargetName" = "8:icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_C625C530AAE34BB09513E3B14CF912D1"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3573AB136F2F9A4BED4DB85300B26A24"
             {
             "AssemblyRegister" = "3:1"
@@ -786,6 +834,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1771C5B500443B68A93A918CD09C834"
+            {
+            "SourcePath" = "8:..\\Van\\Images\\icon.ico"
+            "TargetName" = "8:icon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_1CDC667FFA474713A9523D24263EBCE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F5B16FFD7197DD11F6105918154D6904"
             {
             "AssemblyRegister" = "3:1"
@@ -836,7 +904,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_1CEE3F7D570A46B19C2A8198B27373A9"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
@@ -883,7 +951,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:VanSetup"
+        "ProductName" = "8:Van"
         "ProductCode" = "8:{0726CC17-D4FA-4E0B-A63A-D3C2CEF4C6AC}"
         "PackageCode" = "8:{56253EC5-A4BF-4E87-9CE5-6B979D586EF7}"
         "UpgradeCode" = "8:{434ADBF0-915C-4651-9700-D0F4624DD69E}"
@@ -896,7 +964,7 @@
         "Manufacturer" = "8:Van"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:VanSetup"
+        "Title" = "8:Van"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Van"
         "Keywords" = "8:"
@@ -1005,6 +1073,34 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3119BF88B7F24C5493B2E76383CFC012"
+            {
+            "Name" = "8:Van"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_21186077770D473C96A4BB3D18D45424"
+            "Folder" = "8:_C625C530AAE34BB09513E3B14CF912D1"
+            "WorkingFolder" = "8:_1CEE3F7D570A46B19C2A8198B27373A9"
+            "Icon" = "8:_21186077770D473C96A4BB3D18D45424"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FA8E7D72A019453A8A6FD709209CAF1B"
+            {
+            "Name" = "8:Van"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_F1771C5B500443B68A93A918CD09C834"
+            "Folder" = "8:_1CDC667FFA474713A9523D24263EBCE0"
+            "WorkingFolder" = "8:_1CEE3F7D570A46B19C2A8198B27373A9"
+            "Icon" = "8:_F1771C5B500443B68A93A918CD09C834"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
