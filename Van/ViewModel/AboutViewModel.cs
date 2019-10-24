@@ -33,8 +33,9 @@ namespace Van.ViewModel
 
         public string TempFolderWithFilePath { get; set; }
         public string ProgramFolderWithFilePath { get; set; }
+        public Int64 TotalBytes { get; set; }
 
-        private string xmlData = "https://drive.google.com/uc?export=download&id=1ug6rdMXlSr_H9h2tgTcywYb1AP6-hQaw";
+        private string xmlData = "https://drive.google.com/uc?export=download&id=1E_HsjYhTViSbORTLCIB6mngxXNLTQks9";
 
         public string XmlData
         {
@@ -183,18 +184,19 @@ namespace Van.ViewModel
             CheckFolder(ProgramFolderWithFilePath);
             CheckFolder(TempFolderWithFilePath);
 
-            client = new WebClient();
+            client = new WebClient(); 
+            IsDownload = true;
             client.OpenRead(LinkData);
             string header_contentDisposition = client.ResponseHeaders["content-disposition"];
             string XmlDataFilename = new ContentDisposition(header_contentDisposition).FileName;
-            TempFolderWithFilePath = $@"{TempFolderWithFilePath}\{XmlDataFilename}";
+            TempFolderWithFilePath = $@"{TempFolderWithFilePath}\{XmlDataFilename}"; 
+
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
             client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged); 
             sw.Start();
 
             try
             {
-                IsDownload = true;
                 client.DownloadFileAsync(new Uri(LinkData), TempFolderWithFilePath); 
             }
             catch (Exception ex)
@@ -301,6 +303,9 @@ namespace Van.ViewModel
                     Message("Программа уже последней версии");
                     client.Dispose();
                     return false;
+                }
+                else {
+                    Message($"Начинается скачивание версии {xnode.InnerText}");
                 }
             }
 

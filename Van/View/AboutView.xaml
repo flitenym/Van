@@ -70,7 +70,7 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                To="0"
+                                                To="-100"
                                                 Duration="0:0:0.8">
                                         </DoubleAnimation>
                                     </Storyboard>
