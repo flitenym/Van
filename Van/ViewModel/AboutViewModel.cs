@@ -50,7 +50,7 @@ namespace Van.ViewModel
             }
         }
 
-        private string linkData = "https://drive.google.com/uc?export=download&id=1kasb-3rz8J446Rq0tqdvZkbzdxtbKBST";
+        private string linkData = "https://drive.google.com/uc?export=download&id=1n6dct1Odgb2xL91s6U_egGiAF9eUbsEn";
 
         public string LinkData
         {
