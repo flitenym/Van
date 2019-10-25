@@ -94,12 +94,9 @@ namespace Van.ViewModel
                   (deleteRowCommand = new RelayCommand(obj =>
                   {
                       if (obj != null)
-                      {
-                          IList selectedItemsList = (IList)obj;
-                          var selectedItemsCollection = selectedItemsList.Cast<DataRowView>();  
-                          Task.Factory.StartNew(() =>
-                              DeleteRows(selectedItemsCollection.ToList())
-                          );
+                      { 
+                          var selectedItemsCollection = ((IList)obj).Cast<DataRowView>();
+                          DeleteRows(selectedItemsCollection.ToList());
                       }
                   }));
             }
@@ -129,6 +126,7 @@ namespace Van.ViewModel
 
             IDs.RemoveAll(x => x == -1); 
             SQLExecutor.DeleteExecutor(SelectedModelName, IDs);
+             
 
             foreach (var selectedItem in selectedItems) {
                 TableData.Rows.Remove(selectedItem.Row);

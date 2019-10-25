@@ -10,7 +10,7 @@ namespace Van.Helper
     public class RelayCommand : ICommand
     {
         private Action<object> execute;
-        private Func<object, bool> canExecute;
+        private Predicate<object> canExecute;
 
         public event EventHandler CanExecuteChanged
         {
@@ -18,7 +18,7 @@ namespace Van.Helper
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
@@ -26,7 +26,7 @@ namespace Van.Helper
 
         public bool CanExecute(object parameter)
         {
-            return this.canExecute == null || this.canExecute(parameter);
+            return canExecute == null ? true : canExecute(parameter);
         }
 
         public void Execute(object parameter)

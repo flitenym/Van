@@ -32,14 +32,14 @@
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Van" FontWeight="Thin" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50"  FontFamily="Stencil" Foreground="White" />
-            <TextBlock Grid.Row="1" Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"  Foreground="White"/>
+            <TextBlock Grid.Row="0" Text="Van" FontWeight="Thin" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50"  FontFamily="Stencil" />
+            <TextBlock Grid.Row="1" Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" />
             <Button Grid.Row="2"
                 Margin="2"
                 Content="Обновление программы"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch"
-                Command="{Binding UpdateCommand}"
+                Command="{Binding UpdateCommand}" 
                 Foreground="{DynamicResource PreWindowButtonForeground}"
                 Style="{DynamicResource MaterialDesignRaisedButton}" >
             </Button>
