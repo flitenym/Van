@@ -28,7 +28,7 @@ namespace Van.ViewModel
         /// <summary>
         /// Используется для вычисления скорости
         /// </summary>
-        public Stopwatch sw = new Stopwatch();
+        public Stopwatch sw;
 
         /// <summary>
         /// Используется для скачивания
@@ -39,11 +39,6 @@ namespace Van.ViewModel
         /// Показывает версию текущую
         /// </summary>
         public string AppVersion => "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-        /// <summary>
-        /// Возможность нажатия на кнопку обновления
-        /// </summary>
-        public bool isEnableButton => !IsDownload;
 
         /// <summary>
         /// Путь ко временной таблице Temp
@@ -295,7 +290,7 @@ namespace Van.ViewModel
 
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-
+                sw = new Stopwatch();
                 sw.Start();
                 client.DownloadFileAsync(new Uri(LinkData), TempFolderWithFilePath);
             }
@@ -352,6 +347,7 @@ namespace Van.ViewModel
             IsDownload = false;
             Loading(false);
             sw.Reset();
+            sw.Stop();
             if (e.Cancelled == true)
             {
                 Message("Скачивание отменено");
