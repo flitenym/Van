@@ -31,26 +31,13 @@ namespace Van.ViewModel
 
         public string AppVersion => "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+        public string TempFolderPath { get; set; }
         public string TempFolderWithFilePath { get; set; }
         public string ProgramFolderWithFilePath { get; set; }
         public Int64 TotalBytes { get; set; }
+        
 
-        private string xmlData = "https://drive.google.com/uc?export=download&id=1E_HsjYhTViSbORTLCIB6mngxXNLTQks9";
-
-        public string XmlData
-        {
-            get
-            {
-                return xmlData;
-            }
-            set
-            {
-                xmlData = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(XmlData)));
-            }
-        }
-
-        private string linkData = "https://drive.google.com/uc?export=download&id=1n6dct1Odgb2xL91s6U_egGiAF9eUbsEn";
+        private string linkData = "https://drive.google.com/uc?export=download&id=1AQP6reucQM3swEZAtRo24ccynE1pm9Q9";
 
         public string LinkData
         {
@@ -65,7 +52,7 @@ namespace Van.ViewModel
             }
         }
 
-        private string downloadSpeed;
+        private string downloadSpeed = "0 kb/s";
 
         public string DownloadSpeed
         {
@@ -80,7 +67,7 @@ namespace Van.ViewModel
             }
         }
 
-        private string downloadPercent;
+        private string downloadPercent = "0%";
 
         public string DownloadPercent
         {
@@ -95,7 +82,7 @@ namespace Van.ViewModel
             }
         }
 
-        private string download;
+        private string download = "0,00 MB's / 0,00 MB's";
 
         public string Download
         {
@@ -170,10 +157,7 @@ namespace Van.ViewModel
 
         public void CheckUpdate()
         {
-            if (CheckVersion())
-            {
-                DownloadProgram();
-            }
+            DownloadProgram();
         }
 
         public string AssemblyDirectory
@@ -187,22 +171,52 @@ namespace Van.ViewModel
             }
         }
 
+        public void GetLength(Stream stream) {
+            byte[] b = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int count = 0;
+                do
+                {
+                    byte[] buf = new byte[1024];
+                    count = stream.Read(buf, 0, 1024);
+                    ms.Write(buf, 0, count);
+                } while (stream.CanRead && count > 0);
+
+                TotalBytes = ms.Length;
+            } 
+        }
+
         public void DownloadProgram()
         { 
             ProgramFolderWithFilePath = AssemblyDirectory;
-            TempFolderWithFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Temp";
+            TempFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Temp";
 
-            CheckFolder(TempFolderWithFilePath);
+            CheckFolder(TempFolderPath);
 
-            client = new WebClient(); 
-            IsDownload = true;
-            client.OpenRead(LinkData);
+            client = new WebClient();
+
+            var contentStream = client.OpenRead(LinkData);
             string header_contentDisposition = client.ResponseHeaders["content-disposition"];
-            string XmlDataFilename = new ContentDisposition(header_contentDisposition).FileName.Replace(' ', '_');
-            TempFolderWithFilePath = $@"{TempFolderWithFilePath}\{XmlDataFilename}"; 
+            string fileName = new ContentDisposition(header_contentDisposition).FileName.Replace(' ', '_');
+
+            if (fileName.Contains(Assembly.GetExecutingAssembly().GetName().Version.ToString()))
+            {
+                Message("Программа уже последней версии");
+                client.Dispose();
+                return;
+            }
+            else Message("Начинается скачивание новой версии");
+
+            GetLength(contentStream);
+            TempFolderWithFilePath = $@"{TempFolderPath}\{fileName}";
+            IsDownload = true;
+            Download = $"{(0).ToString("0.00")} MB's / {(TotalBytes / 1024d / 1024d).ToString("0.00")} MB's";
 
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
-            client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged); 
+            client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+
             sw.Start();
 
             try
@@ -217,21 +231,15 @@ namespace Van.ViewModel
             client.Dispose(); 
         } 
 
-        // The event that will fire whenever the progress of the WebClient is changed
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {  
             DownloadSpeed =  string.Format("{0} kb/s", (e.BytesReceived / 1024d / sw.Elapsed.TotalSeconds).ToString("0.00"));
 
-            // Update the progressbar percentage only when the value is not the same.
             progressBarValue = e.ProgressPercentage;
 
-            // Show the percentage on our label.
             DownloadPercent = e.ProgressPercentage.ToString() + "%";
 
-            // Update the label with how much data have been downloaded so far and the total size of the file we are currently downloading
-            Download = string.Format("{0} MB's / {1} MB's",
-                (e.BytesReceived / 1024d / 1024d).ToString("0.00"),
-                (e.TotalBytesToReceive / 1024d / 1024d).ToString("0.00"));
+            Download = $"{(e.BytesReceived / 1024d / 1024d).ToString("0.00")} MB's / {(TotalBytes / 1024d / 1024d).ToString("0.00")} MB's";
         }
 
         private void Cancel()
@@ -244,20 +252,21 @@ namespace Van.ViewModel
 
         private void CompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
-            IsDownload = false;
-            if (e.Error != null)
-            {
-                string error = e.Error.ToString();
-                Message(error);
-                return;
-            }
-
+            IsDownload = false;  
             sw.Reset();
-
             if (e.Cancelled == true)
             {
                 Message("Скачивание отменено");
+                if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
                 client.Dispose();
+                return;
+            }
+            else if (e.Error != null)
+            {
+                string error = e.Error.ToString();
+                Message(error);
+                if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
+                return;
             }
             else
             {
@@ -267,7 +276,7 @@ namespace Van.ViewModel
                 {
                     Process pc = new Process();
                     pc.StartInfo.FileName = "cmd.exe";
-                    pc.StartInfo.Arguments = $"/C cd C:\\ && @ECHO OFF && ping -n 5 127.0.0.1 && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe";
+                    pc.StartInfo.Arguments = $@"/C cd C:\\ && timeout /t 5 /nobreak>nul && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe && powershell Remove-Item {TempFolderPath} -Recurse -Force";
                     pc.Start();
 
                     Application.Current.Dispatcher.BeginInvoke(new Action(() =>
@@ -283,60 +292,6 @@ namespace Van.ViewModel
             }
         }
         
-        public Task<int> RunProcessAsync()
-        {
-            var tcs = new TaskCompletionSource<int>();
-
-            Process pc = new Process();
-            pc.StartInfo.FileName = "cmd";
-            pc.EnableRaisingEvents = true;
-            pc.StartInfo.Arguments = $"@ECHO OFF && ping -n 15 127.0.0.1 && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe";
-           
-            pc.Exited += (sender, args) =>
-            {
-                tcs.SetResult(pc.ExitCode);
-                pc.Dispose();
-            };
-
-            pc.Start();
-
-            return tcs.Task;
-        }
-
-        public bool CheckVersion()
-        {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Version";
-
-            CheckFolder(path);
-
-            client = new WebClient();
-            client.OpenRead(XmlData);
-            string header_contentDisposition = client.ResponseHeaders["content-disposition"];
-            string XmlDataFilename = new ContentDisposition(header_contentDisposition).FileName;
-            client.DownloadFile(XmlData, $@"{path}\{XmlDataFilename}");
-
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load($@"{path}\{XmlDataFilename}");
-            // получим корневой элемент
-            XmlElement xRoot = xDoc.DocumentElement;
-            // обход всех узлов в корневом элементе
-            foreach (XmlNode xnode in xRoot)
-            {
-                if (xnode.InnerText == Assembly.GetExecutingAssembly().GetName().Version.ToString())
-                {
-                    Message("Программа уже последней версии");
-                    client.Dispose();
-                    return false;
-                }
-                else {
-                    Message($"Начинается скачивание версии {xnode.InnerText}");
-                }
-            }
-
-            client.Dispose();
-            return true;
-        }
-
         private void clearFolder(string FolderName)
         {
             DirectoryInfo dir = new DirectoryInfo(FolderName);
