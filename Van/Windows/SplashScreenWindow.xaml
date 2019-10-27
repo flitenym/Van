@@ -23,8 +23,8 @@
         </ResourceDictionary>
     </Window.Resources>
     <Border MouseDown="Border_MouseDown" BorderBrush="Black" BorderThickness="1">
-        <Border  Margin="2"  BorderBrush="#424242" BorderThickness="1"> 
-            <Grid Background="#FF29878B" Grid.Row="0">
+        <Border Margin="2" BorderBrush="#424242" BorderThickness="1"> 
+            <Grid Background="#FF29878B">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="60"/>

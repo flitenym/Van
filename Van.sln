@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Van", "Van\Van.csproj", "{1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControls", "CustomControls\CustomControls.csproj", "{98701113-C470-4C43-BD7F-9E10DFA8AFDC}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VanSetup", "VanSetup\VanSetup.vdproj", "{F1E44964-BEBC-48BB-9EA4-C026B4DC0A4A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,8 +21,6 @@ Global
 		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1E44964-BEBC-48BB-9EA4-C026B4DC0A4A}.Debug|Any CPU.ActiveCfg = Debug
-		{F1E44964-BEBC-48BB-9EA4-C026B4DC0A4A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

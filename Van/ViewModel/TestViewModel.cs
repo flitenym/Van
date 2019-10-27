@@ -17,16 +17,15 @@ namespace Van.ViewModel
     class TestViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
-        
+
+        public List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 }; 
+        public double epsilon = 0.01;
 
         #region Weibull
 
         public void Weibull() {
-            Loading(true);
-            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
-            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
-            double epsilon = 0.01;
+            Loading(true); 
             Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
             WeibullValue = weibull.lambda();
             Loading(false);
@@ -65,9 +64,7 @@ namespace Van.ViewModel
 
         public void Exponential()
         {
-            Loading(true);
-            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
-            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            Loading(true); 
             Exponential exponential = new Exponential(t, delta);
             ExponentialValue = exponential.lambda();
             Loading(false);
@@ -107,8 +104,7 @@ namespace Van.ViewModel
         public void Relay()
         {
             Loading(true);
-            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
-            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+            
             Relay relay = new Relay(t, delta);
             RelayValue = relay.lambda();
             Loading(false);
@@ -147,10 +143,7 @@ namespace Van.ViewModel
 
         public void Gompertz()
         {
-            Loading(true);
-            List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
-            List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
-            double epsilon = 0.01;
+            Loading(true);  
             Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
             GompertzValue = gompertz.lambda();
             Loading(false);

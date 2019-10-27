@@ -27,14 +27,8 @@ namespace Van.View
         }
 
         private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            if (e.PropertyName == "ID")
-            {
-                e.Column.IsReadOnly = true;
-                e.Column.Width = ((DataGrid)sender).MinWidth; 
-            }
-
-            if (e.PropertyName == "Title")
+        { 
+            if (e.PropertyName == "ID" || e.PropertyName == "Title")
             {
                 e.Column.Visibility = Visibility.Collapsed;
             } 
