@@ -27,17 +27,17 @@
 
             <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
                 <TextBlock TextAlignment="Center" Margin="20,5,20,10" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                    Дерево сервера
+                    Таблицы с данными
                 </TextBlock> 
                 <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableListView"
                           ItemsSource="{Binding DatabaseModels, Mode=TwoWay}" 
                           SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
-                          Foreground="{DynamicResource WindowForeground}">
+                          Foreground="{DynamicResource WindowForeground}"
+                          Margin="0,0,-15,0"
+                          Width="Auto">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Width="150" Text="{Binding Path= Title}" 
-                                           IsHyphenationEnabled="True"
-                                           TextWrapping="Wrap" />
+                            <TextBlock Width="Auto" Text="{Binding Path= Title}" TextWrapping="Wrap" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>  
@@ -51,8 +51,7 @@
                     <RowDefinition Height="45"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
-                <DataGrid Grid.Row="0" Background="{x:Null}" 
-                          AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                <DataGrid Grid.Row="0" Background="{x:Null}"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                           x:Name="DataGrid" 
                           EnableRowVirtualization="True" 

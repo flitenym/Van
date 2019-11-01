@@ -10,22 +10,10 @@ namespace Van.View
         public DataBaseBrowsingView()
         {
             InitializeComponent();
+            DataGrid.AutoGeneratingColumn += Helper.Helper.DataGrid_AutoGeneratingColumn;
         }
 
-        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        { 
-            if (e.PropertyName == "ID" || e.PropertyName == "Title")
-            {
-                e.Column.Visibility = Visibility.Collapsed;
-            }
-
-            var dGrid = (sender as DataGrid);
-            if (dGrid == null) return;
-            var view = dGrid.ItemsSource as DataView;
-            if (view == null) return;
-            var table = view.Table;
-            e.Column.Header = table.Columns[e.Column.Header as string].Caption;
-        }
+        
 
     }
 }

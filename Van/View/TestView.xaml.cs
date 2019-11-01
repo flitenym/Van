@@ -24,6 +24,7 @@ namespace Van.View
         public TestView()
         {
             InitializeComponent();
+            DataGrid.AutoGeneratingColumn += Helper.Helper.DataGrid_AutoGeneratingColumn;
         } 
     }
 }

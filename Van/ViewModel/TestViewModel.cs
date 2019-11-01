@@ -14,6 +14,10 @@ using System.Threading.Tasks;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
+using Van.DataBase.Models;
+using Van.DataBase;
+using System.Data;
 
 namespace Van.ViewModel
 {
@@ -27,27 +31,10 @@ namespace Van.ViewModel
 
         #region Weibull
 
-        public void Weibull() {
-            Loading(true); 
+        public void Weibull() { 
             Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
-            WeibullValue = weibull.lambda();
-            Loading(false);
-        }
-
-        private RelayCommand calculateWeibullCommand;
-        public RelayCommand CalculateWeibullCommand
-        {
-            get
-            {
-                return calculateWeibullCommand ??
-                  (calculateWeibullCommand = new RelayCommand(x =>
-                  {
-                        Task.Factory.StartNew(() =>
-                              Weibull()
-                        ); 
-                  }));
-            }
-        }
+            WeibullValue = weibull.lambda(); 
+        } 
 
         private double weibullValue = 0;
 
@@ -66,27 +53,10 @@ namespace Van.ViewModel
         #region Exponential
 
         public void Exponential()
-        {
-            Loading(true); 
+        { 
             Exponential exponential = new Exponential(t, delta);
-            ExponentialValue = exponential.lambda();
-            Loading(false);
-        }
-
-        private RelayCommand calculateExponentialCommand;
-        public RelayCommand CalculateExponentialCommand
-        {
-            get
-            {
-                return calculateExponentialCommand ??
-                  (calculateExponentialCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                            Exponential()
-                      );
-                  }));
-            }
-        }
+            ExponentialValue = exponential.lambda(); 
+        } 
 
         private double exponentialValue = 0;
 
@@ -105,28 +75,10 @@ namespace Van.ViewModel
         #region Relay
 
         public void Relay()
-        {
-            Loading(true);
-            
+        { 
             Relay relay = new Relay(t, delta);
-            RelayValue = relay.lambda();
-            Loading(false);
-        }
-
-        private RelayCommand calculateRelayCommand;
-        public RelayCommand CalculateRelayCommand
-        {
-            get
-            {
-                return calculateRelayCommand ??
-                  (calculateRelayCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                            Relay()
-                      );
-                  }));
-            }
-        }
+            RelayValue = relay.lambda(); 
+        } 
 
         private double relayValue = 0;
 
@@ -145,27 +97,10 @@ namespace Van.ViewModel
         #region Gompertz
 
         public void Gompertz()
-        {
-            Loading(true);  
+        { 
             Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
-            GompertzValue = gompertz.lambda();
-            Loading(false);
-        }
-
-        private RelayCommand calculateGompertzCommand;
-        public RelayCommand CalculateGompertzCommand
-        {
-            get
-            {
-                return calculateGompertzCommand ??
-                  (calculateGompertzCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                            Gompertz()
-                      );
-                  }));
-            }
-        }
+            GompertzValue = gompertz.lambda(); 
+        } 
 
         private double gompertzValue = 0;
 
@@ -179,49 +114,76 @@ namespace Van.ViewModel
             }
         }
 
-        #endregion
+        #endregion 
 
+        private RelayCommand calculateCommand;
+        public RelayCommand CalculateCommand
+        {
+            get
+            {
+                return calculateCommand ??
+                  (calculateCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                            CalculateParametrs()
+                      );
+                  }));
+            }
+        }
+
+        public void CalculateParametrs()
+        {
+            Loading(true);
+            Gompertz();
+            Relay();
+            Exponential();
+            Weibull();
+            Loading(false);
+        }
+
+        private DataTable mortalityTable;
+
+        public DataTable MortalityTable
+        {
+            get { return mortalityTable; }
+            set
+            {
+                if (value == null) return;
+                mortalityTable = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTable)));
+            }
+        }
+
+        private RelayCommand updateMortalityCommand;
+        public RelayCommand UpdateMortalityCommand
+        {
+            get
+            {
+                return updateMortalityCommand ??
+                  (updateMortalityCommand = new RelayCommand(x =>
+                  {
+                      SelectTable();
+                  }));
+            }
+        } 
 
         public TestViewModel()
-        {  
-            SeriesCollection = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Title = "Series 1",
-                    Values = new ChartValues<double> { 4, 6, 5, 2 ,4 }
-                },
-                new LineSeries
-                {
-                    Title = "Series 2",
-                    Values = new ChartValues<double> { 6, 7, 3, 4 ,6 },
-                    PointGeometry = null
-                },
-                new LineSeries
-                {
-                    Title = "Series 3",
-                    Values = new ChartValues<double> { 4,2,7,2,7 },
-                    PointGeometry = DefaultGeometries.Square,
-                    PointGeometrySize = 15
-                }
-            };
+        {
+            SelectTable();
+        }
 
-            Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May" };
-            YFormatter = value => value.ToString("C");
+        private void SelectTable() {
+            Task.Factory.StartNew(() =>
+                    Select()
+            );
+        }
 
-            //modifying the series collection will animate and update the chart
-            SeriesCollection.Add(new LineSeries
-            {
-                Title = "Series 4",
-                Values = new ChartValues<double> { 5, 3, 2, 4 },
-                LineSmoothness = 0, //0: straight lines, 1: really smooth lines
-                PointGeometry = Geometry.Parse("m 25 70.36218 20 -28 -20 22 -8 -6 z"),
-                PointGeometrySize = 50,
-                PointForeground = Brushes.Gray
-            });
-
-            //modifying any series values will also animate and update the chart
-            SeriesCollection[3].Values.Add(5d); 
+        private void Select()
+        {
+            Loading(true);
+            MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
+            MortalityTable.AcceptChanges();
+            Loading(false);
         }
 
         public SeriesCollection SeriesCollection { get; set; }

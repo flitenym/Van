@@ -15,105 +15,134 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid Margin="10,0,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Вейбулла:" HorizontalAlignment="Left"/>
-            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding WeibullValue}" Foreground="{DynamicResource WindowForeground}" />
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Вычислить"
-                        Command="{Binding CalculateWeibullCommand}"
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="15,0,0,0">
+            <DataGrid Height="500"
+                  Background="{x:Null}"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  x:Name="DataGrid" 
+                  EnableRowVirtualization="True" 
+                  EnableColumnVirtualization="False" 
+                  ScrollViewer.CanContentScroll="True" 
+                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                  GridLinesVisibility="None" 
+                  HeadersVisibility="Column" 
+                  CanUserAddRows="False" 
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding MortalityTable, Mode=TwoWay}" 
+                  SelectionUnit="FullRow" 
+                  ColumnWidth="*"
+                  CanUserSortColumns="True">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource DataGridRowSelected}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Style.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="Transparent"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="Transparent" />
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".56"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+            <Button Height="35"
+                    Width="250"
+                    HorizontalAlignment="Center" 
+                    Content="Обновить таблицу"
+                    Command="{Binding UpdateMortalityCommand}" 
+                    Foreground="{DynamicResource PreWindowButtonForeground}"
+                    Style="{DynamicResource MaterialDesignRaisedButton}" >
+            </Button>
+            <Grid Height="15">
+                <Separator VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+            </Grid>
+            <Grid Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Вейбулла:" HorizontalAlignment="Left"/>
+                <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding WeibullValue}" Foreground="{DynamicResource WindowForeground}"/> 
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Экспоненциальное распределение:" HorizontalAlignment="Left"/>
+                <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding ExponentialValue}" Foreground="{DynamicResource WindowForeground}"/> 
+                
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Рэлея:" HorizontalAlignment="Left"/>
+                <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding RelayValue}" Foreground="{DynamicResource WindowForeground}"/> 
+                
+                <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Гомпертца:" HorizontalAlignment="Left"/>
+                <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding GompertzValue}" Foreground="{DynamicResource WindowForeground}"/>
+
+                <Button Grid.Row="4" 
+                        Grid.ColumnSpan="2" 
+                        HorizontalAlignment="Center" 
+                        Width="250"
+                        Content="Вычислить параметры"
+                        Command="{Binding CalculateCommand}" 
                         Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
-                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Экспоненциальное распределение:" HorizontalAlignment="Left"/>
-            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding ExponentialValue}" Foreground="{DynamicResource WindowForeground}"/>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Вычислить"
-                        Command="{Binding CalculateExponentialCommand}"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
-                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Рэлея:" HorizontalAlignment="Left"/>
-            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding RelayValue}" Foreground="{DynamicResource WindowForeground}"/>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Вычислить"
-                        Command="{Binding CalculateRelayCommand}"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
-                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Гомпертца:" HorizontalAlignment="Left"/>
-            <Label Grid.Column="1" HorizontalAlignment="Left" Content="{Binding GompertzValue}" Foreground="{DynamicResource WindowForeground}"/>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Вычислить"
-                        Command="{Binding CalculateGompertzCommand}"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
-                    <materialDesign:PackIcon Kind="CalculatorVariant" Width="30" Height="Auto"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="4" Margin="5">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" >
-                <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                </lvc:CartesianChart.AxisY>
-                <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
-                </lvc:CartesianChart.AxisX>
-            </lvc:CartesianChart> 
-        </Grid>
-    </Grid>
+
+            </Grid>
+            <Grid Height="300" Margin="5">
+                <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>
