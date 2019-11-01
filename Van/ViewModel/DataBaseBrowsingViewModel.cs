@@ -36,7 +36,7 @@ namespace Van.ViewModel
                 tableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
             }
-        }
+        } 
 
         private ObservableCollection<ModelClass> databaseModels = new ObservableCollection<ModelClass>();
 

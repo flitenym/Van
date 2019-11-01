@@ -65,7 +65,7 @@ namespace Van.ViewModel
 
             mainmenu = mainmenu ?? modules.FirstOrDefault();
 
-            var tabControlViewModel = new TabControlViewModel { Name = mainmenu.Name, ViewContent = mainmenu.UserInterface, ID = mainmenu.ID };
+            var tabControlViewModel = new TabControlViewModel { Name = mainmenu.Name, ViewContent = mainmenu.UserInterface, ID = mainmenu.ID, ModuleBaseItem = mainmenu };
              
             ViewModels.Add(tabControlViewModel); 
 
@@ -249,7 +249,7 @@ namespace Van.ViewModel
         private void SetSettings()
         {
             var settings = modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
-            AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID);
+            AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID, settings);
         }
 
         #endregion
@@ -267,14 +267,14 @@ namespace Van.ViewModel
                         var Node = (Node)obj;
                         if (Node != null)
                         {
-                            AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID);
+                            AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
                             Node.Selected = false;
                         }
                     }));
             }
         }
 
-        private void AddItemInTabControl(string name, UserControl userInterface, Guid id)
+        private void AddItemInTabControl(string name, UserControl userInterface, Guid id, ModuleBase moduleBase)
         {
             var existingViewModel = ViewModels.Where(x => x.ID == id).FirstOrDefault();
             int? index = null;
@@ -287,7 +287,7 @@ namespace Van.ViewModel
             {
                 var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
                 
-                var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id };
+                var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id, ModuleBaseItem = moduleBase };
                 ViewModels.Add(TabControlViewModel);
                 SelectedViewModel = TabControlViewModel;
 
@@ -316,7 +316,7 @@ namespace Van.ViewModel
             if (ViewModels.Count() == 1) {
                 SetViewModels(); 
             }
-
+            viewModel.ModuleBaseItem.Deactivate();
             ViewModels.Remove(viewModel); 
         }
 

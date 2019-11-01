@@ -215,7 +215,7 @@ namespace Van.ViewModel
 
         public bool CancelCanUse(object x)
         {
-            if (ProgressBarValue > 0 && ProgressBarValue < 100)
+            if (ProgressBarValue >= 0 && ProgressBarValue < 100)
             {
                 return true;
             }

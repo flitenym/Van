@@ -9,6 +9,7 @@ using Van.Helper;
 using System.Runtime.CompilerServices;
 using static Van.Helper.Helper;
 using System;
+using Van.AbstractClasses;
 
 namespace Van.ViewModel
 {
@@ -22,8 +23,10 @@ namespace Van.ViewModel
 
         public object ViewContent { get; set; }
 
-        private bool isSelected = false;
+        public ModuleBase ModuleBaseItem { get; set; }
 
+
+        private bool isSelected = false; 
         public bool IsSelected
         {
             get

@@ -16,48 +16,19 @@ namespace Van.DataBase
 {
     public static class SQLExecutor
     {
-        private static string LoadConnectionString(string id = "Default") {
-            return ConfigurationManager.ConnectionStrings[id].ConnectionString;
-        }
+        private static string LoadConnectionString => ConfigurationManager.ConnectionStrings["Default"].ConnectionString; 
         
-        #region Select
-
-        public static string SelectQuery(string tableName)
-        {
-            return $@"SELECT * FROM {tableName}";
-        }
-
-        public static string SelectQuery(string tableName, int ID)
-        {
-            switch (tableName)
-            {
-                case nameof(Olds): return $@"SELECT * FROM {tableName} WHERE ID = {ID}";
-                case nameof(Parametrs): return $@"SELECT * FROM {tableName} WHERE ID = {ID}";
-
-                default: throw new Exception("Не верная таблица");
-            }
-        }
+        #region Select 
 
         public static DataTable SelectExecutor(string tableName) {
             switch (tableName) {
-                case nameof(Olds): return Select<Olds>(SelectQuery(tableName)).ToDataTable();
-                case nameof(Parametrs): return Select<Parametrs>(SelectQuery(tableName)).ToDataTable();
-                default: throw new Exception("Не верная таблица");
-            }
-        }
-
-        public static IEnumerable<dynamic> SelectExecutor(string tableName, int ID)
-        {
-            switch (tableName)
-            {
-                case nameof(Olds): return Select<Olds>(SelectQuery(tableName, ID));
-                case nameof(Parametrs): return Select<Parametrs>(SelectQuery(tableName, ID));
+                case nameof(MortalityTable): return Select<MortalityTable>($"SELECT * FROM {tableName}").ToDataTable();
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static IList<T> Select<T>(string query) {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
             { 
                 return db.Query<T>(query).ToList();
             }
@@ -65,28 +36,22 @@ namespace Van.DataBase
 
         #endregion
 
-        #region Delete 
-
-        public static string DeleteQuery(string tableName)
-        {
-            return $@"DELETE FROM {tableName} WHERE ID = @ID";
-        }
+        #region Delete
 
         public static void DeleteExecutor(string tableName, List<int> IDs)
         {
             switch (tableName)
             {
-                case nameof(Olds): Delete(tableName, IDs); break;
-                case nameof(Parametrs): Delete(tableName, IDs); break;
+                case nameof(MortalityTable): Delete(tableName, IDs); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static void Delete(string tableName, List<int> IDs)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
             { 
-                db.Execute(DeleteQuery(tableName), IDs.Select(x => new { Id = x }).ToArray()); 
+                db.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray()); 
             }
         }
 
@@ -98,9 +63,7 @@ namespace Van.DataBase
         {
             switch (tableName)
             {
-                case nameof(Olds): return $@"INSERT INTO {tableName}(Old) VALUES (@Old);  select last_insert_rowid()";
-                case nameof(Parametrs): return $@"INSERT INTO {tableName}(Name) VALUES (@Name);  select last_insert_rowid()";
-
+                case nameof(MortalityTable): return MortalityTableQuery.InsertQuery;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -109,15 +72,14 @@ namespace Van.DataBase
         {
             switch (tableName)
             {
-                case nameof(Olds): return Insert(InsertQuery(tableName), item);
-                case nameof(Parametrs): return Insert(InsertQuery(tableName), item);
+                case nameof(MortalityTable): return Insert(InsertQuery(tableName), item);
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static int Insert(string query, object item)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
             {
                 return db.ExecuteScalar<int>(query, item);
             }
@@ -131,9 +93,7 @@ namespace Van.DataBase
         {
             switch (tableName)
             {
-                case nameof(Olds): return $@"UPDATE {tableName} SET Old = @Old WHERE ID = {ID}";
-                case nameof(Parametrs): return $@"UPDATE {tableName} SET Name = @Name WHERE ID = {ID}";
-
+                case nameof(MortalityTable): return MortalityTableQuery.UpdateQuery(ID);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -142,15 +102,14 @@ namespace Van.DataBase
         {
             switch (tableName)
             {
-                case nameof(Olds): Update(UpdateQuery(tableName, ID), row.ToObject<Olds>()); break;
-                case nameof(Parametrs): Update(UpdateQuery(tableName, ID), row.ToObject<Parametrs>()); break;
+                case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
                 default: throw new Exception("Не верная таблица");
             }
         } 
 
         public static void Update(string query, object item)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
             {
                 db.Execute(query, item);
             }
@@ -165,7 +124,15 @@ namespace Van.DataBase
             PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(T));
             DataTable table = new DataTable();
             foreach (PropertyDescriptor prop in properties)
-                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            {
+                DataColumn column = new DataColumn(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType)
+                {
+                    Caption = string.IsNullOrEmpty(prop.Description) ? prop.Name : prop.Description
+                };
+
+                table.Columns.Add(column); 
+            } 
+
             foreach (T item in data)
             {
                 DataRow row = table.NewRow();
@@ -174,7 +141,7 @@ namespace Van.DataBase
                 table.Rows.Add(row);
             }
             return table;
-        }
+        } 
 
         public static T ToObject<T>(this DataRow row) where T : new()
         {
@@ -183,7 +150,7 @@ namespace Van.DataBase
             {
                 if (row.Table.Columns.Contains(property.Name) && property.CanWrite && property.DeclaringType != typeof(ModelClass))
                 {
-                    property.SetValue(obj, row[property.Name]);
+                    property.SetValue(obj, row[property.Name] == DBNull.Value ? null : row[property.Name]);
                 }
             }
 

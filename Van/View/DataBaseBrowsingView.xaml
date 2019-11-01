@@ -52,17 +52,22 @@
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <DataGrid Grid.Row="0" Background="{x:Null}" 
-                        AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        x:Name="DataGrid" EnableRowVirtualization="True" EnableColumnVirtualization="True" ScrollViewer.CanContentScroll="True" 
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                        GridLinesVisibility="None" HeadersVisibility="Column" 
-                        CanUserAddRows="False" CanUserDeleteRows="False"
-                        ItemsSource="{Binding TableData, Mode=TwoWay}"
-                        SelectionUnit="FullRow"  
-                        ColumnWidth="*"
-                        MinColumnWidth="100"
-                        CanUserSortColumns="False">
+                          AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                          x:Name="DataGrid" 
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          ItemsSource="{Binding TableData, Mode=TwoWay}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
                     <DataGrid.Resources>
                         <Style TargetType="DataGridRow">
                             <Style.Triggers>

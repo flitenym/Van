@@ -64,7 +64,7 @@
                              Duration="0:0:0.3">
             </DoubleAnimation>
         </Storyboard>
-    </Window.Resources>
+    </Window.Resources> 
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
@@ -113,7 +113,7 @@
                                            IsHyphenationEnabled="True"
                                            Style="{StaticResource MaterialDesignTitleTextBlock}"
                                            TextWrapping="Wrap"/>
-                                <Thumb dragablz:DragablzItem.IsCustomThumb="True"  Height="80" />
+                                <Thumb dragablz:DragablzItem.IsCustomThumb="True" Height="80" />
                                 <Grid.InputBindings>
                                     <MouseBinding MouseAction="MiddleClick" Command="dragablz:TabablzControl.CloseItemCommand"/>
                                 </Grid.InputBindings>
