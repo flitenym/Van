@@ -105,7 +105,16 @@ namespace Van.DataBase
                 case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
                 default: throw new Exception("Не верная таблица");
             }
-        } 
+        }
+
+        public static void UpdateExecutor(string tableName, object item, int ID)
+        {
+            switch (tableName)
+            {
+                case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), item); break;
+                default: throw new Exception("Не верная таблица");
+            }
+        }
 
         public static void Update(string query, object item)
         {

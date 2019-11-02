@@ -103,6 +103,7 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
                     <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -127,6 +128,15 @@
                         Width="250"
                         Content="Вычислить параметры"
                         Command="{Binding CalculateCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+                <Button Grid.Row="5" 
+                        Grid.ColumnSpan="2" 
+                        HorizontalAlignment="Center" 
+                        Width="250"
+                        Content="Вычислить число умерших d(x)"
+                        Command="{Binding CalculateNumberOfDeadCommand}" 
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>

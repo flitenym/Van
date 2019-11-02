@@ -25,13 +25,46 @@ namespace Van.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+        public TestViewModel()
+        {
+            Loading(true);
+            Task.Factory.StartNew(() =>
+                    Select()
+            );
+            Loading(false);
+        }
+
         public List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+
         public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 }; 
+
         public double epsilon = 0.01;
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> YFormatter { get; set; }
+
+        public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
+
+        #region Таблица смертности
+
+        private DataTable mortalityTable;
+
+        public DataTable MortalityTable
+        {
+            get { return mortalityTable; }
+            set
+            {
+                if (value == null) return;
+                mortalityTable = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTable)));
+            }
+        }
+
+        #endregion
 
         #region Weibull
 
-        public void Weibull() { 
+        private void Weibull() { 
             Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
             WeibullValue = weibull.lambda(); 
         } 
@@ -52,7 +85,7 @@ namespace Van.ViewModel
 
         #region Exponential
 
-        public void Exponential()
+        private void Exponential()
         { 
             Exponential exponential = new Exponential(t, delta);
             ExponentialValue = exponential.lambda(); 
@@ -74,7 +107,7 @@ namespace Van.ViewModel
 
         #region Relay
 
-        public void Relay()
+        private void Relay()
         { 
             Relay relay = new Relay(t, delta);
             RelayValue = relay.lambda(); 
@@ -96,7 +129,7 @@ namespace Van.ViewModel
 
         #region Gompertz
 
-        public void Gompertz()
+        private void Gompertz()
         { 
             Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
             GompertzValue = gompertz.lambda(); 
@@ -114,7 +147,9 @@ namespace Van.ViewModel
             }
         }
 
-        #endregion 
+        #endregion
+
+        #region Комманда для вычисления параметров
 
         private RelayCommand calculateCommand;
         public RelayCommand CalculateCommand
@@ -131,28 +166,55 @@ namespace Van.ViewModel
             }
         }
 
-        public void CalculateParametrs()
+        private void CalculateParametrs()
         {
             Loading(true);
             Gompertz();
             Relay();
             Exponential();
             Weibull();
+            Message("Параметры вычислены");
             Loading(false);
         }
 
-        private DataTable mortalityTable;
+        #endregion
 
-        public DataTable MortalityTable
+        #region Комманда для вычисления числа умерших d(x)    
+
+        private RelayCommand calculateNumberOfDeadCommand;
+        public RelayCommand CalculateNumberOfDeadCommand
         {
-            get { return mortalityTable; }
-            set
+            get
             {
-                if (value == null) return;
-                mortalityTable = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTable)));
+                return calculateNumberOfDeadCommand ??
+                  (calculateNumberOfDeadCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                            CalculateNumberOfDead()
+                      );
+                  }));
             }
         }
+
+        public void CalculateNumberOfDead()
+        {
+            Loading(true);
+
+            int mortalityTableCount = currentMortalityTables.Count() - 1;
+
+            for (int i = 0; i < mortalityTableCount; i++)
+            {
+                currentMortalityTables[i].NumberOfDead = currentMortalityTables[i].NumberOfSurvivors - currentMortalityTables[i + 1].NumberOfSurvivors;
+            }
+            currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
+
+            Message("d(x) вычислено, чтобы посмотреть результаты обновите таблицу");
+            Loading(false);
+        }
+
+        #endregion
+
+        #region Комманда для обновления таблицы (используется после вычислений)
 
         private RelayCommand updateMortalityCommand;
         public RelayCommand UpdateMortalityCommand
@@ -162,33 +224,42 @@ namespace Van.ViewModel
                 return updateMortalityCommand ??
                   (updateMortalityCommand = new RelayCommand(x =>
                   {
-                      SelectTable();
+                      Task.Factory.StartNew(() =>
+                          UpdateTable()
+                      );
                   }));
             }
-        } 
-
-        public TestViewModel()
-        {
-            SelectTable();
         }
 
-        private void SelectTable() {
-            Task.Factory.StartNew(() =>
-                    Select()
-            );
-        }
-
-        private void Select()
+        public void UpdateTable()
         {
             Loading(true);
-            MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
-            MortalityTable.AcceptChanges();
+
+            //Обновим в БД данные исходя из текущего списка
+            Update(); 
+            //обновим таблицу через БД
+            Select();
+
+            Message("Таблица обновлена");
             Loading(false);
         }
 
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> YFormatter { get; set; }
+
+        private void Update() {
+            foreach (var MortalityTable in currentMortalityTables)
+            {
+                SQLExecutor.UpdateExecutor(nameof(MortalityTable), MortalityTable, MortalityTable.ID);
+            }
+        }
+
+        private void Select()
+        { 
+            MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
+            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
+            MortalityTable.AcceptChanges();
+        }
+
+        #endregion
 
     }
 }
