@@ -22,7 +22,7 @@
                   Background="{x:Null}"
                   HorizontalAlignment="Stretch" 
                   VerticalAlignment="Stretch" 
-                  x:Name="DataGrid" 
+                  x:Name="MortalityTableDataGrid" 
                   EnableRowVirtualization="True" 
                   EnableColumnVirtualization="False" 
                   ScrollViewer.CanContentScroll="True" 
@@ -33,7 +33,7 @@
                   CanUserAddRows="False" 
                   CanUserDeleteRows="False"
                   IsReadOnly="True"
-                  ItemsSource="{Binding MortalityTable, Mode=TwoWay}" 
+                  ItemsSource="{Binding MortalityTableData, Mode=TwoWay}" 
                   SelectionUnit="FullRow" 
                   ColumnWidth="*"
                   CanUserSortColumns="True">
@@ -100,9 +100,7 @@
                     Foreground="{DynamicResource PreWindowButtonForeground}"
                     Style="{DynamicResource MaterialDesignRaisedButton}" >
             </Button>
-            <Grid Height="15">
-                <Separator VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-            </Grid>
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" />
             <Grid Height="Auto">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
@@ -147,18 +145,116 @@
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
+            </Grid>
+            
+            <Expander Background="Transparent" Header="Функция выживания s(t)" Margin="5"> 
+                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
+                    <DataGrid Height="500"
+                          x:Name="SurvivalFunctionTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding SurvivalFunctionTable, Mode=TwoWay}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource DataGridRowSelected}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Style.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </MultiTrigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </MultiTrigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value=".56"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                                <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+                    </DataGrid>
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Top" >
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
-            </Grid>
-            <Grid Height="300" Margin="5">
-                <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" >
-                    <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                    </lvc:CartesianChart.AxisY>
-                    <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
-                    </lvc:CartesianChart.AxisX>
-                </lvc:CartesianChart>
-            </Grid>
+            <Expander Background="Transparent" Header="Плотность f(t)" Margin="5">
+                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Top" >
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
         </StackPanel>
     </ScrollViewer>
 

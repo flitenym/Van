@@ -47,7 +47,10 @@
     <!-- Фон у выплывающего сообщения снизу -->
     <SolidColorBrush x:Key="SnackBarBackGround" Color="{StaticResource DarkGray}" />
     <!-- Бордеры у Window, сами Rectangle -->
-    <SolidColorBrush x:Key="RectangleBackGround" Color="{StaticResource DarkBlue}" />  
+    <SolidColorBrush x:Key="RectangleBackGround" Color="{StaticResource DarkBlue}" />
+    <!-- Цвет разделителя -->
+    <SolidColorBrush x:Key="SeparatorBackGround" Color="{StaticResource Gray}" />
+
 
 
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">

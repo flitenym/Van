@@ -14,6 +14,7 @@ using System.Messaging;
 using MaterialDesignThemes.Wpf;
 using ITheme = Van.Interfaces.ITheme;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace Van.ViewModel
 {
@@ -266,9 +267,12 @@ namespace Van.ViewModel
                     {
                         var Node = (Node)obj;
                         if (Node != null)
-                        {
-                            AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
-                            Node.Selected = false;
+                        { 
+                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
+                                Node.Selected = false;
+                            }));  
                         }
                     }));
             }

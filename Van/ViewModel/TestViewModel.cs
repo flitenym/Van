@@ -29,8 +29,13 @@ namespace Van.ViewModel
         {
             Loading(true);
             Task.Factory.StartNew(() =>
-                    Select()
+                    SelectMortality()
             );
+
+            Task.Factory.StartNew(() =>
+                    SelectSurvivalFunction()
+            ); 
+
             Loading(false);
         }
 
@@ -45,18 +50,20 @@ namespace Van.ViewModel
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
+        public List<SurvivalFunction> currentSurvivalFunctions = new List<SurvivalFunction>();
+
         #region Таблица смертности
 
-        private DataTable mortalityTable;
+        private DataTable mortalityTableData;
 
-        public DataTable MortalityTable
+        public DataTable MortalityTableData
         {
-            get { return mortalityTable; }
+            get { return mortalityTableData; }
             set
             {
                 if (value == null) return;
-                mortalityTable = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTable)));
+                mortalityTableData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTableData)));
             }
         }
 
@@ -190,22 +197,22 @@ namespace Van.ViewModel
                   (calculateDataCommand = new RelayCommand(x =>
                   {
                       Task.Factory.StartNew(() =>
-                            CalculateData()
+                            CalculateMortality()
                       );
                   }));
             }
         }
 
-        public void CalculateData()
+        public void CalculateMortality()
         {
             Loading(true); 
             
             //обновим таблицу через БД
-            Select(false);
+            SelectMortality(false);
 
             if (currentMortalityTables.Count() < 2)
             {
-                Select();
+                SelectMortality();
                 Message("Слишком мало данных");
                 Loading(false);
                 return;
@@ -216,9 +223,9 @@ namespace Van.ViewModel
             CalculateProbability();
 
             //Обновим в БД данные исходя из текущего списка
-            Update(); 
+            UpdateMortality(); 
             //обновим таблицу через БД
-            Select();
+            SelectMortality();
 
             Message("Вычисление прошло успешно");
             Loading(false);
@@ -255,43 +262,71 @@ namespace Van.ViewModel
                   (updateMortalityCommand = new RelayCommand(x =>
                   {
                       Task.Factory.StartNew(() =>
-                          UpdateTable()
+                          UpdateMortalityTable()
                       );
                   }));
             }
         }
 
-        public void UpdateTable()
+        public void UpdateMortalityTable()
         {
             Loading(true);
 
             //обновим таблицу через БД
-            Select();
+            SelectMortality();
 
             Message("Таблица обновлена");
             Loading(false);
         }
 
 
-        private void Update() {
+        private void UpdateMortality() {
             foreach (var MortalityTable in currentMortalityTables)
             {
                 SQLExecutor.UpdateExecutor(nameof(MortalityTable), MortalityTable, MortalityTable.ID);
             }
         }
 
-        private void Select(bool needTableRefresh = true)
+        private void SelectMortality(bool needTableRefresh = true)
         {
             if (needTableRefresh)
             {
-                MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
-                MortalityTable.AcceptChanges();
+                MortalityTableData = SQLExecutor.SelectExecutor(nameof(MortalityTable));
+                MortalityTableData.AcceptChanges();
             }
 
             currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList(); 
         }
 
         #endregion
+
+        #region Функция выживания s(t)
+
+        private DataTable survivalFunctionTable;
+
+        public DataTable SurvivalFunctionTable
+        {
+            get { return survivalFunctionTable; }
+            set
+            {
+                if (value == null) return;
+                survivalFunctionTable = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionTable)));
+            }
+        }
+
+        #endregion
+
+        private void SelectSurvivalFunction(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                SurvivalFunctionTable = SQLExecutor.SelectExecutor(nameof(SurvivalFunction));
+                SurvivalFunctionTable.AcceptChanges();
+            }
+
+            currentSurvivalFunctions = SQLExecutor.Select<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
+        }
 
     }
 }

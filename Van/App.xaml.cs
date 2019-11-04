@@ -28,7 +28,7 @@ namespace Van
             {  
                 this.Dispatcher.Invoke(async () =>
                 { 
-                    await Task.Delay(TimeSpan.FromSeconds(1.5));  
+                    await Task.Delay(TimeSpan.FromSeconds(2.5));  
                     var mainWindow = new MainWindowView();
                     var vm = new MainWindowViewModel(); 
                     mainWindow.DataContext = vm;
