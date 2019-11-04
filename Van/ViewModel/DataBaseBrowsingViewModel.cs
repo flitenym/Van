@@ -84,6 +84,24 @@ namespace Van.ViewModel
             Loading(false);
         }
 
+        
+
+        private RelayCommand refreshCommand;
+
+        public RelayCommand RefreshCommand
+        {
+            get
+            {
+                return refreshCommand ??
+                  (refreshCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                          Select()
+                      );
+                  }));
+            }
+        }
+
         private RelayCommand deleteRowCommand;
 
         public RelayCommand DeleteRowCommand

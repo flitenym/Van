@@ -198,7 +198,10 @@ namespace Van.ViewModel
 
         public void CalculateNumberOfDead()
         {
-            Loading(true);
+            Loading(true); 
+            
+            //обновим таблицу через БД
+            Select(false);
 
             int mortalityTableCount = currentMortalityTables.Count() - 1;
 
@@ -208,7 +211,13 @@ namespace Van.ViewModel
             }
             currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
 
-            Message("d(x) вычислено, чтобы посмотреть результаты обновите таблицу");
+            //Обновим в БД данные исходя из текущего списка
+            Update();
+
+            //обновим таблицу через БД
+            Select();
+
+            Message("d(x) вычислено");
             Loading(false);
         }
 
@@ -235,8 +244,6 @@ namespace Van.ViewModel
         {
             Loading(true);
 
-            //Обновим в БД данные исходя из текущего списка
-            Update(); 
             //обновим таблицу через БД
             Select();
 
@@ -252,11 +259,15 @@ namespace Van.ViewModel
             }
         }
 
-        private void Select()
-        { 
-            MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
-            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
-            MortalityTable.AcceptChanges();
+        private void Select(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                MortalityTable = SQLExecutor.SelectExecutor(nameof(MortalityTable));
+                MortalityTable.AcceptChanges();
+            }
+
+            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList(); 
         }
 
         #endregion

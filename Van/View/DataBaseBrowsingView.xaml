@@ -119,6 +119,15 @@
                     <Button Width="auto"
                         Height="auto"  
                         VerticalAlignment="Center" 
+                        ToolTip="Обновить данные"
+                        Command="{Binding RefreshCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="Refresh" Width="30" Height="Auto"/>
+                    </Button>
+                    <Button Width="auto"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
                         ToolTip="Сохранить изменения"
                         Command="{Binding UpdateRowCommand}"
                         Foreground="{DynamicResource PreWindowButtonForeground}"
