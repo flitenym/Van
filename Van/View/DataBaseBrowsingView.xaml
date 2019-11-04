@@ -102,8 +102,15 @@
                             </Style.Triggers>
                         </Style> 
                         <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                            <Setter Property="Background" Value="{DynamicResource DataGridBackground}" /> 
                             <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />

@@ -181,28 +181,50 @@ namespace Van.ViewModel
 
         #region Комманда для вычисления числа умерших d(x)    
 
-        private RelayCommand calculateNumberOfDeadCommand;
-        public RelayCommand CalculateNumberOfDeadCommand
+        private RelayCommand calculateDataCommand;
+        public RelayCommand CalculateDataCommand
         {
             get
             {
-                return calculateNumberOfDeadCommand ??
-                  (calculateNumberOfDeadCommand = new RelayCommand(x =>
+                return calculateDataCommand ??
+                  (calculateDataCommand = new RelayCommand(x =>
                   {
                       Task.Factory.StartNew(() =>
-                            CalculateNumberOfDead()
+                            CalculateData()
                       );
                   }));
             }
         }
 
-        public void CalculateNumberOfDead()
+        public void CalculateData()
         {
             Loading(true); 
             
             //обновим таблицу через БД
             Select(false);
 
+            if (currentMortalityTables.Count() < 2)
+            {
+                Select();
+                Message("Слишком мало данных");
+                Loading(false);
+                return;
+            }
+
+            CalculateNumberOfDead();
+
+            CalculateProbability();
+
+            //Обновим в БД данные исходя из текущего списка
+            Update(); 
+            //обновим таблицу через БД
+            Select();
+
+            Message("Вычисление прошло успешно");
+            Loading(false);
+        }
+
+        private void CalculateNumberOfDead() {
             int mortalityTableCount = currentMortalityTables.Count() - 1;
 
             for (int i = 0; i < mortalityTableCount; i++)
@@ -210,15 +232,14 @@ namespace Van.ViewModel
                 currentMortalityTables[i].NumberOfDead = currentMortalityTables[i].NumberOfSurvivors - currentMortalityTables[i + 1].NumberOfSurvivors;
             }
             currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
+        }
 
-            //Обновим в БД данные исходя из текущего списка
-            Update();
-
-            //обновим таблицу через БД
-            Select();
-
-            Message("d(x) вычислено");
-            Loading(false);
+        private void CalculateProbability()
+        { 
+            foreach (var mortalityTable in currentMortalityTables)
+            {
+                mortalityTable.Probability = (double?)mortalityTable.NumberOfDead / (double)currentMortalityTables.FirstOrDefault()?.NumberOfSurvivors;
+            }
         }
 
         #endregion

@@ -74,6 +74,13 @@
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
                         <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
@@ -135,8 +142,8 @@
                         Grid.ColumnSpan="2" 
                         HorizontalAlignment="Center" 
                         Width="250"
-                        Content="Вычислить число умерших d(x)"
-                        Command="{Binding CalculateNumberOfDeadCommand}" 
+                        Content="Вычислить данные"
+                        Command="{Binding CalculateDataCommand}" 
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>

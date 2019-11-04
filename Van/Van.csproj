@@ -136,7 +136,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataBase\ModelTitleAttribute.cs" />
+    <Compile Include="DataBase\Models\SurvivalFunction.cs" />
+    <Compile Include="DataBase\ModelClassAttribute.cs" />
     <Compile Include="DataBase\ModelClass.cs" />
     <Compile Include="DataBase\Models\MortalityTable.cs" />
     <Compile Include="DataBase\SQLExecutor.cs" />

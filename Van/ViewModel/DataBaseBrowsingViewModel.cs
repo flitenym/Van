@@ -19,11 +19,66 @@ namespace Van.ViewModel
         public DataBaseBrowsingViewModel()
         { 
             TableData = new DataTable();
+
             var models = StaticReflectionHelper.GetAllInstancesOf<ModelClass>().ToList();
             models.ForEach(x => x.Title = GetModelTitleAttribute(x));
+            models.ForEach(x => x.CanInsert = GetModelCanInsertAttribute(x));
+            models.ForEach(x => x.CanDelete = GetModelCanDeleteAttribute(x));
+            models.ForEach(x => x.CanUpdate = GetModelCanUpdateAttribute(x));
+
             DatabaseModels = new ObservableCollection<ModelClass>(models);
             SelectedModel = DatabaseModels.FirstOrDefault();
         }
+
+        /// <summary>
+        /// Взять название из атрибута чтобы отобразить корректно для пользователя
+        /// </summary>
+        private string GetModelTitleAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                if (myAttribute.TableTitle != null)
+                    return myAttribute.TableTitle;
+            }
+            return model.GetType().Name;
+        }
+         
+        private bool GetModelCanInsertAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                return myAttribute.CanInsert;
+            }
+            return true;
+        }
+
+        private bool GetModelCanUpdateAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                return myAttribute.CanUpdate;
+            }
+            return true;
+        }
+
+        private bool GetModelCanDeleteAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                return myAttribute.CanDelete;
+            }
+            return true;
+        }
+
+        #region Отображение данных в таблице
 
         private DataTable tableData;
 
@@ -36,7 +91,11 @@ namespace Van.ViewModel
                 tableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
             }
-        } 
+        }
+
+        #endregion
+
+        #region Все модели которые необходимо отобразить
 
         private ObservableCollection<ModelClass> databaseModels = new ObservableCollection<ModelClass>();
 
@@ -48,22 +107,18 @@ namespace Van.ViewModel
                 databaseModels = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(DatabaseModels)));
             }
-        } 
-
-        private ModelClass selectedModel;
-
-        private string SelectedModelName => SelectedModel.GetType().Name; 
-
-        private string GetModelTitleAttribute(object model) {
-            var customAttributes = (ModelTitleAttribute[])model.GetType().GetCustomAttributes(typeof(ModelTitleAttribute), true);
-            if (customAttributes.Length > 0)
-            {
-                var myAttribute = customAttributes[0];
-                return myAttribute.TableTitle; 
-            }
-            return string.Empty;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Название выбранной таблицы
+        /// </summary>
+        private string SelectedModelName => SelectedModel.GetType().Name;
+
+        #region Выбранная модель (таблица)
+
+        private ModelClass selectedModel;
         public ModelClass SelectedModel
         {
             get { return selectedModel; }
@@ -76,15 +131,9 @@ namespace Van.ViewModel
             }
         }
 
-        private void Select() {
-            Loading(true);
-            TableData = SQLExecutor.SelectExecutor(SelectedModelName);
-            TableData.AcceptChanges();
-            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
-            Loading(false);
-        }
+        #endregion
 
-        
+        #region Обновление данных из БД, по сути Select
 
         private RelayCommand refreshCommand;
 
@@ -102,6 +151,19 @@ namespace Van.ViewModel
             }
         }
 
+        private void Select()
+        {
+            Loading(true);
+            TableData = SQLExecutor.SelectExecutor(SelectedModelName);
+            TableData.AcceptChanges();
+            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
+            Loading(false);
+        }
+
+        #endregion
+
+        #region Удаление выделенных строк
+
         private RelayCommand deleteRowCommand;
 
         public RelayCommand DeleteRowCommand
@@ -116,8 +178,13 @@ namespace Van.ViewModel
                           var selectedItemsCollection = ((IList)obj).Cast<DataRowView>();
                           DeleteRows(selectedItemsCollection.ToList());
                       }
-                  }));
+                  }, CanDelete));
             }
+        }
+
+        private bool CanDelete(object x)
+        {
+            return SelectedModel.CanDelete;
         }
 
         public void DeleteRows(IList<DataRowView> selectedItems)
@@ -155,6 +222,10 @@ namespace Van.ViewModel
 
         }
 
+        #endregion
+
+        #region Добавление новой строки
+
         private RelayCommand insertRowCommand;
         public RelayCommand InsertRowCommand
         {
@@ -164,8 +235,12 @@ namespace Van.ViewModel
                   (insertRowCommand = new RelayCommand(x =>
                   { 
                         InsertRows(); 
-                  }));
+                  }, CanInsert));
             }
+        }
+
+        private bool CanInsert(object x) {
+            return SelectedModel.CanInsert;
         }
 
         public void InsertRows()
@@ -201,6 +276,10 @@ namespace Van.ViewModel
             }
         }
 
+        #endregion
+
+        #region Применение изменений
+
         private RelayCommand updateRowCommand;
         public RelayCommand UpdateRowCommand
         {
@@ -212,8 +291,13 @@ namespace Van.ViewModel
                       Task.Factory.StartNew(() =>
                           UpdateRows()
                       );
-                  }));
+                  }, CanUpdate));
             }
+        }
+
+        private bool CanUpdate(object x)
+        {
+            return SelectedModel.CanUpdate;
         }
 
         public void UpdateRows()
@@ -234,6 +318,8 @@ namespace Van.ViewModel
             Message("Изменения сохранены");
             Loading(false);
         }
+
+        #endregion
 
     }
 }

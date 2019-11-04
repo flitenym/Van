@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Van.DataBase.Models
 {
-    [ModelTitle(TableTitle = "Таблица выживаемости")]
+    [ModelClass(TableTitle = "Таблица выживаемости")]
     public class MortalityTable : ModelClass
     {
         [Write(false)]
@@ -20,8 +20,8 @@ namespace Van.DataBase.Models
         [Description("Число умерших")]
         public int? NumberOfDead { get; set; }
 
-        [Description("Число живущих")]
-        public int? NumberOfLiving { get; set; }
+        [Description("Вероятность")]
+        public double? Probability { get; set; }
 
         [Description("Продолжительность жизни")]
         public double? ExpectedDuration { get; set; }
@@ -30,10 +30,10 @@ namespace Van.DataBase.Models
     public static class MortalityTableQuery
     {
         public static string UpdateQuery(int ID) {
-            return $@"UPDATE {nameof(MortalityTable)} SET AgeX = @AgeX, NumberOfSurvivors = @NumberOfSurvivors, NumberOfDead = @NumberOfDead, NumberOfLiving = @NumberOfLiving, ExpectedDuration = @ExpectedDuration WHERE ID = {ID}";
+            return $@"UPDATE {nameof(MortalityTable)} SET AgeX = @AgeX, NumberOfSurvivors = @NumberOfSurvivors, NumberOfDead = @NumberOfDead, Probability = @Probability, ExpectedDuration = @ExpectedDuration WHERE ID = {ID}";
         }
 
-        public static string InsertQuery => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, NumberOfLiving, ExpectedDuration) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @NumberOfLiving, @ExpectedDuration);  select last_insert_rowid()";
+        public static string InsertQuery => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, Probability, ExpectedDuration) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @Probability, @ExpectedDuration);  select last_insert_rowid()";
     }
 
 

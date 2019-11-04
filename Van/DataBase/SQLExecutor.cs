@@ -23,6 +23,7 @@ namespace Van.DataBase
         public static DataTable SelectExecutor(string tableName) {
             switch (tableName) {
                 case nameof(MortalityTable): return Select<MortalityTable>($"SELECT * FROM {tableName}").ToDataTable();
+                case nameof(SurvivalFunction): return Select<SurvivalFunction>($"SELECT * FROM {tableName}").ToDataTable();
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -43,6 +44,7 @@ namespace Van.DataBase
             switch (tableName)
             {
                 case nameof(MortalityTable): Delete(tableName, IDs); break;
+                case nameof(SurvivalFunction): Delete(tableName, IDs); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -94,6 +96,7 @@ namespace Van.DataBase
             switch (tableName)
             {
                 case nameof(MortalityTable): return MortalityTableQuery.UpdateQuery(ID);
+                case nameof(SurvivalFunction): return SurvivalFunctionQuery.UpdateQuery(ID);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -103,17 +106,14 @@ namespace Van.DataBase
             switch (tableName)
             {
                 case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
+                case nameof(SurvivalFunction): Update(UpdateQuery(tableName, ID), row.ToObject<SurvivalFunction>()); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static void UpdateExecutor(string tableName, object item, int ID)
         {
-            switch (tableName)
-            {
-                case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), item); break;
-                default: throw new Exception("Не верная таблица");
-            }
+            Update(UpdateQuery(tableName, ID), item);
         }
 
         public static void Update(string query, object item)

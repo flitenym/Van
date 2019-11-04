@@ -59,7 +59,13 @@ namespace Van.Helper
 
         public static void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            if (e.PropertyName == "ID" || e.PropertyName == "Title")
+            // В случае если референсы или сами ID то будем скрывать, они не нужны пользователю
+            if (e.PropertyName == "ID" || 
+                e.PropertyName.EndsWith("ID") || 
+                e.PropertyName == "Title" ||
+                e.PropertyName == "CanInsert" ||
+                e.PropertyName == "CanUpdate" ||
+                e.PropertyName == "CanDelete")
             {
                 e.Column.Visibility = Visibility.Collapsed;
             }

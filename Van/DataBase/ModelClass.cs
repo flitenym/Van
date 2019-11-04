@@ -6,9 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Van.DataBase
-{ 
+{
     public abstract class ModelClass
     { 
         public string Title { get; set; }
+
+        public bool CanInsert { get; set; }
+
+        public bool CanDelete { get; set; }
+
+        public bool CanUpdate { get; set; } 
     }
 }
