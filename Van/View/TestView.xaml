@@ -92,62 +92,41 @@
                     </Style>
                 </DataGrid.Resources>
             </DataGrid>
-            <Button Height="35"
-                    Width="250"
-                    HorizontalAlignment="Center" 
-                    Content="Обновить таблицу"
-                    Command="{Binding UpdateMortalityCommand}" 
-                    Foreground="{DynamicResource PreWindowButtonForeground}"
-                    Style="{DynamicResource MaterialDesignRaisedButton}" >
-            </Button>
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" />
-            <Grid Height="Auto">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                    <RowDefinition Height="50" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Вейбулла:" HorizontalAlignment="Left"/>
-                <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding WeibullValue}" Foreground="{DynamicResource WindowForeground}"/> 
-                
-                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Экспоненциальное распределение:" HorizontalAlignment="Left"/>
-                <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding ExponentialValue}" Foreground="{DynamicResource WindowForeground}"/> 
-                
-                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Рэлея:" HorizontalAlignment="Left"/>
-                <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding RelayValue}" Foreground="{DynamicResource WindowForeground}"/> 
-                
-                <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Распределение Гомпертца:" HorizontalAlignment="Left"/>
-                <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding GompertzValue}" Foreground="{DynamicResource WindowForeground}"/>
-
-                <Button Grid.Row="4" 
-                        Grid.ColumnSpan="2" 
-                        HorizontalAlignment="Center" 
-                        Width="250"
-                        Content="Вычислить параметры"
-                        Command="{Binding CalculateCommand}" 
+            <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="250" 
+                        Margin="5"
+                        Content="Обновить таблицу"
+                        Command="{Binding UpdateMortalityCommand}" 
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
-                <Button Grid.Row="5" 
-                        Grid.ColumnSpan="2" 
-                        HorizontalAlignment="Center" 
-                        Width="250"
+                <Button Width="250"
+                        Margin="5"
                         Content="Вычислить данные"
                         Command="{Binding CalculateDataCommand}" 
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
-            </Grid>
+            </StackPanel>
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" /> 
             
-            <Expander Background="Transparent" Header="Функция выживания s(t)" Margin="5"> 
+            <Expander Background="Transparent" >
+                <Expander.Header> 
+                    <Grid Height="35">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Функция выживания s(t)" />
+                        <Button Grid.Column="1" 
+                                Width="auto"
+                                Height="auto" 
+                                ToolTip="Пересчитать функции выживаний s(t)"
+                                Style="{DynamicResource ButtonZoom}">
+                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
+                        </Button>
+                    </Grid>
+                </Expander.Header> 
                 <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
                     <DataGrid Height="500"
                           x:Name="SurvivalFunctionTableDataGrid"
@@ -238,7 +217,23 @@
             
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
-            <Expander Background="Transparent" Header="Плотность f(t)" Margin="5">
+            <Expander Background="Transparent" >
+                <Expander.Header>
+                    <Grid Height="35">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Плотность f(t)" /> 
+                        <Button Grid.Column="1" 
+                                Width="auto"
+                                Height="auto" 
+                                ToolTip="Пересчитать плотность f(t)"
+                                Style="{DynamicResource ButtonZoom}">
+                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
+                        </Button>
+                    </Grid>
+                </Expander.Header>
                 <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
                         <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Top" >
