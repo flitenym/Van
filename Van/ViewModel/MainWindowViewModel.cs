@@ -203,10 +203,12 @@ namespace Van.ViewModel
         {
             get { return _SelectedTheme; }
             set
-            {
-                _SelectedTheme = null;
-                if (value == _SelectedTheme) return;
-                if (_SelectedTheme != null) _SelectedTheme.Deactivate();
+            { 
+                if (value == _SelectedTheme) 
+                    return;
+                if (_SelectedTheme != null) 
+                    _SelectedTheme.Deactivate();
+
                 _SelectedTheme = value;
                 _SelectedTheme.SelectTheme();
             }
@@ -221,10 +223,12 @@ namespace Van.ViewModel
         {
             get { return _SelectedThemeDarkOrLight; }
             set
-            {
-                _SelectedThemeDarkOrLight = null;
-                if (value == _SelectedThemeDarkOrLight) return;
-                if (_SelectedThemeDarkOrLight != null) _SelectedThemeDarkOrLight.Deactivate();
+            { 
+                if (value == _SelectedThemeDarkOrLight)
+                    return;
+                if (_SelectedThemeDarkOrLight != null)
+                    _SelectedThemeDarkOrLight.Deactivate();
+
                 _SelectedThemeDarkOrLight = value;
                 _SelectedThemeDarkOrLight.SelectTheme();
             }

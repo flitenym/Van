@@ -78,6 +78,7 @@ namespace Van.ViewModel
             else
             {
                 Message("Тема уже применена");
+                var x = Application.Current.Resources;
             }
         }
 
