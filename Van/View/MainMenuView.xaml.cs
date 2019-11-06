@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class MainMenuView : UserControl
+    public partial class MainMenuView : UserControl, IDisposable
     {
         public MainMenuView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

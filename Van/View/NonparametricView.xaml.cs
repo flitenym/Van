@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class NonparametricView : UserControl
+    public partial class NonparametricView : UserControl, IDisposable
     {
         public NonparametricView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

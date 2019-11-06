@@ -26,7 +26,7 @@ namespace Van
 
             Task.Factory.StartNew(() =>
             {  
-                this.Dispatcher.Invoke(async () =>
+                this.Dispatcher.Invoke(() =>
                 {  
                     var mainWindow = new MainWindowView();
                     var vm = new MainWindowViewModel(); 

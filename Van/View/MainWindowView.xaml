@@ -19,7 +19,7 @@
             Foreground="{DynamicResource WindowForeground}"
         >
 
-    <Window.Resources>
+    <Window.Resources> 
         <!--анимация открытия меню-->
         <Storyboard x:Key="OpenLeftMenu" Timeline.DesiredFrameRate="60"> 
             <DoubleAnimation Storyboard.TargetName="GridLeftMenu"
@@ -63,8 +63,11 @@
                              To="5"
                              Duration="0:0:0.3">
             </DoubleAnimation>
-        </Storyboard>
-    </Window.Resources> 
+        </Storyboard> 
+    </Window.Resources>
+
+
+    
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
@@ -111,7 +114,7 @@
                                            TextAlignment="Center" 
                                            Text="{Binding Name}" 
                                            IsHyphenationEnabled="True"
-                                           Style="{StaticResource MaterialDesignTitleTextBlock}"
+                                           Style="{DynamicResource MaterialDesignTitleTextBlock}"
                                            TextWrapping="Wrap"/>
                                 <Thumb dragablz:DragablzItem.IsCustomThumb="True" Height="80" />
                                 <Grid.InputBindings>

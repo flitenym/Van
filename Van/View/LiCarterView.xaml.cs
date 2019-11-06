@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class LiCarterView : UserControl
+    public partial class LiCarterView : UserControl, IDisposable
     {
         public LiCarterView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

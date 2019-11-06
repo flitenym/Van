@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class SurvivalAnalysisMethodsView : UserControl
+    public partial class SurvivalAnalysisMethodsView : UserControl, IDisposable
     {
         public SurvivalAnalysisMethodsView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

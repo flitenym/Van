@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class SemiParametricView : UserControl
+    public partial class SemiParametricView : UserControl, IDisposable
     {
         public SemiParametricView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

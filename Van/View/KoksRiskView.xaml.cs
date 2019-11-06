@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class KoksRiskView : UserControl
+    public partial class KoksRiskView : UserControl, IDisposable
     {
         public KoksRiskView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

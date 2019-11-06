@@ -19,11 +19,16 @@ using static Van.Helper.Helper;
 
 namespace Van.View
 { 
-    public partial class ExcludingMortalityView : UserControl
+    public partial class ExcludingMortalityView : UserControl, IDisposable
     {
         public ExcludingMortalityView()
         {
             InitializeComponent();
-        } 
+        }
+
+        public void Dispose()
+        {
+
+        }
     }
 }
