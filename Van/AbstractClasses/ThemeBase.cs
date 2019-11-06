@@ -30,7 +30,7 @@ namespace Van.AbstractClasses
         public void Deactivate()
         {
             // очищаем коллекцию ресурсов приложения
-            Application.Current.Resources.Clear();
+            Application.Current.Resources.MergedDictionaries.Remove(ResourceDictionary);
         }
 
         public void SelectTheme()

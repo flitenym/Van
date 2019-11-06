@@ -426,8 +426,6 @@ namespace Van.ViewModel
             {
                 clearFolder(path);
             }
-        }
-
-
+        } 
     }
 }
