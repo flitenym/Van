@@ -141,11 +141,11 @@
             </dragablz:TabablzControl>
         </dockablz:Layout>
 
-        <Grid x:Name="GridButtonLeftMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="20">
-            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronRight" Foreground="{DynamicResource WindowForeground}"/>
+        <Grid x:Name="GridButtonLeftMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="22">
+            <materialDesign:PackIcon VerticalAlignment="Center" Width="22" Height="Auto" Kind="PageLast" Foreground="{DynamicResource WindowForeground}"/>
         </Grid>
-        <Grid x:Name="GridButtonRightMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="20" >
-            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ChevronLeft" Foreground="{DynamicResource WindowForeground}"/>
+        <Grid x:Name="GridButtonRightMenu" Background="{DynamicResource LeftRightMenuBackGround}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="22" >
+            <materialDesign:PackIcon VerticalAlignment="Center" Width="22" Height="Auto" Kind="PageFirst" Foreground="{DynamicResource WindowForeground}"/>
         </Grid>
 
 

@@ -46,17 +46,24 @@ namespace CustomControls
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
             StackPanel stackPanel = this.Template.FindName("buttonsStackPanel", this) as StackPanel;
             Button restoreButton = this.Template.FindName("restoreButton", this) as Button;
-            
+            TextBlock titleTextBlock = this.Template.FindName("titleTextBlock", this) as TextBlock;
+            Grid gridResult = this.Template.FindName("gridResult", this) as Grid;  
+
             if (WindowState == WindowState.Maximized)
             {
                 border.Margin = new Thickness(-1, 6, -1, -1);
                 stackPanel.Margin = new Thickness(0, 0, 8, 0);
+                titleTextBlock.Margin = new Thickness(14, 0, 0, 0);
+                gridResult.Margin = new Thickness(7, 2, 7, 8);
                 restoreButton.Content = 2;
+
             }
             else if (WindowState == WindowState.Normal)
             {
                 border.Margin = new Thickness(0);
                 stackPanel.Margin = new Thickness(0, 0, 4, 0);
+                titleTextBlock.Margin = new Thickness(10, 0, 0, 0);
+                gridResult.Margin = new Thickness(5,2,5,5);
                 restoreButton.Content = 1;
             }
         }
