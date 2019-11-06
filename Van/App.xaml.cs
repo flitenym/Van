@@ -27,8 +27,7 @@ namespace Van
             Task.Factory.StartNew(() =>
             {  
                 this.Dispatcher.Invoke(async () =>
-                { 
-                    await Task.Delay(TimeSpan.FromSeconds(2.5));  
+                {  
                     var mainWindow = new MainWindowView();
                     var vm = new MainWindowViewModel(); 
                     mainWindow.DataContext = vm;
@@ -39,6 +38,12 @@ namespace Van
                     {
                         if (vm.SelectedTheme != null)
                             vm.SelectedTheme.Deactivate();
+
+                        if (vm.SelectedThemeDarkOrLight != null)
+                            vm.SelectedThemeDarkOrLight.Deactivate();
+
+                        if (vm.SelectedViewModel != null)
+                            vm.SelectedViewModel.ModuleBaseItem.Deactivate();
                     }; 
                 });
             }); 
