@@ -31,7 +31,7 @@ namespace Van.ViewModel
 
         public ObservableCollection<TabControlViewModel> ViewModels { get; set; } = new ObservableCollection<TabControlViewModel>();
 
-        private IEnumerable<ModuleBase> modules { get; set; }
+        private IList<ModuleBase> modules { get; set; }
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace Van.ViewModel
 
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
 
-            modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x=>x.IsActive);
+            modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x=>x.IsActive).ToList();
 
             var leftMenu = modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
