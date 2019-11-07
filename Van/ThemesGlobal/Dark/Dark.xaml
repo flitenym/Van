@@ -4,11 +4,7 @@
                     xmlns:local="clr-namespace:Van.ThemesGlobal.Dark"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
-                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
-    
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/CustomControls;component/Themes/ControlStyle.xaml" /> 
-    </ResourceDictionary.MergedDictionaries>
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"> 
  
     <Color x:Key="White">#fffafa</Color>
     <Color x:Key="DarkBlue">#2a323b</Color>
