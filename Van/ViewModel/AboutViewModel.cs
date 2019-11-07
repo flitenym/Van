@@ -53,7 +53,7 @@ namespace Van.ViewModel
 
         #region Ссылка для файла
 
-        private string linkData = "https://drive.google.com/uc?export=download&id=1AQP6reucQM3swEZAtRo24ccynE1pm9Q9";
+        private string linkData = "";
         
         public string LinkData
         {

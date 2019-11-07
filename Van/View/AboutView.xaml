@@ -17,13 +17,17 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="400" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="45"/>
+                <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
             <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Grid.Row="0" Grid.Column="0" Text="Ссылка для скачивания" VerticalAlignment="Center" />
-            <TextBox Grid.Row="0" Grid.Column="1" HorizontalScrollBarVisibility="Auto" Text="{Binding LinkData}" />
+            <TextBox Grid.Row="0" 
+                     Grid.Column="1"
+                     Text="{Binding LinkData}" 
+                     materialDesign:HintAssist.Hint="Ссылка" AcceptsReturn="True"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
         </Grid>
         <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
             <Grid.RowDefinitions>
