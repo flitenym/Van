@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Shapes;
 
-namespace CustomControls
+namespace Van.Controls
 {
     public class WindowControl : Window
     {

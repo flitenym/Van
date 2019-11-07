@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Van", "Van\Van.csproj", "{1B240007-13C5-47C8-9A7B-F128E81B7BBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControls", "CustomControls\CustomControls.csproj", "{98701113-C470-4C43-BD7F-9E10DFA8AFDC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{1B240007-13C5-47C8-9A7B-F128E81B7BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B240007-13C5-47C8-9A7B-F128E81B7BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B240007-13C5-47C8-9A7B-F128E81B7BBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98701113-C470-4C43-BD7F-9E10DFA8AFDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

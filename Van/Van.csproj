@@ -136,6 +136,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\WindowControl.cs" />
     <Compile Include="DataBase\Models\SurvivalFunction.cs" />
     <Compile Include="DataBase\ModelClassAttribute.cs" />
     <Compile Include="DataBase\ModelClass.cs" />
@@ -398,12 +399,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CustomControls\CustomControls.csproj">
-      <Project>{98701113-c470-4c43-bd7f-9e10dfa8afdc}</Project>
-      <Name>CustomControls</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\icon.ico" />
