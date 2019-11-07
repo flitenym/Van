@@ -267,7 +267,7 @@ namespace Van.ViewModel
                         var Node = (Node)obj;
                         if (Node != null)
                         { 
-                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                             {
                                 AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
                                 Node.Selected = false;
@@ -290,6 +290,7 @@ namespace Van.ViewModel
             {
                 var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
                 
+
                 var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id, ModuleBaseItem = moduleBase };
                 ViewModels.Add(TabControlViewModel);
                 SelectedViewModel = TabControlViewModel;
