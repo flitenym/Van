@@ -28,7 +28,8 @@ namespace Van.Windows
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
         }
     }
 }
