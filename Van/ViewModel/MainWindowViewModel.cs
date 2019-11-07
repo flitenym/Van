@@ -1,5 +1,4 @@
-﻿using Van.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -10,11 +9,7 @@ using System.Collections.ObjectModel;
 using System;
 using Van.AbstractClasses;
 using Dragablz;
-using System.Messaging;
 using MaterialDesignThemes.Wpf;
-using ITheme = Van.Interfaces.ITheme;
-using System.Windows.Input;
-using System.Threading.Tasks;
 
 namespace Van.ViewModel
 {
@@ -25,9 +20,9 @@ namespace Van.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { }; 
 
-        public List<ITheme> Themes { get; private set; }
+        public List<ThemeBase> Themes { get; private set; }
 
-        public List<ITheme> DarkLightThemes { get; private set; } 
+        public List<ThemeBase> DarkLightThemes { get; private set; } 
 
         public ObservableCollection<TabControlViewModel> ViewModels { get; set; } = new ObservableCollection<TabControlViewModel>();
 
@@ -50,7 +45,7 @@ namespace Van.ViewModel
              
             SetViewModels(); 
 
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
 
             Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
             SelectedTheme = this.Themes.FirstOrDefault();
@@ -198,8 +193,8 @@ namespace Van.ViewModel
 
         #region Выбор обычной темы
 
-        private ITheme _SelectedTheme;
-        public ITheme SelectedTheme
+        private ThemeBase _SelectedTheme;
+        public ThemeBase SelectedTheme
         {
             get { return _SelectedTheme; }
             set
@@ -218,8 +213,8 @@ namespace Van.ViewModel
 
         #region Выбор глобальной темы
 
-        private ITheme _SelectedThemeDarkOrLight;
-        public ITheme SelectedThemeDarkOrLight
+        private ThemeBase _SelectedThemeDarkOrLight;
+        public ThemeBase SelectedThemeDarkOrLight
         {
             get { return _SelectedThemeDarkOrLight; }
             set

@@ -333,7 +333,6 @@
     </Compile>
     <Compile Include="Helper\Helper.cs" />
     <Compile Include="Helper\StaticReflectionHelper.cs" />
-    <Compile Include="Interfaces\ITheme.cs" />
     <Compile Include="ThemesGlobal\Dark\Dark.cs" />
     <Compile Include="Themes\Blue\Blue.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
-using Van.Interfaces;
 using static Van.Helper.Enums;
 
 namespace Van.AbstractClasses
 {
-    abstract class ThemeBase : ITheme
+    abstract class ThemeBase
     {
         private ResourceDictionary resource;
 

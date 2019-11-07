@@ -1,14 +1,9 @@
-﻿using Van.Interfaces;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+using Van.AbstractClasses;
 using Van.Helper;
-using System.Runtime.CompilerServices;
 using static Van.Helper.Helper;
-using System;
 
 namespace Van.ViewModel
 {
@@ -35,7 +30,7 @@ namespace Van.ViewModel
 
         public void AcceptTheme(string ThemeName) {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
             if (win.SelectedTheme.UriPath != selectedTheme.UriPath)
@@ -67,7 +62,7 @@ namespace Van.ViewModel
         public void AcceptGlobalTheme(string ThemeName)
         {
             MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ITheme>().ToList();
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
             if (win.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
