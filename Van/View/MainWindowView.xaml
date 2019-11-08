@@ -91,6 +91,7 @@
                 BorderThickness="0"
                 ItemsSource="{Binding ViewModels}" 
                 SelectedItem="{Binding SelectedViewModel}" 
+                OverridesDefaultStyle="False"
                 ClosingItemCallback="{Binding ClosingTabItemHandler}"> 
                 <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController />
