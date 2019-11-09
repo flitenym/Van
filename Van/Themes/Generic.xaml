@@ -582,10 +582,5 @@
             </Style>
         </Style.Resources>
     </Style>
-
-    <Style TargetType="{x:Type TextBoxBase}" BasedOn="{StaticResource MaterialDesignTextBoxBase}"> 
-        <Setter Property="OverridesDefaultStyle" Value="True" /> 
-    </Style>
-
-
+ 
 </ResourceDictionary>

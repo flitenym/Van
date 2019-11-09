@@ -19,15 +19,24 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="350" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Grid.Row="0" Grid.Column="0" Text="Ссылка для скачивания" VerticalAlignment="Center" />
+            <TextBlock 
+                Style="{StaticResource MaterialDesignBody2TextBlock}" 
+                Grid.Row="0" 
+                Grid.Column="0"
+                Text="Ссылка для скачивания" 
+                VerticalAlignment="Center"
+                />
             <TextBox Grid.Row="0" 
                      Grid.Column="1"
                      Text="{Binding LinkData}" 
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch"
+                     TextWrapping="Wrap"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      ScrollViewer.CanContentScroll="True"
