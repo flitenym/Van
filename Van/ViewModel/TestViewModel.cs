@@ -31,9 +31,13 @@ namespace Van.ViewModel
             Loading(false);
         }
 
-        public List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+        public List<double> t = new List<double>();
 
-        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 }; 
+        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+
+        public Random random = new Random();
+
+        public bool HaveNullProbability = true;
 
         public double epsilon = 0.01;
         public SeriesCollection SeriesCollection { get; set; }
@@ -144,6 +148,95 @@ namespace Van.ViewModel
                 gompertzValue = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(GompertzValue)));
             }
+        }
+
+        #endregion
+
+        #region n значение
+
+        private int nValue;
+
+        public int NValue
+        {
+            get { return nValue; }
+            set
+            {
+                nValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(NValue)));
+            }
+        }
+
+        #endregion
+
+        #region Комманда для вычисления T
+
+        private RelayCommand calculateTCommand;
+        public RelayCommand CalculateTCommand
+        {
+            get
+            {
+                return calculateTCommand ??
+                  (calculateTCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                          CalculateT()
+                      );
+                  }, CanCalculateT));
+            }
+        }
+
+        private bool CanCalculateT(object x)
+        {
+            return !HaveNullProbability;
+        }
+
+        public void CalculateT()
+        {
+            Loading(true);
+            t = new List<double>();
+
+            GenerateT();
+
+            Message("t вычислено");
+            Loading(false);
+        }
+
+        public void GenerateT()
+        {
+            for (int i = 0; i < NValue; i++)
+            {
+                int randomNumber = random.Next(0, 101);
+                double z = (double)randomNumber / 100.0;
+
+                double sumProbubility = 0;
+
+                for (int j = 0; j < currentMortalityTables.Count(); j++)
+                {
+                    if (z < currentMortalityTables[j].Probability)
+                    {
+                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        break;
+                    }
+                    else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
+                    {
+                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        break;
+                    }
+                    sumProbubility += currentMortalityTables[j].Probability.Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+        /// </summary>
+        public int getTValue(string ageX) {
+            // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+            if (int.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out int value))
+            { 
+                return value;
+            }
+            return 0;
         }
 
         #endregion
@@ -287,7 +380,12 @@ namespace Van.ViewModel
                 MortalityTableData.AcceptChanges();
             }
 
-            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList(); 
+            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
+
+            NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
+            if (currentMortalityTables.Where(x => x.Probability == null).Any())
+                HaveNullProbability = true;
+            else HaveNullProbability = false;
         }
 
         #endregion

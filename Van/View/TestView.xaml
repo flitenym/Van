@@ -9,8 +9,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries> 
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" /> 
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textbox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -53,8 +54,36 @@
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
             </StackPanel>
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" /> 
-            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" />
+
+            <Grid HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="250" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                Style="{StaticResource MaterialDesignBody2TextBlock}" 
+                Grid.Row="0" 
+                Grid.Column="0"
+                Text="Введите n (целое число)"
+                VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0"
+                     Grid.Column="1"
+                     Text="{Binding NValue}" 
+                     Style="{StaticResource MaterialDesignTextBox}"/>
+                <Button Margin="5"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Content="Вычислить t"
+                        Command="{Binding CalculateTCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </Grid>
             <Expander Background="Transparent" >
                 <Expander.Header> 
                     <Grid Height="35">
