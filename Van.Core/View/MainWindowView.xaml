@@ -1,5 +1,4 @@
-﻿<controls:WindowControl 
-            x:Class="Van.Core.View.MainWindowView"
+﻿<controls:WindowControl x:Class="Van.Core.View.MainWindowView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -92,6 +91,7 @@
                 BorderThickness="0"
                 ItemsSource="{Binding ViewModels}" 
                 SelectedItem="{Binding SelectedViewModel}" 
+                OverridesDefaultStyle="False"
                 ClosingItemCallback="{Binding ClosingTabItemHandler}">
                 <dragablz:TabablzControl.InterTabController>
                     <dragablz:InterTabController />

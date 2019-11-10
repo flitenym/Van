@@ -26,14 +26,18 @@ namespace Van.Core.ViewModel
 
             Task.Factory.StartNew(() =>
                     SelectSurvivalFunction()
-            ); 
+            );
 
             Loading(false);
         }
 
-        public List<double> t = new List<double>() { 2, 2, 3, 4, 8, 4, 7, 9, 2, 4 };
+        public List<double> t = new List<double>();
 
-        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 }; 
+        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+
+        public Random random = new Random();
+
+        public bool HaveNullProbability = true;
 
         public double epsilon = 0.01;
         public SeriesCollection SeriesCollection { get; set; }
@@ -63,10 +67,11 @@ namespace Van.Core.ViewModel
 
         #region Weibull
 
-        private void Weibull() { 
+        private void Weibull()
+        {
             Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
-            WeibullValue = weibull.lambda(); 
-        } 
+            WeibullValue = weibull.lambda();
+        }
 
         private double weibullValue = 0;
 
@@ -85,10 +90,10 @@ namespace Van.Core.ViewModel
         #region Exponential
 
         private void Exponential()
-        { 
+        {
             Exponential exponential = new Exponential(t, delta);
-            ExponentialValue = exponential.lambda(); 
-        } 
+            ExponentialValue = exponential.lambda();
+        }
 
         private double exponentialValue = 0;
 
@@ -107,10 +112,10 @@ namespace Van.Core.ViewModel
         #region Relay
 
         private void Relay()
-        { 
+        {
             Relay relay = new Relay(t, delta);
-            RelayValue = relay.lambda(); 
-        } 
+            RelayValue = relay.lambda();
+        }
 
         private double relayValue = 0;
 
@@ -129,10 +134,10 @@ namespace Van.Core.ViewModel
         #region Gompertz
 
         private void Gompertz()
-        { 
+        {
             Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
-            GompertzValue = gompertz.lambda(); 
-        } 
+            GompertzValue = gompertz.lambda();
+        }
 
         private double gompertzValue = 0;
 
@@ -144,6 +149,96 @@ namespace Van.Core.ViewModel
                 gompertzValue = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(GompertzValue)));
             }
+        }
+
+        #endregion
+
+        #region n значение
+
+        private int nValue;
+
+        public int NValue
+        {
+            get { return nValue; }
+            set
+            {
+                nValue = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(NValue)));
+            }
+        }
+
+        #endregion
+
+        #region Комманда для вычисления T
+
+        private RelayCommand calculateTCommand;
+        public RelayCommand CalculateTCommand
+        {
+            get
+            {
+                return calculateTCommand ??
+                  (calculateTCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                          CalculateT()
+                      );
+                  }, CanCalculateT));
+            }
+        }
+
+        private bool CanCalculateT(object x)
+        {
+            return !HaveNullProbability;
+        }
+
+        public void CalculateT()
+        {
+            Loading(true);
+            t = new List<double>();
+
+            GenerateT();
+
+            Message("t вычислено");
+            Loading(false);
+        }
+
+        public void GenerateT()
+        {
+            for (int i = 0; i < NValue; i++)
+            {
+                int randomNumber = random.Next(0, 101);
+                double z = (double)randomNumber / 100.0;
+
+                double sumProbubility = 0;
+
+                for (int j = 0; j < currentMortalityTables.Count(); j++)
+                {
+                    if (z < currentMortalityTables[j].Probability)
+                    {
+                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        break;
+                    }
+                    else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
+                    {
+                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        break;
+                    }
+                    sumProbubility += currentMortalityTables[j].Probability.Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+        /// </summary>
+        public int getTValue(string ageX)
+        {
+            // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+            if (int.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out int value))
+            {
+                return value;
+            }
+            return 0;
         }
 
         #endregion
@@ -197,8 +292,8 @@ namespace Van.Core.ViewModel
 
         public void CalculateMortality()
         {
-            Loading(true); 
-            
+            Loading(true);
+
             //обновим таблицу через БД
             SelectMortality(false);
 
@@ -215,7 +310,7 @@ namespace Van.Core.ViewModel
             CalculateProbability();
 
             //Обновим в БД данные исходя из текущего списка
-            UpdateMortality(); 
+            UpdateMortality();
             //обновим таблицу через БД
             SelectMortality();
 
@@ -223,7 +318,8 @@ namespace Van.Core.ViewModel
             Loading(false);
         }
 
-        private void CalculateNumberOfDead() {
+        private void CalculateNumberOfDead()
+        {
             int mortalityTableCount = currentMortalityTables.Count() - 1;
 
             for (int i = 0; i < mortalityTableCount; i++)
@@ -234,7 +330,7 @@ namespace Van.Core.ViewModel
         }
 
         private void CalculateProbability()
-        { 
+        {
             foreach (var mortalityTable in currentMortalityTables)
             {
                 mortalityTable.Probability = (double?)mortalityTable.NumberOfDead / (double)currentMortalityTables.FirstOrDefault()?.NumberOfSurvivors;
@@ -272,7 +368,8 @@ namespace Van.Core.ViewModel
         }
 
 
-        private void UpdateMortality() {
+        private void UpdateMortality()
+        {
             foreach (var MortalityTable in currentMortalityTables)
             {
                 SQLExecutor.UpdateExecutor(nameof(MortalityTable), MortalityTable, MortalityTable.ID);
@@ -287,7 +384,12 @@ namespace Van.Core.ViewModel
                 MortalityTableData.AcceptChanges();
             }
 
-            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList(); 
+            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
+
+            NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
+            if (currentMortalityTables.Where(x => x.Probability == null).Any())
+                HaveNullProbability = true;
+            else HaveNullProbability = false;
         }
 
         #endregion

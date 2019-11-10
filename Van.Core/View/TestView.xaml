@@ -11,6 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textbox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -29,67 +30,13 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                   GridLinesVisibility="None" 
                   HeadersVisibility="Column" 
-                  CanUserAddRows="False" 
+                  CanUserAddRows="False"  
                   CanUserDeleteRows="False"
                   IsReadOnly="True"
                   ItemsSource="{Binding MortalityTableData, Mode=TwoWay}" 
                   SelectionUnit="FullRow" 
                   ColumnWidth="*"
                   CanUserSortColumns="True">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGridRow">
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource DataGridRowSelected}" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="False">
-                                <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Style.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" Value="Transparent"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" Value="Transparent" />
-                            </MultiTrigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value=".56"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
-                        <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
-                        <Setter Property="ContentTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding}" />
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.Resources>
             </DataGrid>
             <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Width="250" 
@@ -109,6 +56,34 @@
             </StackPanel>
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" />
 
+            <Grid HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="250" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                Style="{StaticResource MaterialDesignBody2TextBlock}" 
+                Grid.Row="0" 
+                Grid.Column="0"
+                Text="Введите n (целое число)"
+                VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0"
+                     Grid.Column="1"
+                     Text="{Binding NValue}" 
+                     Style="{StaticResource MaterialDesignTextBox}"/>
+                <Button Margin="5"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Content="Вычислить t"
+                        Command="{Binding CalculateTCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </Grid>
             <Expander Background="Transparent" >
                 <Expander.Header>
                     <Grid Height="35">

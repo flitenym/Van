@@ -8,6 +8,7 @@
     xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
     xmlns:dragablzTheme="clr-namespace:Dragablz.Themes;assembly=Dragablz" >
 
+
     <!--  Button style -->
     <Style TargetType="{x:Type Button}" x:Key="WindowButtonStyle">
         <Setter Property="Template">
@@ -227,17 +228,6 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type Thumb}" x:Key="MaterialDesignInvisibleThumbStyle">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Grid Background="{TemplateBinding Background}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!--Scrollbar Thumbs-->
     <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -275,7 +265,7 @@
     </Style>
 
     <!--ScrollBars-->
-    <Style TargetType="{x:Type ScrollBar}">
+    <Style TargetType="{x:Type ScrollBar}" x:Key="ScrollBarStyle">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -353,6 +343,7 @@
                         <ScrollBar x:Name="PART_VerticalScrollBar"   
                                    Grid.Row="0"
                                    Grid.Column="1"
+                                   Style="{StaticResource ScrollBarStyle}"
                                    Value="{TemplateBinding VerticalOffset}" 
                                    Maximum="{TemplateBinding ScrollableHeight}" 
                                    ViewportSize="{TemplateBinding ViewportHeight}"  
@@ -361,6 +352,7 @@
                                    Orientation="Horizontal"
                                    Grid.Row="1"
                                    Grid.Column="0"
+                                   Style="{StaticResource ScrollBarStyle}"
                                    Value="{TemplateBinding HorizontalOffset}" 
                                    Maximum="{TemplateBinding ScrollableWidth}" 
                                    ViewportSize="{TemplateBinding ViewportWidth}"  
@@ -369,8 +361,8 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style> 
-  
+    </Style>
+
     <Style TargetType="{x:Type TreeView}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
@@ -533,5 +525,62 @@
         <Setter Property="ItemContainerStyle" Value="{StaticResource DragablzItemStyle}" />
     </Style>
 
+    <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource MaterialDesignDataGrid}">
+        <Style.Resources>
+            <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBarStyle}" />
+            <Style TargetType="DataGridRow">
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DataGridRowSelected}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="False">
+                        <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Style.Triggers>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True"/>
+                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </MultiTrigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True"/>
+                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="Transparent" />
+                    </MultiTrigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value=".56"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="Background" Value="{DynamicResource DataGridBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock TextWrapping="Wrap" Text="{Binding}" />
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource DataGridRowSelected}" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource DataGridForeground}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
+    </Style>
 
 </ResourceDictionary>
