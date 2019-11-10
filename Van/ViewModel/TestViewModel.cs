@@ -10,6 +10,10 @@ using LiveCharts;
 using Van.DataBase.Models;
 using Van.DataBase;
 using System.Data;
+using System.Data.SQLite;
+using Dapper;
+using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace Van.ViewModel
 {
@@ -20,20 +24,25 @@ namespace Van.ViewModel
         public TestViewModel()
         {
             Loading(true);
+
             Task.Factory.StartNew(() =>
-                    SelectMortality()
+                SelectMortality()
             );
 
             Task.Factory.StartNew(() =>
-                    SelectSurvivalFunction()
+               SelectSurvivalFunction()
+            );
+
+            Task.Factory.StartNew(() =>
+               SelectLifeTimesFunction()
             ); 
 
             Loading(false);
         }
 
-        public List<double> t = new List<double>();
+        public List<int> t = new List<int>();
 
-        public List<double> delta = new List<double>() { 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 };
+        public List<int> delta = new List<int>();
 
         public Random random = new Random();
 
@@ -48,6 +57,10 @@ namespace Van.ViewModel
 
         public List<SurvivalFunction> currentSurvivalFunctions = new List<SurvivalFunction>();
 
+        public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
+
+
+
         #region Таблица смертности
 
         private DataTable mortalityTableData;
@@ -61,6 +74,22 @@ namespace Van.ViewModel
                 mortalityTableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTableData)));
             }
+        }
+
+        private void SelectMortality(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                MortalityTableData = SQLExecutor.SelectExecutor(nameof(MortalityTable));
+                MortalityTableData.AcceptChanges();
+            }
+
+            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
+
+            NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
+            if (currentMortalityTables.Where(x => x.Probability == null).Any())
+                HaveNullProbability = true;
+            else HaveNullProbability = false;
         }
 
         #endregion
@@ -193,9 +222,13 @@ namespace Van.ViewModel
         public void CalculateT()
         {
             Loading(true);
-            t = new List<double>();
+            t = new List<int>();
 
             GenerateT();
+            
+            RewriteLifeTimesTable();
+            
+            SelectLifeTimesFunction();
 
             Message("t вычислено");
             Loading(false);
@@ -203,10 +236,15 @@ namespace Van.ViewModel
 
         public void GenerateT()
         {
+            var minimalProb = currentMortalityTables.Select(x => x.Probability).Min().Value;
+            var maxsurv = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
+            minimalProb = minimalProb / 2; 
+
             for (int i = 0; i < NValue; i++)
             {
-                int randomNumber = random.Next(0, 101);
-                double z = (double)randomNumber / 100.0;
+                int randomNumber = random.Next(0, maxsurv + 1);
+                double z = (double)randomNumber / maxsurv;
+                z -= minimalProb;
 
                 double sumProbubility = 0;
 
@@ -224,6 +262,54 @@ namespace Van.ViewModel
                     }
                     sumProbubility += currentMortalityTables[j].Probability.Value;
                 }
+            }
+        }
+
+        public void RewriteLifeTimesTable()
+        {
+            Message("Начнем составлять значения");
+
+            currentLifeTimes = new List<LifeTimes>(); 
+            delta = new List<int>();
+
+            foreach (var tValue in t)
+            {
+                currentLifeTimes.Add(new LifeTimes() { LifeTime = tValue, Censor = 1 });
+                delta.Add(1);
+            } 
+
+            using (IDbConnection db = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                Message("Начнем удаление");
+
+                db.Execute($"DELETE FROM LifeTimes"); 
+            }
+
+            Message("Удаление завершено");
+
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                Message("Добавим записи в таблице");
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                cn.Open();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $"INSERT INTO LifeTimes(LifeTime, Censor) VALUES(@LifeTime, @Censor);";
+                        foreach (var currentLifeTime in currentLifeTimes)
+                        {
+                            cmd.Parameters.AddWithValue("@LifeTime", currentLifeTime.LifeTime);
+                            cmd.Parameters.AddWithValue("@Censor", currentLifeTime.Censor);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    transaction.Commit();
+                }
+
+                Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             }
         }
 
@@ -370,23 +456,7 @@ namespace Van.ViewModel
             {
                 SQLExecutor.UpdateExecutor(nameof(MortalityTable), MortalityTable, MortalityTable.ID);
             }
-        }
-
-        private void SelectMortality(bool needTableRefresh = true)
-        {
-            if (needTableRefresh)
-            {
-                MortalityTableData = SQLExecutor.SelectExecutor(nameof(MortalityTable));
-                MortalityTableData.AcceptChanges();
-            }
-
-            currentMortalityTables = SQLExecutor.Select<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
-
-            NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
-            if (currentMortalityTables.Where(x => x.Probability == null).Any())
-                HaveNullProbability = true;
-            else HaveNullProbability = false;
-        }
+        } 
 
         #endregion
 
@@ -405,8 +475,6 @@ namespace Van.ViewModel
             }
         }
 
-        #endregion
-
         private void SelectSurvivalFunction(bool needTableRefresh = true)
         {
             if (needTableRefresh)
@@ -417,6 +485,39 @@ namespace Van.ViewModel
 
             currentSurvivalFunctions = SQLExecutor.Select<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
         }
+
+        #endregion
+
+        #region t таблица
+
+        private DataTable lifeTimesTable;
+
+        public DataTable LifeTimesTable
+        {
+            get { return lifeTimesTable; }
+            set
+            {
+                if (value == null) return;
+                lifeTimesTable = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(LifeTimesTable)));
+            }
+        }
+
+        private void SelectLifeTimesFunction(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                LifeTimesTable = SQLExecutor.SelectExecutor(nameof(LifeTimes));
+                LifeTimesTable.AcceptChanges();
+            }
+
+            currentLifeTimes = SQLExecutor.Select<LifeTimes>($"SELECT * FROM {nameof(LifeTimes)}").ToList();
+
+            t = currentLifeTimes.Select(x=>x.LifeTime.Value).ToList();
+            delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
+        }
+
+        #endregion 
 
     }
 }

@@ -8,14 +8,14 @@ namespace Van.Methods
 {
     public class Relay
     {
-        public Relay(List<double> t, List<double> delta)
+        public Relay(List<int> t, List<int> delta)
         {
             this.t = t;
             this.delta = delta;
         }
 
-        public List<double> t = new List<double>();
-        public List<double> delta = new List<double>();
+        public List<int> t = new List<int>();
+        public List<int> delta = new List<int>();
         public double r => delta.Where(x => x == 1).Count();
         public double n => t.Count();
 

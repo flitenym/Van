@@ -12,12 +12,14 @@ namespace Van.Core.View
             InitializeComponent();
             MortalityTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             SurvivalFunctionTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+            LifeTimesTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
         }
 
         public void Dispose()
         {
             MortalityTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             SurvivalFunctionTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
+            LifeTimesTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
         }
     }
 }

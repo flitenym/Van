@@ -16,21 +16,25 @@ namespace Van.Core.DataBase
 {
     public static class SQLExecutor
     {
-        private static string LoadConnectionString => ConfigurationManager.ConnectionStrings["Default"].ConnectionString; 
-        
+        public static string LoadConnectionString => ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
+
         #region Select 
 
-        public static DataTable SelectExecutor(string tableName) {
-            switch (tableName) {
+        public static DataTable SelectExecutor(string tableName)
+        {
+            switch (tableName)
+            {
                 case nameof(MortalityTable): return Select<MortalityTable>($"SELECT * FROM {tableName}").ToDataTable();
                 case nameof(SurvivalFunction): return Select<SurvivalFunction>($"SELECT * FROM {tableName}").ToDataTable();
+                case nameof(LifeTimes): return Select<LifeTimes>($"SELECT * FROM {tableName}").ToDataTable();
                 default: throw new Exception("Не верная таблица");
             }
         }
 
-        public static IList<T> Select<T>(string query) {
+        public static IList<T> Select<T>(string query)
+        {
             using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
-            { 
+            {
                 return db.Query<T>(query).ToList();
             }
         }
@@ -52,8 +56,8 @@ namespace Van.Core.DataBase
         public static void Delete(string tableName, List<int> IDs)
         {
             using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
-            { 
-                db.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray()); 
+            {
+                db.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray());
             }
         }
 
@@ -97,6 +101,7 @@ namespace Van.Core.DataBase
             {
                 case nameof(MortalityTable): return MortalityTableQuery.UpdateQuery(ID);
                 case nameof(SurvivalFunction): return SurvivalFunctionQuery.UpdateQuery(ID);
+                case nameof(LifeTimes): return LifeTimesQuery.UpdateQuery(ID);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -105,8 +110,9 @@ namespace Van.Core.DataBase
         {
             switch (tableName)
             {
-                case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
+                case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break;
                 case nameof(SurvivalFunction): Update(UpdateQuery(tableName, ID), row.ToObject<SurvivalFunction>()); break;
+                case nameof(LifeTimes): Update(UpdateQuery(tableName, ID), row.ToObject<LifeTimes>()); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -139,8 +145,8 @@ namespace Van.Core.DataBase
                     Caption = string.IsNullOrEmpty(prop.Description) ? prop.Name : prop.Description
                 };
 
-                table.Columns.Add(column); 
-            } 
+                table.Columns.Add(column);
+            }
 
             foreach (T item in data)
             {
@@ -150,7 +156,7 @@ namespace Van.Core.DataBase
                 table.Rows.Add(row);
             }
             return table;
-        } 
+        }
 
         public static T ToObject<T>(this DataRow row) where T : new()
         {

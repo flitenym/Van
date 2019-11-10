@@ -16,7 +16,7 @@ namespace Van.DataBase
 {
     public static class SQLExecutor
     {
-        private static string LoadConnectionString => ConfigurationManager.ConnectionStrings["Default"].ConnectionString; 
+        public static string LoadConnectionString => ConfigurationManager.ConnectionStrings["Default"].ConnectionString; 
         
         #region Select 
 
@@ -24,6 +24,7 @@ namespace Van.DataBase
             switch (tableName) {
                 case nameof(MortalityTable): return Select<MortalityTable>($"SELECT * FROM {tableName}").ToDataTable();
                 case nameof(SurvivalFunction): return Select<SurvivalFunction>($"SELECT * FROM {tableName}").ToDataTable();
+                case nameof(LifeTimes): return Select<LifeTimes>($"SELECT * FROM {tableName}").ToDataTable();
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -97,6 +98,7 @@ namespace Van.DataBase
             {
                 case nameof(MortalityTable): return MortalityTableQuery.UpdateQuery(ID);
                 case nameof(SurvivalFunction): return SurvivalFunctionQuery.UpdateQuery(ID);
+                case nameof(LifeTimes): return LifeTimesQuery.UpdateQuery(ID);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -107,6 +109,7 @@ namespace Van.DataBase
             {
                 case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
                 case nameof(SurvivalFunction): Update(UpdateQuery(tableName, ID), row.ToObject<SurvivalFunction>()); break;
+                case nameof(LifeTimes): Update(UpdateQuery(tableName, ID), row.ToObject<LifeTimes>()); break;
                 default: throw new Exception("Не верная таблица");
             }
         }

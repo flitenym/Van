@@ -8,7 +8,7 @@ namespace Van.Core.Methods
 {
     public class Weibull
     {
-        public Weibull(List<double> t, List<double> delta, double b, double epsilon, double? a = null)
+        public Weibull(List<int> t, List<int> delta, double b, double epsilon, double? a = null)
         {
             this.t = t;
             this.delta = delta;
@@ -17,8 +17,8 @@ namespace Van.Core.Methods
             this.a = a != null ? (double)a : epsilon;
         }
 
-        public List<double> t = new List<double>();
-        public List<double> delta = new List<double>();
+        public List<int> t = new List<int>();
+        public List<int> delta = new List<int>();
         public double r => delta.Where(x => x == 1).Count();
         public double n => t.Count();
         public double b { get; set; }
@@ -26,7 +26,8 @@ namespace Van.Core.Methods
         public double a { get; set; }
 
 
-        public double FirstSum() {
+        public double FirstSum()
+        {
             double firstSum = 0;
 
             for (int i = 0; i < n; i++)
@@ -61,7 +62,8 @@ namespace Van.Core.Methods
             return thirdSum;
         }
 
-        public double function(double x) {
+        public double function(double x)
+        {
             return r / x + FirstSum() - SecondSum(x) * ThirdSum(x);
         }
 
