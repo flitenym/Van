@@ -292,8 +292,8 @@ namespace Van.Core.ViewModel
                 IsDownload = false;
             }
             finally{
-
                 client.Dispose();
+                Loading(false);
             }
 
         }

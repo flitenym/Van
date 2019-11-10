@@ -5,6 +5,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+    <StartupObject>Van.Core.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
