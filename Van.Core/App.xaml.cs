@@ -1,10 +1,10 @@
-﻿using Van.View;
+﻿using Van.Core.View;
 using System.Threading.Tasks;
 using System.Windows;
-using Van.ViewModel;
-using Van.Windows;
+using Van.Core.ViewModel;
+using Van.Core.Windows;
 
-namespace Van
+namespace Van.Core
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml
@@ -18,13 +18,13 @@ namespace Van
             splashScreen.Show();
 
             Task.Factory.StartNew(() =>
-            {  
+            {
                 this.Dispatcher.Invoke(() =>
-                {  
+                {
                     var mainWindow = new MainWindowView();
-                    var vm = new MainWindowViewModel(); 
+                    var vm = new MainWindowViewModel();
                     mainWindow.DataContext = vm;
-                    this.MainWindow = mainWindow; 
+                    this.MainWindow = mainWindow;
                     mainWindow.Show();
                     splashScreen.Close();
                     mainWindow.Closing += (s, args) =>
@@ -37,9 +37,9 @@ namespace Van
 
                         if (vm.SelectedViewModel != null)
                             vm.SelectedViewModel.ModuleBaseItem.Deactivate();
-                    }; 
+                    };
                 });
-            }); 
+            });
         }
     }
 }

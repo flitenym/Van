@@ -1,0 +1,111 @@
+﻿<UserControl x:Class="Van.Core.View.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="400" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Grid.Row="0" Grid.Column="0" Text="Ссылка для скачивания" VerticalAlignment="Center" />
+            <TextBox Grid.Row="0" 
+                     Grid.Column="1"
+                     Text="{Binding LinkData}" 
+                     materialDesign:HintAssist.Hint="Ссылка" AcceptsReturn="True"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+        </Grid>
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Van" FontWeight="Thin" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50"  FontFamily="Stencil" />
+            <TextBlock Grid.Row="1" Text="{Binding AppVersion}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" />
+            <Button Grid.Row="2"
+                Margin="2"
+                Content="Обновление программы"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Command="{Binding UpdateCommand}" 
+                Foreground="{DynamicResource PreWindowButtonForeground}"
+                Style="{DynamicResource MaterialDesignRaisedButton}" >
+            </Button>
+        </Grid>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Grid.RenderTransform>
+                <TranslateTransform Y="135"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path = IsDownload}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                To="-100"
+                                                Duration="0:0:0.8">
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                To="135"
+                                                Duration="0:0:0.8">
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Text="Скорость:" />
+            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding DownloadSpeed}" />
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Text="Выполнено:"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding DownloadPercent}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Binding Download}"/>
+            <ProgressBar Value="{Binding ProgressBarValue}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2"/>
+            <Button Grid.Row="4"
+                Margin="2"
+                Grid.Column="0" Grid.ColumnSpan="2"
+                Content="Отменить скачивание"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Command="{Binding CancelDownloadCommand}"
+                Foreground="{DynamicResource PreWindowButtonForeground}"
+                Style="{DynamicResource MaterialDesignRaisedButton}" >
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>
