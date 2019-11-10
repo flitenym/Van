@@ -9,7 +9,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -17,15 +19,27 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="350" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Grid.Row="0" Grid.Column="0" Text="Ссылка для скачивания" VerticalAlignment="Center" />
+            <TextBlock 
+                Style="{StaticResource MaterialDesignBody2TextBlock}" 
+                Grid.Row="0" 
+                Grid.Column="0"
+                Text="Ссылка для скачивания" 
+                VerticalAlignment="Center"
+                />
             <TextBox Grid.Row="0" 
                      Grid.Column="1"
                      Text="{Binding LinkData}" 
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch"
+                     TextWrapping="Wrap"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.CanContentScroll="True"
                      materialDesign:HintAssist.Hint="Ссылка" AcceptsReturn="True"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
         </Grid>
@@ -44,7 +58,7 @@
                 HorizontalAlignment="Stretch"
                 Command="{Binding UpdateCommand}" 
                 Foreground="{DynamicResource PreWindowButtonForeground}"
-                Style="{DynamicResource MaterialDesignRaisedButton}" >
+                Style="{StaticResource MaterialDesignRaisedButton}" >
             </Button>
         </Grid>
         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
