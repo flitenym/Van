@@ -23,5 +23,10 @@ namespace Van.Methods
             return r * Math.Pow(t.Sum(), -1);
         }
 
+        public double st() {
+            var lambdaValue = lambda();
+            return 0;
+        }
+
     }
 }

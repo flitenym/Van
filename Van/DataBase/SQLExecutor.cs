@@ -30,9 +30,10 @@ namespace Van.DataBase
         }
 
         public static IList<T> Select<T>(string query) {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
-            { 
-                return db.Query<T>(query).ToList();
+            using (var slc = new SQLiteConnection(LoadConnectionString))
+            {
+                slc.Open();
+                return slc.Query<T>(query).ToList();
             }
         }
 
@@ -46,15 +47,17 @@ namespace Van.DataBase
             {
                 case nameof(MortalityTable): Delete(tableName, IDs); break;
                 case nameof(SurvivalFunction): Delete(tableName, IDs); break;
+                case nameof(LifeTimes): Delete(tableName, IDs); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static void Delete(string tableName, List<int> IDs)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
-            { 
-                db.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray()); 
+            using (var slc = new SQLiteConnection(LoadConnectionString))
+            {
+                slc.Open();
+                slc.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray()); 
             }
         }
 
@@ -67,6 +70,7 @@ namespace Van.DataBase
             switch (tableName)
             {
                 case nameof(MortalityTable): return MortalityTableQuery.InsertQuery;
+                case nameof(LifeTimes): return LifeTimesQuery.InsertQuery;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -76,15 +80,17 @@ namespace Van.DataBase
             switch (tableName)
             {
                 case nameof(MortalityTable): return Insert(InsertQuery(tableName), item);
+                case nameof(LifeTimes): return Insert(InsertQuery(tableName), item);
                 default: throw new Exception("Не верная таблица");
             }
         }
 
         public static int Insert(string query, object item)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
+            using (var slc = new SQLiteConnection(LoadConnectionString))
             {
-                return db.ExecuteScalar<int>(query, item);
+                slc.Open();
+                return slc.ExecuteScalar<int>(query, item);
             }
         }
 
@@ -121,9 +127,10 @@ namespace Van.DataBase
 
         public static void Update(string query, object item)
         {
-            using (IDbConnection db = new SQLiteConnection(LoadConnectionString))
+            using (var slc = new SQLiteConnection(LoadConnectionString))
             {
-                db.Execute(query, item);
+                slc.Open();
+                slc.Execute(query, item);
             }
         }
 

@@ -88,6 +88,7 @@ namespace Van.ViewModel
             set
             {
                 if (value == null) return;
+                tableData?.Clear();
                 tableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
             }
