@@ -52,7 +52,7 @@
                           HeadersVisibility="Column" 
                           CanUserAddRows="False" 
                           CanUserDeleteRows="False"
-                          ItemsSource="{Binding TableData, Mode=TwoWay}" 
+                          ItemsSource="{Binding TableData, Mode=TwoWay, IsAsync=True}" 
                           SelectionUnit="FullRow" 
                           ColumnWidth="*"
                           CanUserSortColumns="True"> 

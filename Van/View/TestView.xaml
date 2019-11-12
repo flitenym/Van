@@ -100,7 +100,7 @@
                           CanUserAddRows="False" 
                           CanUserDeleteRows="False"
                           IsReadOnly="True"
-                          ItemsSource="{Binding LifeTimesTable, Mode=TwoWay}" 
+                          ItemsSource="{Binding LifeTimesTable, Mode=TwoWay, IsAsync=True}" 
                           SelectionUnit="FullRow" 
                           ColumnWidth="*"
                           CanUserSortColumns="True"/>
@@ -143,7 +143,7 @@
                           CanUserAddRows="False" 
                           CanUserDeleteRows="False"
                           IsReadOnly="True"
-                          ItemsSource="{Binding SurvivalFunctionTable, Mode=TwoWay}" 
+                          ItemsSource="{Binding SurvivalFunctionTable, Mode=TwoWay, IsAsync=True}" 
                           SelectionUnit="FullRow" 
                           ColumnWidth="*"
                           CanUserSortColumns="True"> 

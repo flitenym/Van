@@ -10,6 +10,7 @@ using System;
 using Van.AbstractClasses;
 using Dragablz;
 using MaterialDesignThemes.Wpf;
+using System.Threading;
 
 namespace Van.ViewModel
 {
@@ -241,7 +242,15 @@ namespace Van.ViewModel
                 return setSettingsView ??
                     (setSettingsView = new RelayCommand(obj =>
                     {
-                        SetSettings();
+                        Thread thread = new Thread(new ThreadStart(() =>
+                        {
+                            Application.Current.Dispatcher.Invoke(
+                               System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+                               {
+                                   SetSettings();
+                               });
+                        }));
+                        thread.Start(); 
                     }));
             }
         }
@@ -266,12 +275,23 @@ namespace Van.ViewModel
                     {
                         var Node = (Node)obj;
                         if (Node != null)
-                        { 
-                            Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+                        {
+                            Thread thread = new Thread(new ThreadStart(() =>
                             {
-                                AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
-                                Node.Selected = false;
-                            }));  
+                                Application.Current.Dispatcher.Invoke(
+                                   System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
+                                   {
+                                       AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
+                                       Node.Selected = false;
+                                   });
+                            }));
+                            thread.Start();
+
+                            //Application.Current.Dispatcher.Invoke(new Action(() =>
+                            //{
+                            //    AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
+                            //    Node.Selected = false;
+                            //}));  
                         }
                     }));
             }
@@ -290,7 +310,6 @@ namespace Van.ViewModel
             {
                 var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
                 
-
                 var TabControlViewModel = new TabControlViewModel() { Name = name, ViewContent = userInterface, ID = id, ModuleBaseItem = moduleBase };
                 ViewModels.Add(TabControlViewModel);
                 SelectedViewModel = TabControlViewModel;
