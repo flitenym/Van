@@ -14,10 +14,10 @@ namespace Van.Core.ViewModel
 {
     class DataBaseBrowsingViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { }; 
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public DataBaseBrowsingViewModel()
-        { 
+        {
             TableData = new DataTable();
 
             var models = StaticReflectionHelper.GetAllInstancesOf<ModelClass>().ToList();
@@ -44,7 +44,7 @@ namespace Van.Core.ViewModel
             }
             return model.GetType().Name;
         }
-         
+
         private bool GetModelCanInsertAttribute(object model)
         {
             var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
@@ -88,6 +88,7 @@ namespace Van.Core.ViewModel
             set
             {
                 if (value == null) return;
+                tableData?.Clear();
                 tableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TableData)));
             }
@@ -124,7 +125,7 @@ namespace Van.Core.ViewModel
             get { return selectedModel; }
             set
             {
-                selectedModel = value;  
+                selectedModel = value;
                 Task.Factory.StartNew(() =>
                     Select()
                 );
@@ -174,7 +175,7 @@ namespace Van.Core.ViewModel
                   (deleteRowCommand = new RelayCommand(obj =>
                   {
                       if (obj != null)
-                      { 
+                      {
                           var selectedItemsCollection = ((IList)obj).Cast<DataRowView>();
                           DeleteRows(selectedItemsCollection.ToList());
                       }
@@ -188,16 +189,18 @@ namespace Van.Core.ViewModel
         }
 
         public void DeleteRows(IList<DataRowView> selectedItems)
-        { 
+        {
             Loading(true);
-            if (selectedItems.Count() == 0) {
+            if (selectedItems.Count() == 0)
+            {
                 Message("Нет выделенных строк");
                 Loading(false);
                 return;
             }
             List<int> IDs = new List<int>();
 
-            foreach (var selectedItem in selectedItems) { 
+            foreach (var selectedItem in selectedItems)
+            {
                 for (int i = 0; i < selectedItem.Row.Table.Columns.Count; i++)
                 {
                     string columnName = selectedItem.Row.Table.Columns[i].ColumnName;
@@ -206,14 +209,15 @@ namespace Van.Core.ViewModel
                         IDs.Add((int?)selectedItem.Row.ItemArray[i] ?? -1);
                         break;
                     }
-                } 
+                }
             }
 
-            IDs.RemoveAll(x => x == -1); 
+            IDs.RemoveAll(x => x == -1);
             SQLExecutor.DeleteExecutor(SelectedModelName, IDs);
-             
 
-            foreach (var selectedItem in selectedItems) {
+
+            foreach (var selectedItem in selectedItems)
+            {
                 TableData.Rows.Remove(selectedItem.Row);
             }
             TableData.AcceptChanges();
@@ -233,13 +237,14 @@ namespace Van.Core.ViewModel
             {
                 return insertRowCommand ??
                   (insertRowCommand = new RelayCommand(x =>
-                  { 
-                        InsertRows(); 
+                  {
+                      InsertRows();
                   }, CanInsert));
             }
         }
 
-        private bool CanInsert(object x) {
+        private bool CanInsert(object x)
+        {
             return SelectedModel.CanInsert;
         }
 
@@ -261,11 +266,11 @@ namespace Van.Core.ViewModel
             }
 
             var newRow = TableData.NewRow();
-            var ID = SQLExecutor.InsertExecutor(SelectedModelName, SelectedModel); 
+            var ID = SQLExecutor.InsertExecutor(SelectedModelName, SelectedModel);
 
             if (ID != -1)
             {
-                newRow["ID"] = ID; 
+                newRow["ID"] = ID;
                 TableData.Rows.Add(newRow);
                 TableData.AcceptChanges();
                 Message("Добавление новой строки успешно");
@@ -304,16 +309,19 @@ namespace Van.Core.ViewModel
         {
             var tableData = TableData.GetChanges();
 
-            if (tableData == null || tableData.Rows.Count == 0 ) {
+            if (tableData == null || tableData.Rows.Count == 0)
+            {
                 Message("Изменения не найдены");
                 return;
             }
             Loading(true);
-            foreach (DataRow row in tableData.Rows) { 
-                if (int.TryParse(row["ID"].ToString(), out int ID)){
-                    SQLExecutor.UpdateExecutor(SelectedModelName, row, ID); 
+            foreach (DataRow row in tableData.Rows)
+            {
+                if (int.TryParse(row["ID"].ToString(), out int ID))
+                {
+                    SQLExecutor.UpdateExecutor(SelectedModelName, row, ID);
                 }
-            } 
+            }
             TableData.AcceptChanges();
             Message("Изменения сохранены");
             Loading(false);

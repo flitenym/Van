@@ -11,9 +11,10 @@ using Van.Core.DataBase.Models;
 using Van.Core.DataBase;
 using System.Data;
 using System.Data.SQLite;
-using Dapper;
-using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Windows.Media;
+using LiveCharts.Wpf;
+using System.Windows;
 
 namespace Van.Core.ViewModel
 {
@@ -49,16 +50,12 @@ namespace Van.Core.ViewModel
         public bool HaveNullProbability = true;
 
         public double epsilon = 0.01;
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> YFormatter { get; set; }
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
         public List<SurvivalFunction> currentSurvivalFunctions = new List<SurvivalFunction>();
 
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
-
 
 
         #region Таблица смертности
@@ -71,6 +68,7 @@ namespace Van.Core.ViewModel
             set
             {
                 if (value == null) return;
+                mortalityTableData?.Clear();
                 mortalityTableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTableData)));
             }
@@ -225,13 +223,18 @@ namespace Van.Core.ViewModel
             Loading(true);
             t = new List<int>();
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             GenerateT();
 
             RewriteLifeTimesTable();
 
             SelectLifeTimesFunction();
 
-            Message("t вычислено");
+            Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            stopwatch.Stop();
+
             Loading(false);
         }
 
@@ -268,7 +271,6 @@ namespace Van.Core.ViewModel
 
         public void RewriteLifeTimesTable()
         {
-            Message("Начнем составлять значения");
 
             currentLifeTimes = new List<LifeTimes>();
             delta = new List<int>();
@@ -279,21 +281,24 @@ namespace Van.Core.ViewModel
                 delta.Add(1);
             }
 
-            using (IDbConnection db = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                Message("Начнем удаление");
-
-                db.Execute($"DELETE FROM LifeTimes");
+                cn.Open();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $"DELETE FROM LifeTimes";
+                        cmd.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                cn.Close();
             }
 
-            Message("Удаление завершено");
 
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                Message("Добавим записи в таблице");
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-
                 cn.Open();
                 using (var transaction = cn.BeginTransaction())
                 {
@@ -309,8 +314,7 @@ namespace Van.Core.ViewModel
                     }
                     transaction.Commit();
                 }
-
-                Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+                cn.Close();
             }
         }
 
@@ -464,6 +468,73 @@ namespace Van.Core.ViewModel
 
         #endregion
 
+        #region Комманда для вычисления s(t)
+
+        private RelayCommand calculateSTCommand;
+        public RelayCommand CalculateSTCommand
+        {
+            get
+            {
+                return calculateSTCommand ??
+                  (calculateSTCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                          CalculateST()
+                      );
+                  }, CanCalculateST));
+            }
+        }
+
+        private bool CanCalculateST(object x)
+        {
+            return currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
+        }
+
+        private void UpdateST()
+        {
+            foreach (var SurvivalFunction in currentSurvivalFunctions)
+            {
+                SQLExecutor.UpdateExecutor(nameof(SurvivalFunction), SurvivalFunction, SurvivalFunction.ID);
+            }
+        }
+
+        public void CalculateST()
+        {
+            Loading(true);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            CalculateSTStandart();
+
+            //Обновим в БД данные исходя из текущего списка
+            UpdateST();
+
+            //обновим таблицу через БД
+            SelectSurvivalFunction();
+
+            Message($"s(t) вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            stopwatch.Stop();
+
+            Loading(false);
+        }
+
+        public void CalculateSTStandart()
+        {
+            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
+
+            if (maxNumberOfSurvivors == null) return;
+
+            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].Standart = (double)currentMortalityTables[i]?.NumberOfSurvivors / (double)maxNumberOfSurvivors;
+            }
+        }
+
+        #endregion
+
         #region Функция выживания s(t)
 
         private DataTable survivalFunctionTable;
@@ -474,7 +545,13 @@ namespace Van.Core.ViewModel
             set
             {
                 if (value == null) return;
+                survivalFunctionTable?.Clear();
                 survivalFunctionTable = value;
+
+                Task.Factory.StartNew(() =>
+                   SelectLifeTimesFunction()
+                );
+
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionTable)));
             }
         }
@@ -488,6 +565,11 @@ namespace Van.Core.ViewModel
             }
 
             currentSurvivalFunctions = SQLExecutor.Select<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
+
+            if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any())
+            {
+                RefreshCharts();
+            }
         }
 
         #endregion
@@ -502,6 +584,7 @@ namespace Van.Core.ViewModel
             set
             {
                 if (value == null) return;
+                lifeTimesTable?.Clear();
                 lifeTimesTable = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(LifeTimesTable)));
             }
@@ -521,7 +604,53 @@ namespace Van.Core.ViewModel
             delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
         }
 
-        #endregion 
+        #endregion
+
+        public void RefreshCharts()
+        {
+            Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+            {
+                SeriesCollection = new SeriesCollection();
+
+                var series = new LineSeries
+                {
+                    Title = "Стандартное",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Standart.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = 1,
+                    PointGeometry = null //use a null geometry when you have many series
+                };
+
+                SeriesCollection.Add(series);
+
+                YFormatter = value => Math.Round(value,3).ToString();
+            }));
+
+        }
+
+        private SeriesCollection seriesCollection;
+
+        public SeriesCollection SeriesCollection
+        {
+            get { return seriesCollection; }
+            set
+            {
+                seriesCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SeriesCollection)));
+            }
+        }
+
+        private Func<double, string> yFormatter;
+
+        public Func<double, string> YFormatter
+        {
+            get { return yFormatter; }
+            set
+            {
+                yFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(YFormatter)));
+            }
+        }
 
     }
 }

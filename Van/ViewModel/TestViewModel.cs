@@ -615,7 +615,7 @@ namespace Van.ViewModel
 
                 SeriesCollection.Add(series);
 
-                YFormatter = value => value.ToString();
+                YFormatter = value => Math.Round(value, 3).ToString();
             }));
 
         }
