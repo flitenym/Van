@@ -244,11 +244,11 @@ namespace Van.ViewModel
                     {
                         Thread thread = new Thread(new ThreadStart(() =>
                         {
-                            Application.Current.Dispatcher.Invoke(
+                            Application.Current.Dispatcher.BeginInvoke(
                                System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
                                {
                                    SetSettings();
-                               });
+                               }); 
                         }));
                         thread.Start(); 
                     }));
@@ -278,7 +278,7 @@ namespace Van.ViewModel
                         {
                             Thread thread = new Thread(new ThreadStart(() =>
                             {
-                                Application.Current.Dispatcher.Invoke(
+                                Application.Current.Dispatcher.BeginInvoke(
                                    System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
                                    {
                                        AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);

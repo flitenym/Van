@@ -69,6 +69,9 @@ namespace Van.ViewModel
             {
                 if (value == null) return;
                 mortalityTableData?.Clear();
+                mortalityTableData?.Columns.Clear();
+                mortalityTableData?.Rows.Clear();
+
                 mortalityTableData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(MortalityTableData)));
             }
@@ -88,6 +91,81 @@ namespace Van.ViewModel
             if (currentMortalityTables.Where(x => x.Probability == null).Any())
                 HaveNullProbability = true;
             else HaveNullProbability = false;
+        }
+
+        #endregion
+
+        #region Таблица s(t)
+
+        private DataTable survivalFunctionTable;
+
+        public DataTable SurvivalFunctionTable
+        {
+            get { return survivalFunctionTable; }
+            set
+            {
+                if (value == null) return;
+                survivalFunctionTable?.Clear();
+                survivalFunctionTable?.Columns.Clear();
+                survivalFunctionTable?.Rows.Clear();
+
+                survivalFunctionTable = value;
+                Task.Factory.StartNew(() =>
+                   SelectLifeTimesFunction()
+                );
+
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionTable)));
+            }
+        }
+
+        private void SelectSurvivalFunction(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                SurvivalFunctionTable = SQLExecutor.SelectExecutor(nameof(SurvivalFunction));
+                SurvivalFunctionTable.AcceptChanges();
+            }
+
+            currentSurvivalFunctions = SQLExecutor.Select<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
+
+            if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any())
+            {
+                RefreshCharts();
+            }
+        }
+
+        #endregion
+
+        #region Таблица t
+
+        private DataTable lifeTimesTable;
+
+        public DataTable LifeTimesTable
+        {
+            get { return lifeTimesTable; }
+            set
+            {
+                if (value == null) return;
+                lifeTimesTable?.Clear();
+                lifeTimesTable?.Columns.Clear();
+                lifeTimesTable?.Rows.Clear();
+                lifeTimesTable = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(LifeTimesTable)));
+            }
+        }
+
+        private void SelectLifeTimesFunction(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                LifeTimesTable = SQLExecutor.SelectExecutor(nameof(LifeTimes));
+                LifeTimesTable.AcceptChanges();
+            }
+
+            currentLifeTimes = SQLExecutor.Select<LifeTimes>($"SELECT * FROM {nameof(LifeTimes)}").ToList();
+
+            t = currentLifeTimes.Select(x => x.LifeTime.Value).ToList();
+            delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
         }
 
         #endregion
@@ -528,79 +606,9 @@ namespace Van.ViewModel
         }
 
         #endregion
-
-        #region Функция выживания s(t)
-
-        private DataTable survivalFunctionTable;
-
-        public DataTable SurvivalFunctionTable
-        {
-            get { return survivalFunctionTable; }
-            set
-            {
-                if (value == null) return;
-                survivalFunctionTable?.Clear();
-                survivalFunctionTable = value;
-                
-                Task.Factory.StartNew(() =>
-                   SelectLifeTimesFunction()
-                );
-
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionTable)));
-            }
-        }
-
-        private void SelectSurvivalFunction(bool needTableRefresh = true)
-        {
-            if (needTableRefresh)
-            {
-                SurvivalFunctionTable = SQLExecutor.SelectExecutor(nameof(SurvivalFunction));
-                SurvivalFunctionTable.AcceptChanges();
-            }
-
-            currentSurvivalFunctions = SQLExecutor.Select<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
-
-            if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any()) {
-                RefreshCharts();
-            }
-        }
-
-        #endregion
-
-        #region t таблица
-
-        private DataTable lifeTimesTable;
-
-        public DataTable LifeTimesTable
-        {
-            get { return lifeTimesTable; }
-            set
-            {
-                if (value == null) return;
-                lifeTimesTable?.Clear();
-                lifeTimesTable = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(LifeTimesTable)));
-            }
-        }
-
-        private void SelectLifeTimesFunction(bool needTableRefresh = true)
-        {
-            if (needTableRefresh)
-            {
-                LifeTimesTable = SQLExecutor.SelectExecutor(nameof(LifeTimes));
-                LifeTimesTable.AcceptChanges();
-            }
-
-            currentLifeTimes = SQLExecutor.Select<LifeTimes>($"SELECT * FROM {nameof(LifeTimes)}").ToList();
-
-            t = currentLifeTimes.Select(x=>x.LifeTime.Value).ToList();
-            delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
-        }
-
-        #endregion
-
+         
         public void RefreshCharts() {
-            Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 SeriesCollection = new SeriesCollection();
 
