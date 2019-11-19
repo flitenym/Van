@@ -240,7 +240,8 @@
                                 SnapsToDevicePixels="True"
                                 Background="{DynamicResource ScrollBackground}"
                                 CornerRadius="3"
-                                Opacity="0.2"
+                                Margin="0,0,2,0"
+                                Opacity="0.3"
                                 Height="{TemplateBinding Height}"
                                 Width="{TemplateBinding Width}"/>
                     <ControlTemplate.Triggers>
@@ -254,7 +255,7 @@
                         <EventTrigger RoutedEvent="MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <DoubleAnimation To="0.2" Duration="0:0:0.3" Storyboard.TargetName="rectangle" Storyboard.TargetProperty="Opacity" />
+                                    <DoubleAnimation To="0.3" Duration="0:0:0.3" Storyboard.TargetName="rectangle" Storyboard.TargetProperty="Opacity" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -271,11 +272,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-                        <Border Padding="0 4">
+                        <Border>
                             <Track x:Name="PART_Track"
                                IsDirectionReversed="true"
                                IsEnabled="{TemplateBinding IsMouseOver}"
-                               Width="6"
+                               Width="8"
                                HorizontalAlignment="Center">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Opacity="0" Command="{x:Static ScrollBar.PageUpCommand}" />

@@ -149,7 +149,7 @@
                           CanUserSortColumns="True"> 
                     </DataGrid>
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
-                        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Top" >
+                        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
                             <lvc:CartesianChart.AxisY>
                                 <lvc:Axis Title="Значение" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
                             </lvc:CartesianChart.AxisY>

@@ -8,21 +8,17 @@ namespace Van.Methods
 {
     public class Relay
     {
-        public Relay(List<int> t, List<int> delta)
+        public Relay(List<int> t, double r)
         {
-            this.t = t;
-            this.delta = delta;
-        }
+            LambdaCalculation(t, r);
+        } 
 
-        public List<int> t = new List<int>();
-        public List<int> delta = new List<int>();
-        public double r => delta.Where(x => x == 1).Count();
-        public double n => t.Count();
+        public double lambda { get; set; }
 
-        public double FirstSum() { 
+        public double FirstSum(List<int> t) { 
             double sum = 0;
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < t.Count(); i++)
             {
                 sum += Math.Pow(t[i], 2);
             }
@@ -30,8 +26,8 @@ namespace Van.Methods
             return sum;
         }
 
-        public double lambda() {
-            return Math.Pow(1 / (2 * r) * FirstSum(), -2);
+        public void LambdaCalculation(List<int> t, double r) {
+            lambda = Math.Pow(1 / (2 * r) * FirstSum(t), -2);
         }
 
     }

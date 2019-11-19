@@ -170,93 +170,6 @@ namespace Van.ViewModel
 
         #endregion
 
-        #region Weibull
-
-        private void Weibull() { 
-            Weibull weibull = new Weibull(t, delta, (double)int.MaxValue, epsilon);
-            WeibullValue = weibull.lambda(); 
-        } 
-
-        private double weibullValue = 0;
-
-        public double WeibullValue
-        {
-            get { return weibullValue; }
-            set
-            {
-                weibullValue = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(WeibullValue)));
-            }
-        }
-
-        #endregion
-
-        #region Exponential
-
-        private void Exponential()
-        { 
-            Exponential exponential = new Exponential(t, delta);
-            ExponentialValue = exponential.lambda(); 
-        } 
-
-        private double exponentialValue = 0;
-
-        public double ExponentialValue
-        {
-            get { return exponentialValue; }
-            set
-            {
-                exponentialValue = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ExponentialValue)));
-            }
-        }
-
-        #endregion
-
-        #region Relay
-
-        private void Relay()
-        { 
-            Relay relay = new Relay(t, delta);
-            RelayValue = relay.lambda(); 
-        } 
-
-        private double relayValue = 0;
-
-        public double RelayValue
-        {
-            get { return relayValue; }
-            set
-            {
-                relayValue = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(RelayValue)));
-            }
-        }
-
-        #endregion
-
-        #region Gompertz
-
-        private void Gompertz()
-        { 
-            Gompertz gompertz = new Gompertz(t, delta, (double)int.MaxValue, epsilon);
-            GompertzValue = gompertz.lambda(); 
-        } 
-
-        private double gompertzValue = 0;
-
-        public double GompertzValue
-        {
-            get { return gompertzValue; }
-            set
-            {
-                gompertzValue = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(GompertzValue)));
-            }
-        }
-
-        #endregion
-
         #region n значение
 
         private int nValue;
@@ -349,12 +262,12 @@ namespace Van.ViewModel
         public void RewriteLifeTimesTable()
         {
 
-            currentLifeTimes = new List<LifeTimes>(); 
+            currentLifeTimes = new List<LifeTimes>();
             delta = new List<int>();
 
-            foreach (var tValue in t)
+            for (int i = 0; i < t.Count(); i++)
             {
-                currentLifeTimes.Add(new LifeTimes() { LifeTime = tValue, Censor = 1 });
+                currentLifeTimes.Add(new LifeTimes() { LifeTime = t[i], Censor = 1 });
                 delta.Add(1);
             }
 
@@ -365,8 +278,8 @@ namespace Van.ViewModel
                 {
                     using (var cmd = cn.CreateCommand())
                     {
-                        cmd.CommandText = $"DELETE FROM LifeTimes"; 
-                        cmd.ExecuteNonQuery(); 
+                        cmd.CommandText = $"DELETE FROM LifeTimes";
+                        cmd.ExecuteNonQuery();
                     }
                     transaction.Commit();
                 }
@@ -375,17 +288,17 @@ namespace Van.ViewModel
 
 
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            { 
+            {
                 cn.Open();
                 using (var transaction = cn.BeginTransaction())
                 {
                     using (var cmd = cn.CreateCommand())
                     {
                         cmd.CommandText = $"INSERT INTO LifeTimes(LifeTime, Censor) VALUES(@LifeTime, @Censor);";
-                        foreach (var currentLifeTime in currentLifeTimes)
+                        for (int i = 0; i < currentLifeTimes.Count(); i++)
                         {
-                            cmd.Parameters.AddWithValue("@LifeTime", currentLifeTime.LifeTime);
-                            cmd.Parameters.AddWithValue("@Censor", currentLifeTime.Censor);
+                            cmd.Parameters.AddWithValue("@LifeTime", currentLifeTimes[i].LifeTime);
+                            cmd.Parameters.AddWithValue("@Censor", currentLifeTimes[i].Censor);
                             cmd.ExecuteNonQuery();
                         }
                     }
@@ -407,37 +320,7 @@ namespace Van.ViewModel
             return 0;
         }
 
-        #endregion
-
-        #region Комманда для вычисления параметров
-
-        private RelayCommand calculateCommand;
-        public RelayCommand CalculateCommand
-        {
-            get
-            {
-                return calculateCommand ??
-                  (calculateCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                            CalculateParametrs()
-                      );
-                  }));
-            }
-        }
-
-        private void CalculateParametrs()
-        {
-            Loading(true);
-            Gompertz();
-            Relay();
-            Exponential();
-            Weibull();
-            Message("Параметры вычислены");
-            Loading(false);
-        }
-
-        #endregion
+        #endregion 
 
         #region Комманда для вычисления числа умерших d(x)    
 
@@ -495,10 +378,10 @@ namespace Van.ViewModel
         }
 
         private void CalculateProbability()
-        { 
-            foreach (var mortalityTable in currentMortalityTables)
+        {
+            for (int i = 0; i < currentMortalityTables.Count(); i++)
             {
-                mortalityTable.Probability = (double?)mortalityTable.NumberOfDead / (double)currentMortalityTables.FirstOrDefault()?.NumberOfSurvivors;
+                currentMortalityTables[i].Probability = (double?)currentMortalityTables[i].NumberOfDead / (double)currentMortalityTables.First().NumberOfSurvivors;
             }
         }
 
@@ -533,10 +416,11 @@ namespace Van.ViewModel
         }
 
 
-        private void UpdateMortality() {
-            foreach (var MortalityTable in currentMortalityTables)
+        private void UpdateMortality()
+        {
+            for (int i = 0; i < currentMortalityTables.Count(); i++)
             {
-                SQLExecutor.UpdateExecutor(nameof(MortalityTable), MortalityTable, MortalityTable.ID);
+                SQLExecutor.UpdateExecutor(nameof(MortalityTable), currentMortalityTables[i], currentMortalityTables[i].ID);
             }
         }
 
@@ -566,9 +450,9 @@ namespace Van.ViewModel
 
         private void UpdateST()
         {
-            foreach (var SurvivalFunction in currentSurvivalFunctions)
+            for (int i = 0; i < currentSurvivalFunctions.Count(); i++) 
             {
-                SQLExecutor.UpdateExecutor(nameof(SurvivalFunction), SurvivalFunction, SurvivalFunction.ID);
+                SQLExecutor.UpdateExecutor(nameof(SurvivalFunction), currentSurvivalFunctions[i], currentSurvivalFunctions[i].ID);
             }
         }
 
@@ -580,6 +464,14 @@ namespace Van.ViewModel
             stopwatch.Start();
 
             CalculateSTStandart();
+
+            CalculateSTWeibull();
+
+            CalculateSTRelay();
+
+            CalculateSTGompertz();
+
+            CalculateSTExponential();
 
             //Обновим в БД данные исходя из текущего списка
             UpdateST();
@@ -605,23 +497,137 @@ namespace Van.ViewModel
             }
         }
 
+        public void CalculateSTWeibull()
+        {
+            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
+
+            if (maxNumberOfSurvivors == null) return;
+
+            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+
+            double r = delta.Where(x => x == 1).Count();
+            Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon); 
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].Weibull = Math.Exp(
+                    weibull.lambda * Math.Pow((double)currentMortalityTables[i]?.NumberOfSurvivors, weibull.gamma)
+                    );
+            }
+        }
+
+        public void CalculateSTRelay()
+        {
+            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
+
+            if (maxNumberOfSurvivors == null) return;
+
+            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+
+            double r = delta.Where(x => x == 1).Count();
+            Relay relay = new Relay(t, r); 
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].Relay = Math.Exp(
+                    (-0.5) * Math.Pow((double)currentMortalityTables[i]?.NumberOfSurvivors, 2) / Math.Pow(relay.lambda, 2)
+                    );
+            }
+        }
+
+        public void CalculateSTGompertz()
+        {
+            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
+
+            if (maxNumberOfSurvivors == null) return;
+
+            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+
+            double r = delta.Where(x => x == 1).Count();
+            Gompertz gompertz = new Gompertz(t, delta, r, (double)int.MaxValue, epsilon);
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].Gompertz = Math.Exp(
+                    (gompertz.lambda / gompertz.alpha) * (1 - Math.Exp(gompertz.alpha * (double)currentMortalityTables[i]?.NumberOfSurvivors))
+                    );
+            }
+        }
+
+        public void CalculateSTExponential()
+        {
+            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
+
+            if (maxNumberOfSurvivors == null) return;
+
+            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+
+            double r = delta.Where(x => x == 1).Count();
+            Exponential exponential = new Exponential(t, delta, r);
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].Exponential = Math.Exp(-exponential.lambda * (double)currentMortalityTables[i]?.NumberOfSurvivors);
+            }
+        }
+
         #endregion
-         
+
         public void RefreshCharts() {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 SeriesCollection = new SeriesCollection();
-
-                var series = new LineSeries
+                var strokeThickness = 2;
+                var standart = new LineSeries
                 {
                     Title = "Стандартное",
                     Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Standart.Value)),
                     Fill = Brushes.Transparent,
-                    StrokeThickness = 1,
-                    PointGeometry = null //use a null geometry when you have many series
-                };
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                }; 
+                SeriesCollection.Add(standart);
 
-                SeriesCollection.Add(series);
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Weibull.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                SeriesCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Exponential.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                SeriesCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Gompertz.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                SeriesCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Relay.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                SeriesCollection.Add(relay);
+
 
                 YFormatter = value => Math.Round(value, 3).ToString();
             }));

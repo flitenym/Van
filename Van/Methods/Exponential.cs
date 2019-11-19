@@ -8,24 +8,15 @@ namespace Van.Methods
 {
     public class Exponential
     {
-        public Exponential(List<int> t, List<int> delta)
+        public Exponential(List<int> t, List<int> delta, double r)
         {
-            this.t = t;
-            this.delta = delta;
+            LambdaCalculation(t, r);
         }
+        public double lambda { get; set; }
 
-        public List<int> t = new List<int>();
-        public List<int> delta = new List<int>();
-        public double r => delta.Where(x => x == 1).Count();
-        public double n => t.Count();
-
-        public double lambda() {
-            return r * Math.Pow(t.Sum(), -1);
-        }
-
-        public double st() {
-            var lambdaValue = lambda();
-            return 0;
+        public void LambdaCalculation(List<int> t, double r)
+        {
+            this.lambda = r * Math.Pow(t.Sum(), -1);
         }
 
     }
