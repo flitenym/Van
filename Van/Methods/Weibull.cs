@@ -34,7 +34,7 @@ namespace Van.Methods
             return firstSum;
         }
 
-        public double SecondSum(List<int> t, double x, double r)
+        public double SecondSum(List<int> t, double r, double x)
         {
             double secondSum = 0;
 
@@ -58,8 +58,8 @@ namespace Van.Methods
             return thirdSum;
         }
 
-        public double function(List<int> t, List<int> delta, double x, double r) {
-            return r / x + FirstSum(t, delta) - SecondSum(t, x, r) * ThirdSum(t, x);
+        public double function(List<int> t, List<int> delta, double r, double x) {
+            return r / x + FirstSum(t, delta) - SecondSum(t, r, x) * ThirdSum(t, x);
         }
 
         public double dichotomy(List<int> t, List<int> delta, double r)
@@ -68,7 +68,7 @@ namespace Van.Methods
             while (this.b - this.a > this.epsilon)
             {
                 x = (this.a + this.b) / 2;
-                if (this.function(t, delta, this.b, r) * this.function(t, delta, x, r) < 0)
+                if (this.function(t, delta, r, this.b) * this.function(t, delta, r, x) < 0)
                     this.a = x;
                 else
                     this.b = x;
@@ -86,6 +86,7 @@ namespace Van.Methods
             {
                 sum += Math.Pow(t[i], gamma);
             }
+             
 
             this.lambda = r * Math.Pow(sum, -1); 
         }

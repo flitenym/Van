@@ -272,7 +272,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="Bg" SnapsToDevicePixels="true" Background="Transparent">
-                        <Border>
+                        <Border Padding="0 4">
                             <Track x:Name="PART_Track"
                                IsDirectionReversed="true"
                                IsEnabled="{TemplateBinding IsMouseOver}"

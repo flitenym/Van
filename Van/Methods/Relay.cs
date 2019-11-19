@@ -27,7 +27,7 @@ namespace Van.Methods
         }
 
         public void LambdaCalculation(List<int> t, double r) {
-            lambda = Math.Pow(1 / (2 * r) * FirstSum(t), -2);
+            lambda = Math.Pow(FirstSum(t) / (2 * r), -2);
         }
 
     }

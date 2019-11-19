@@ -45,11 +45,15 @@ namespace Van.ViewModel
 
         public List<int> delta = new List<int>();
 
+        double r => delta.Where(x => x == 1).Count();
+
         public Random random = new Random();
 
         public bool HaveNullProbability = true;
 
         public double epsilon = 0.01;
+
+        public int round = 5;
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
@@ -493,7 +497,10 @@ namespace Van.ViewModel
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
             for (int i = 0; i < currentMortalityTables.Count; i++) {
-                currentSurvivalFunctions[i].Standart = (double)currentMortalityTables[i]?.NumberOfSurvivors / (double)maxNumberOfSurvivors;
+                currentSurvivalFunctions[i].Standart = Math.Round(
+                    (double)currentMortalityTables[i]?.NumberOfSurvivors / 
+                    (double)maxNumberOfSurvivors
+                    , round);
             }
         }
 
@@ -505,14 +512,16 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            double r = delta.Where(x => x == 1).Count();
             Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon); 
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Weibull = Math.Exp(
-                    weibull.lambda * Math.Pow((double)currentMortalityTables[i]?.NumberOfSurvivors, weibull.gamma)
-                    );
+                currentSurvivalFunctions[i].Weibull = Math.Round(
+                    Math.Exp(
+                    weibull.lambda * 
+                    Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
+                    )
+                    , round);
             }
         }
 
@@ -524,14 +533,16 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            double r = delta.Where(x => x == 1).Count();
-            Relay relay = new Relay(t, r); 
+            Relay relay = new Relay(t, r);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Relay = Math.Exp(
-                    (-0.5) * Math.Pow((double)currentMortalityTables[i]?.NumberOfSurvivors, 2) / Math.Pow(relay.lambda, 2)
-                    );
+                currentSurvivalFunctions[i].Relay = Math.Round(
+                    Math.Exp(
+                            -Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
+                            (2 * Math.Pow(relay.lambda, 2))
+                        )
+                    , round);
             }
         }
 
@@ -543,14 +554,23 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            double r = delta.Where(x => x == 1).Count();
             Gompertz gompertz = new Gompertz(t, delta, r, (double)int.MaxValue, epsilon);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Gompertz = Math.Exp(
-                    (gompertz.lambda / gompertz.alpha) * (1 - Math.Exp(gompertz.alpha * (double)currentMortalityTables[i]?.NumberOfSurvivors))
-                    );
+                currentSurvivalFunctions[i].Gompertz = Math.Round(
+                    Math.Exp(
+                    gompertz.lambda /
+                    gompertz.alpha *
+                    (
+                        1 -
+                        Math.Exp(
+                                    gompertz.alpha *
+                                    getTValue(currentMortalityTables[i]?.AgeX)
+                                )
+                    )
+                    )
+                    , round);
             }
         }
 
@@ -562,12 +582,16 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            double r = delta.Where(x => x == 1).Count();
             Exponential exponential = new Exponential(t, delta, r);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Exponential = Math.Exp(-exponential.lambda * (double)currentMortalityTables[i]?.NumberOfSurvivors);
+                currentSurvivalFunctions[i].Exponential = Math.Round(
+                    Math.Exp(
+                                -exponential.lambda *
+                                getTValue(currentMortalityTables[i]?.AgeX)
+                            )
+                    , round);
             }
         }
 
