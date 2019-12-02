@@ -20,14 +20,14 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                sum += Math.Pow(t[i], 2);
+                sum += t[i];
             }
 
             return sum;
         }
 
         public void LambdaCalculation(List<int> t, double r) {
-            lambda = Math.Pow(FirstSum(t) / (2 * r), -2);
+            lambda = Math.Sqrt(FirstSum(t) / (4 * Math.Sqrt(r)));
         }
 
     }

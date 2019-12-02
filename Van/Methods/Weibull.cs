@@ -34,7 +34,7 @@ namespace Van.Methods
             return firstSum;
         }
 
-        public double SecondSum(List<int> t, double r, double x)
+        public double SecondSum(List<int> t, double x)
         {
             double secondSum = 0;
 
@@ -43,7 +43,7 @@ namespace Van.Methods
                 secondSum += Math.Pow(t[i], x);
             }
 
-            return r * Math.Pow(secondSum, -1);
+            return Math.Pow(secondSum, -1);
         }
 
         public double ThirdSum(List<int> t, double x)
@@ -59,7 +59,7 @@ namespace Van.Methods
         }
 
         public double function(List<int> t, List<int> delta, double r, double x) {
-            return r / x + FirstSum(t, delta) - SecondSum(t, r, x) * ThirdSum(t, x);
+            return r / x + FirstSum(t, delta) - r * SecondSum(t, x) * ThirdSum(t, x);
         }
 
         public double dichotomy(List<int> t, List<int> delta, double r)
@@ -84,7 +84,7 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                sum += Math.Pow(t[i], gamma);
+                sum += Math.Pow(t[i], this.gamma);
             }
              
 

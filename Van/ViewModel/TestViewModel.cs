@@ -250,12 +250,12 @@ namespace Van.ViewModel
                 {
                     if (z < currentMortalityTables[j].Probability)
                     {
-                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        t.Add((int)getTValue(currentMortalityTables[j].AgeX));
                         break;
                     }
                     else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
                     {
-                        t.Add(getTValue(currentMortalityTables[j].AgeX));
+                        t.Add((int)getTValue(currentMortalityTables[j].AgeX));
                         break;
                     }
                     sumProbubility += currentMortalityTables[j].Probability.Value;
@@ -315,9 +315,9 @@ namespace Van.ViewModel
         /// <summary>
         /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
         /// </summary>
-        public int getTValue(string ageX) {
+        public double getTValue(string ageX) {
             // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
-            if (int.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out int value))
+            if (double.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out double value))
             { 
                 return value;
             }
@@ -512,14 +512,14 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon); 
+            Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Weibull = Math.Round(
+                    1.0 -
                     Math.Exp(
-                    weibull.lambda * 
-                    Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
+                    - Math.Pow(getTValue(currentMortalityTables[i]?.AgeX) / weibull.lambda, weibull.gamma)
                     )
                     , round);
             }
@@ -539,8 +539,8 @@ namespace Van.ViewModel
             {
                 currentSurvivalFunctions[i].Relay = Math.Round(
                     Math.Exp(
-                            -Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
-                            (2 * Math.Pow(relay.lambda, 2))
+                            - Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
+                            Math.Pow(relay.lambda, 2)
                         )
                     , round);
             }
