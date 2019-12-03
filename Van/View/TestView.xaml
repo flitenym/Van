@@ -167,6 +167,50 @@
                             <ColumnDefinition Width="250" />
                             <ColumnDefinition Width="70" />
                         </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Оценка качесва моделей" />
+                        <Button Grid.Column="1" 
+                                Width="auto"
+                                Height="auto" 
+                                ToolTip="Пересчитать качесво моделей"
+                                Command="{Binding CalculateQualityCommand}" 
+                                Style="{DynamicResource ButtonZoom}">
+                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
+                        </Button>
+                    </Grid>
+                </Expander.Header>
+                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
+                    <DataGrid Height="500"
+                          x:Name="QualityAssessmentOfModelsTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding QualityAssessmentOfModelsTableData, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+                    </DataGrid> 
+                </StackPanel>
+            </Expander>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <!--<Expander Background="Transparent" >
+                <Expander.Header>
+                    <Grid Height="35">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Плотность f(t)" /> 
                         <Button Grid.Column="1" 
                                 Width="auto"
@@ -184,7 +228,7 @@
                 </StackPanel>
             </Expander>
             
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>-->
 
         </StackPanel>
     </ScrollViewer>

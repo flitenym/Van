@@ -137,6 +137,7 @@
     </ApplicationDefinition>
     <Compile Include="Controls\WindowControl.cs" />
     <Compile Include="DataBase\Models\LifeTimes.cs" />
+    <Compile Include="DataBase\Models\QualityAssessmentOfModels.cs" />
     <Compile Include="DataBase\Models\SurvivalFunction.cs" />
     <Compile Include="DataBase\ModelClassAttribute.cs" />
     <Compile Include="DataBase\ModelClass.cs" />

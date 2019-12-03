@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Windows.Media;
 using LiveCharts.Wpf;
 using System.Windows;
+using Dapper;
 
 namespace Van.ViewModel
 {
@@ -26,17 +27,10 @@ namespace Van.ViewModel
         {
             Loading(true);
 
-            Task.Factory.StartNew(() =>
-                SelectMortality()
-            );
-
-            Task.Factory.StartNew(() =>
-               SelectSurvivalFunction()
-            );
-
-            Task.Factory.StartNew(() =>
-               SelectLifeTimesFunction()
-            ); 
+            SelectMortality();
+            SelectSurvivalFunction();
+            SelectLifeTimesFunction(); 
+            SelectQualityAssessmentOfModels();
 
             Loading(false);
         }
@@ -61,6 +55,34 @@ namespace Van.ViewModel
 
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
 
+        public QualityAssessmentOfModels qualityAssessmentOfModels = new QualityAssessmentOfModels();
+
+        #region Таблица оценка качесва моделей
+
+        private DataTable qualityAssessmentOfModelsTableData;
+
+        public DataTable QualityAssessmentOfModelsTableData
+        {
+            get { return qualityAssessmentOfModelsTableData; }
+            set
+            {
+                if (value == null) return;
+                qualityAssessmentOfModelsTableData?.Clear();
+                qualityAssessmentOfModelsTableData?.Columns.Clear();
+                qualityAssessmentOfModelsTableData?.Rows.Clear();
+
+                qualityAssessmentOfModelsTableData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(QualityAssessmentOfModelsTableData)));
+            }
+        }
+
+        private void SelectQualityAssessmentOfModels()
+        { 
+            QualityAssessmentOfModelsTableData = SQLExecutor.SelectExecutor(nameof(QualityAssessmentOfModels));
+            QualityAssessmentOfModelsTableData.AcceptChanges(); 
+        }
+
+        #endregion
 
         #region Таблица смертности
 
@@ -449,7 +471,7 @@ namespace Van.ViewModel
 
         private bool CanCalculateST(object x)
         {
-            return currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
+            return t.Any() && currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
         }
 
         private void UpdateST()
@@ -466,6 +488,8 @@ namespace Van.ViewModel
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            qualityAssessmentOfModels = new QualityAssessmentOfModels();
 
             CalculateSTStandart();
 
@@ -501,7 +525,7 @@ namespace Van.ViewModel
                     (double)currentMortalityTables[i]?.NumberOfSurvivors / 
                     (double)maxNumberOfSurvivors
                     , round);
-            }
+            } 
         }
 
         public void CalculateSTWeibull()
@@ -593,9 +617,63 @@ namespace Van.ViewModel
                             )
                     , round);
             }
+
+            qualityAssessmentOfModels.Exponential = exponential.LValue;
         }
 
         #endregion
+
+        #region Комманда для вычисления качества моделей
+
+        private RelayCommand calculateQualityCommand;
+        public RelayCommand CalculateQualityCommand
+        {
+            get
+            {
+                return calculateQualityCommand ??
+                  (calculateQualityCommand = new RelayCommand(x =>
+                  {
+                      Task.Factory.StartNew(() =>
+                          CalculateQuality()
+                      );
+                  }, CanCalculateQuality));
+            }
+        }
+
+        private bool CanCalculateQuality(object x)
+        {
+            return currentLifeTimes.Any();
+        }
+
+        public void CalculateQuality()
+        {
+            Loading(true);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            //Удалим значение из таблицы
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                slc.Open();
+                slc.Execute($"DELETE from {nameof(QualityAssessmentOfModels)}");
+            }
+
+            //Вычислим и обновим таблицу
+
+
+
+            //Загрузим из БД
+            SelectSurvivalFunction();
+
+            Message($"Качество моделей вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            stopwatch.Stop();
+
+            Loading(false);
+        }
+
+        #endregion
+
 
         public void RefreshCharts() {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>

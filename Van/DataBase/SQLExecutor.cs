@@ -25,6 +25,7 @@ namespace Van.DataBase
                 case nameof(MortalityTable): return Select<MortalityTable>($"SELECT * FROM {tableName}").ToDataTable();
                 case nameof(SurvivalFunction): return Select<SurvivalFunction>($"SELECT * FROM {tableName}").ToDataTable();
                 case nameof(LifeTimes): return Select<LifeTimes>($"SELECT * FROM {tableName}").ToDataTable();
+                case nameof(QualityAssessmentOfModels): return Select<QualityAssessmentOfModels>($"SELECT * FROM {tableName}").ToDataTable();
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -48,6 +49,7 @@ namespace Van.DataBase
                 case nameof(MortalityTable): Delete(tableName, IDs); break;
                 case nameof(SurvivalFunction): Delete(tableName, IDs); break;
                 case nameof(LifeTimes): Delete(tableName, IDs); break;
+                case nameof(QualityAssessmentOfModels): Delete(tableName, IDs); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -71,6 +73,7 @@ namespace Van.DataBase
             {
                 case nameof(MortalityTable): return MortalityTableQuery.InsertQuery;
                 case nameof(LifeTimes): return LifeTimesQuery.InsertQuery;
+                case nameof(QualityAssessmentOfModels): return QualityAssessmentOfModelsQuery.InsertQuery;
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -81,6 +84,7 @@ namespace Van.DataBase
             {
                 case nameof(MortalityTable): return Insert(InsertQuery(tableName), item);
                 case nameof(LifeTimes): return Insert(InsertQuery(tableName), item);
+                case nameof(QualityAssessmentOfModels): return Insert(InsertQuery(tableName), item);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -105,6 +109,7 @@ namespace Van.DataBase
                 case nameof(MortalityTable): return MortalityTableQuery.UpdateQuery(ID);
                 case nameof(SurvivalFunction): return SurvivalFunctionQuery.UpdateQuery(ID);
                 case nameof(LifeTimes): return LifeTimesQuery.UpdateQuery(ID);
+                case nameof(QualityAssessmentOfModels): return QualityAssessmentOfModelsQuery.UpdateQuery(ID);
                 default: throw new Exception("Не верная таблица");
             }
         }
@@ -116,6 +121,7 @@ namespace Van.DataBase
                 case nameof(MortalityTable): Update(UpdateQuery(tableName, ID), row.ToObject<MortalityTable>()); break; 
                 case nameof(SurvivalFunction): Update(UpdateQuery(tableName, ID), row.ToObject<SurvivalFunction>()); break;
                 case nameof(LifeTimes): Update(UpdateQuery(tableName, ID), row.ToObject<LifeTimes>()); break;
+                case nameof(QualityAssessmentOfModels): Update(UpdateQuery(tableName, ID), row.ToObject<QualityAssessmentOfModels>()); break;
                 default: throw new Exception("Не верная таблица");
             }
         }
