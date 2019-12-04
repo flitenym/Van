@@ -9,12 +9,12 @@ namespace Van.Methods
     public class Gompertz
     {
         public Gompertz(List<int> t, List<int> delta, double r, double b, double epsilon, double? a = null)
-        { 
+        {
             this.b = b;
             this.epsilon = epsilon;
             this.a = a != null ? (double)a : epsilon;
 
-            LambdaAlphaCalculation(t, delta, r);
+            ParamterCalculation(t, delta, r);
         }
 
         public double b { get; set; }
@@ -24,7 +24,10 @@ namespace Van.Methods
         public double alpha { get; set; }
         public double lambda { get; set; }
 
-        public double FirstSum(List<int> t, List<int> delta, double x) {
+        public double LValue { get; set; }
+
+        public double FirstSum(List<int> t, List<int> delta, double x)
+        {
             double firstSum = 0;
 
             for (int i = 0; i < t.Count(); i++)
@@ -70,7 +73,7 @@ namespace Van.Methods
             while (this.b - this.a > this.epsilon)
             {
                 x = (this.a + this.b) / 2;
-                if (this.function(t,delta,r,this.b) * this.function(t, delta, r, x) < 0)
+                if (this.function(t, delta, r, this.b) * this.function(t, delta, r, x) < 0)
                     this.a = x;
                 else
                     this.b = x;
@@ -90,6 +93,27 @@ namespace Van.Methods
             }
 
             lambda = alpha * r * Math.Pow(sum - t.Count(), -1);
+        }
+
+        public void LCalculation(List<int> t, List<int> delta, double r, double sum)
+        {
+            LValue = r * Math.Log(lambda) + FirstSum(t, delta, alpha) + (lambda / alpha) * (t.Count() - sum);
+        }
+
+        public void ParamterCalculation(List<int> t, List<int> delta, double r)
+        {
+            alpha = dichotomy(t, delta, r);
+
+            double sum = 0;
+
+            for (int i = 0; i < t.Count(); i++)
+            {
+                sum += Math.Exp(t[i] * alpha);
+            }
+
+            lambda = alpha * r * Math.Pow(sum - t.Count(), -1);
+
+            LCalculation(t, delta, r, sum);
         }
 
     }

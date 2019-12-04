@@ -10,19 +10,20 @@ namespace Van.Methods
     {
         public Exponential(List<int> t, List<int> delta, double r)
         {
-            LambdaCalculation(t, r);
-            LCalculation(t, r);
+            ParamterCalculation(t, r);
         }
         public double lambda { get; set; }
         public double LValue { get; set; }
 
-        public void LambdaCalculation(List<int> t, double r)
+        public void ParamterCalculation(List<int> t, double r)
         {
-            this.lambda = r * Math.Pow(t.Sum(), -1);
-        }
+            int tSum = t.Sum();
 
-        public void LCalculation(List<int> t, double r) {
-            LValue = r * Math.Log(this.lambda) - this.lambda * t.Sum();
+            //Вычисление параметра
+            this.lambda = r / tSum;
+
+            //Вычисление ФМП
+            LValue = r * Math.Log(this.lambda) - this.lambda * tSum;
         }
 
     }

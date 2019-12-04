@@ -14,52 +14,40 @@ namespace Van.Methods
             this.epsilon = epsilon;
             this.a = a != null ? (double)a : epsilon;
 
-            LambdaGammaCalculate(t, delta, r);
+            ParamterCalculation(t, delta, r);
         }
         public double b { get; set; }
         public double epsilon { get; set; }
         public double a { get; set; }
 
         public double lambda { get; set; }
-        public double gamma { get; set; } 
+        public double gamma { get; set; }
 
-        public double FirstSum(List<int> t, List<int> delta) {
+        public double LValue { get; set; }
+
+        public double FirstSum(List<int> t, List<int> delta, double r, double x)
+        {
             double firstSum = 0;
-
-            for (int i = 0; i < t.Count(); i++)
-            {
-                firstSum += Math.Log(t[i]) * delta[i];
-            }
-
-            return firstSum;
-        }
-
-        public double SecondSum(List<int> t, double x)
-        {
             double secondSum = 0;
-
-            for (int i = 0; i < t.Count(); i++)
-            {
-                secondSum += Math.Pow(t[i], x);
-            }
-
-            return Math.Pow(secondSum, -1);
-        }
-
-        public double ThirdSum(List<int> t, double x)
-        {
             double thirdSum = 0;
 
             for (int i = 0; i < t.Count(); i++)
             {
+                firstSum += Math.Log(t[i]) * delta[i];
+
+                secondSum += Math.Pow(t[i], x);
+
                 thirdSum += Math.Pow(t[i], x) * Math.Log(t[i]);
             }
 
-            return thirdSum;
+            secondSum = r * Math.Pow(secondSum, -1);
+
+            return firstSum - secondSum * thirdSum;
         }
 
-        public double function(List<int> t, List<int> delta, double r, double x) {
-            return r / x + FirstSum(t, delta) - r * SecondSum(t, x) * ThirdSum(t, x);
+        public double function(List<int> t, List<int> delta, double r, double x)
+        {
+            return r / x + FirstSum(t, delta, r, x);
         }
 
         public double dichotomy(List<int> t, List<int> delta, double r)
@@ -78,7 +66,7 @@ namespace Van.Methods
 
         public void LambdaGammaCalculate(List<int> t, List<int> delta, double r)
         {
-            this.gamma = dichotomy(t, delta, r); 
+            this.gamma = dichotomy(t, delta, r);
 
             double sum = 0;
 
@@ -86,9 +74,31 @@ namespace Van.Methods
             {
                 sum += Math.Pow(t[i], this.gamma);
             }
-             
 
-            this.lambda = r * Math.Pow(sum, -1); 
+            this.lambda = r * Math.Pow(sum, -1);
+        }
+
+        public void LCalculation(List<int> t, List<int> delta, double r)
+        {
+            double firstSum = 0;
+            double secondSum = 0;
+
+            for (int i = 0; i < t.Count(); i++)
+            {
+                firstSum += Math.Log(t[i]) * delta[i];
+
+                secondSum += Math.Pow(t[i], gamma);
+            }
+
+
+            LValue = r * Math.Log(lambda * gamma) + (gamma - 1) * firstSum - lambda * secondSum;
+        }
+
+        public void ParamterCalculation(List<int> t, List<int> delta, double r)
+        {
+            LambdaGammaCalculate(t, delta, r);
+
+            LCalculation(t, delta, r);
         }
 
     }

@@ -54,9 +54,8 @@
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                 </Button>
             </StackPanel>
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" />
- 
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" /> 
 
             <Expander Background="Transparent" >
                 <Expander.Header>
@@ -108,27 +107,19 @@
             </Expander>
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+            
+            <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="250" 
+                        Margin="5"
+                        Content="Вычислить данные методы"
+                        Command="{Binding CalculateMethodsCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </StackPanel>
 
-            <Expander Background="Transparent" >
-                <Expander.Header> 
-                    <Grid Height="35">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="70" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Функция выживания s(t)" />
-                        <Button Grid.Column="1" 
-                                Width="auto"
-                                Height="auto" 
-                                ToolTip="Пересчитать функции выживаний s(t)"
-                                Command="{Binding CalculateSTCommand}" 
-                                Style="{DynamicResource ButtonZoom}">
-                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
-                        </Button>
-                    </Grid>
-                </Expander.Header> 
-                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
-                    <DataGrid Height="500"
+            <TextBlock Height="20" Text="Функция выживания s(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
                           x:Name="SurvivalFunctionTableDataGrid"
                           Background="{x:Null}"
                           HorizontalAlignment="Stretch" 
@@ -147,60 +138,38 @@
                           SelectionUnit="FullRow" 
                           ColumnWidth="*"
                           CanUserSortColumns="True"> 
-                    </DataGrid>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
-                        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
-                            <lvc:CartesianChart.AxisY>
-                                <lvc:Axis Title="Значение" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
-                            </lvc:CartesianChart.AxisY>
-                        </lvc:CartesianChart>
-                    </Grid>
-                </StackPanel>
-            </Expander>
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid> 
             
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
-
-            <Expander Background="Transparent" >
-                <Expander.Header>
-                    <Grid Height="35">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="70" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Оценка качесва моделей" />
-                        <Button Grid.Column="1" 
-                                Width="auto"
-                                Height="auto" 
-                                ToolTip="Пересчитать качесво моделей"
-                                Command="{Binding CalculateQualityCommand}" 
-                                Style="{DynamicResource ButtonZoom}">
-                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
-                        </Button>
-                    </Grid>
-                </Expander.Header>
-                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
-                    <DataGrid Height="500"
-                          x:Name="QualityAssessmentOfModelsTableDataGrid"
-                          Background="{x:Null}"
-                          HorizontalAlignment="Stretch" 
-                          VerticalAlignment="Stretch"
-                          EnableRowVirtualization="True" 
-                          EnableColumnVirtualization="False" 
-                          ScrollViewer.CanContentScroll="True" 
-                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                          GridLinesVisibility="None" 
-                          HeadersVisibility="Column" 
-                          CanUserAddRows="False" 
-                          CanUserDeleteRows="False"
-                          IsReadOnly="True"
-                          ItemsSource="{Binding QualityAssessmentOfModelsTableData, Mode=TwoWay, IsAsync=True}" 
-                          SelectionUnit="FullRow" 
-                          ColumnWidth="*"
-                          CanUserSortColumns="True">
-                    </DataGrid> 
-                </StackPanel>
-            </Expander>
+  
+            <TextBlock Height="20" Text="Оценка качества моделей" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="100"
+                        x:Name="QualityAssessmentOfModelsTableDataGrid"
+                        Background="{x:Null}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"
+                        EnableRowVirtualization="True" 
+                        EnableColumnVirtualization="False" 
+                        ScrollViewer.CanContentScroll="True" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                        GridLinesVisibility="None" 
+                        HeadersVisibility="Column" 
+                        CanUserAddRows="False" 
+                        CanUserDeleteRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding QualityAssessmentOfModelsTableData, Mode=TwoWay, IsAsync=True}" 
+                        SelectionUnit="FullRow" 
+                        ColumnWidth="*"
+                        CanUserSortColumns="True">
+            </DataGrid>  
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 

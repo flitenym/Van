@@ -452,24 +452,24 @@ namespace Van.ViewModel
 
         #endregion
 
-        #region Комманда для вычисления s(t)
+        #region Комманда для методов
 
-        private RelayCommand calculateSTCommand;
-        public RelayCommand CalculateSTCommand
+        private RelayCommand calculateMethodsCommand;
+        public RelayCommand CalculateMethodsCommand
         {
             get
             {
-                return calculateSTCommand ??
-                  (calculateSTCommand = new RelayCommand(x =>
+                return calculateMethodsCommand ??
+                  (calculateMethodsCommand = new RelayCommand(x =>
                   {
                       Task.Factory.StartNew(() =>
-                          CalculateST()
+                          CalculateMethods()
                       );
-                  }, CanCalculateST));
+                  }, CanCalculateMethods));
             }
         }
 
-        private bool CanCalculateST(object x)
+        private bool CanCalculateMethods(object x)
         {
             return t.Any() && currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
         }
@@ -482,7 +482,7 @@ namespace Van.ViewModel
             }
         }
 
-        public void CalculateST()
+        public void CalculateMethods()
         {
             Loading(true); 
 
@@ -501,16 +501,25 @@ namespace Van.ViewModel
 
             CalculateSTExponential();
 
+            //--------Обновление S(t)
             //Обновим в БД данные исходя из текущего списка
-            UpdateST();
-
+            UpdateST(); 
             //обновим таблицу через БД
             SelectSurvivalFunction();
 
-            Message($"s(t) вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            //--------Обновление оценки качества
+            QualityUpdate();
+
+
+            Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             stopwatch.Stop();
 
             Loading(false);
+        }
+
+        public double GetQuality(double LValue, int k, int n)
+        {
+            return -2.0 * LValue + 2.0 * k + (double)(2.0 * k * (k + 1.0)) / (double)(n - k - 1.0);
         }
 
         public void CalculateSTStandart() {
@@ -525,7 +534,7 @@ namespace Van.ViewModel
                     (double)currentMortalityTables[i]?.NumberOfSurvivors / 
                     (double)maxNumberOfSurvivors
                     , round);
-            } 
+            }
         }
 
         public void CalculateSTWeibull()
@@ -547,6 +556,8 @@ namespace Van.ViewModel
                     )
                     , round);
             }
+
+            qualityAssessmentOfModels.Weibull = GetQuality(weibull.LValue, 2, t.Count());
         }
 
         public void CalculateSTRelay()
@@ -557,7 +568,7 @@ namespace Van.ViewModel
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            Relay relay = new Relay(t, r);
+            Relay relay = new Relay(t, delta, r);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -568,6 +579,8 @@ namespace Van.ViewModel
                         )
                     , round);
             }
+
+            qualityAssessmentOfModels.Relay = GetQuality(relay.LValue, 1, t.Count());
         }
 
         public void CalculateSTGompertz()
@@ -596,6 +609,8 @@ namespace Van.ViewModel
                     )
                     , round);
             }
+
+            qualityAssessmentOfModels.Gompertz = GetQuality(gompertz.LValue, 2, t.Count());
         }
 
         public void CalculateSTExponential()
@@ -618,40 +633,11 @@ namespace Van.ViewModel
                     , round);
             }
 
-            qualityAssessmentOfModels.Exponential = exponential.LValue;
+            qualityAssessmentOfModels.Exponential = GetQuality(exponential.LValue, 1, t.Count());
         }
 
-        #endregion
-
-        #region Комманда для вычисления качества моделей
-
-        private RelayCommand calculateQualityCommand;
-        public RelayCommand CalculateQualityCommand
+        public void QualityUpdate()
         {
-            get
-            {
-                return calculateQualityCommand ??
-                  (calculateQualityCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          CalculateQuality()
-                      );
-                  }, CanCalculateQuality));
-            }
-        }
-
-        private bool CanCalculateQuality(object x)
-        {
-            return currentLifeTimes.Any();
-        }
-
-        public void CalculateQuality()
-        {
-            Loading(true);
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             //Удалим значение из таблицы
             using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
@@ -659,21 +645,11 @@ namespace Van.ViewModel
                 slc.Execute($"DELETE from {nameof(QualityAssessmentOfModels)}");
             }
 
-            //Вычислим и обновим таблицу
-
-
-
-            //Загрузим из БД
-            SelectSurvivalFunction();
-
-            Message($"Качество моделей вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
-            stopwatch.Stop();
-
-            Loading(false);
+            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), qualityAssessmentOfModels);
+            SelectQualityAssessmentOfModels();
         }
 
         #endregion
-
 
         public void RefreshCharts() {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
