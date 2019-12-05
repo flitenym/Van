@@ -16,6 +16,7 @@ using System.Windows.Media;
 using LiveCharts.Wpf;
 using System.Windows;
 using Dapper;
+using System.Threading;
 
 namespace Van.ViewModel
 {
@@ -27,10 +28,8 @@ namespace Van.ViewModel
         {
             Loading(true);
 
-            SelectMortality();
-            SelectSurvivalFunction();
-            SelectLifeTimesFunction(); 
-            SelectQualityAssessmentOfModels();
+            Thread thread = new Thread(LoadTables);
+            thread.Start();
 
             Loading(false);
         }
@@ -56,6 +55,17 @@ namespace Van.ViewModel
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
 
         public QualityAssessmentOfModels qualityAssessmentOfModels = new QualityAssessmentOfModels();
+
+        public void LoadTables()
+        { 
+            Task.Factory.StartNew(() =>
+            {
+                SelectMortality();
+                SelectSurvivalFunction();
+                SelectLifeTimesFunction();
+                SelectQualityAssessmentOfModels();
+            });
+        }
 
         #region Таблица оценка качесва моделей
 
@@ -463,7 +473,7 @@ namespace Van.ViewModel
                   (calculateMethodsCommand = new RelayCommand(x =>
                   {
                       Task.Factory.StartNew(() =>
-                          CalculateMethods()
+                          CalculateMethodsAsync()
                       );
                   }, CanCalculateMethods));
             }
@@ -482,7 +492,7 @@ namespace Van.ViewModel
             }
         }
 
-        public void CalculateMethods()
+        public async Task CalculateMethodsAsync()
         {
             Loading(true); 
 
@@ -491,15 +501,20 @@ namespace Van.ViewModel
 
             qualityAssessmentOfModels = new QualityAssessmentOfModels();
 
-            CalculateSTStandart();
+            var taskStandart = new Task(CalculateSTStandart);
+            var taskWeibull = new Task(CalculateSTWeibull);
+            var taskRelay = new Task(CalculateSTRelay);
+            var taskGompertz = new Task(CalculateSTGompertz);
+            var taskExponential = new Task(CalculateSTExponential);
 
-            CalculateSTWeibull();
+            taskStandart.Start();
+            taskWeibull.Start();
+            taskRelay.Start();
+            taskGompertz.Start();
+            taskExponential.Start();
 
-            CalculateSTRelay();
+            await Task.WhenAll(taskStandart, taskWeibull, taskRelay, taskGompertz, taskExponential);
 
-            CalculateSTGompertz();
-
-            CalculateSTExponential();
 
             //--------Обновление S(t)
             //Обновим в БД данные исходя из текущего списка
