@@ -17,13 +17,13 @@ namespace Van.Methods
 
         public void ParamterCalculation(List<int> t, double r)
         {
-            int tSum = t.Sum();
+            double tSum = t.Sum();
 
             //Вычисление параметра
             this.lambda = r / tSum;
 
             //Вычисление ФМП
-            LValue = r * Math.Log(this.lambda) - this.lambda * tSum;
+            LValue = r * Math.Log(this.lambda == 0 ? 0.1 : this.lambda) - this.lambda * tSum;
         }
 
     }

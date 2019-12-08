@@ -33,11 +33,13 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                firstSum += Math.Log(t[i]) * delta[i];
+                double tValue = t[i] == 0 ? 0.1 : t[i];
+
+                firstSum += Math.Log(tValue) * delta[i];
 
                 secondSum += Math.Pow(t[i], x);
 
-                thirdSum += Math.Pow(t[i], x) * Math.Log(t[i]);
+                thirdSum += Math.Pow(t[i], x) * Math.Log(tValue);
             }
 
             secondSum = r * Math.Pow(secondSum, -1);
@@ -85,13 +87,14 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                firstSum += Math.Log(t[i]) * delta[i];
+                firstSum += Math.Log(t[i] == 0 ? 0.1 : t[i]) * delta[i];
 
                 secondSum += Math.Pow(t[i], gamma);
             }
 
+            double paramsPow = lambda * gamma == 0 ? 0.1 : lambda * gamma;
 
-            LValue = r * Math.Log(lambda * gamma) + (gamma - 1) * firstSum - lambda * secondSum;
+            LValue = r * Math.Log(paramsPow) + (gamma - 1) * firstSum - lambda * secondSum;
         }
 
         public void ParamterCalculation(List<int> t, List<int> delta, double r)

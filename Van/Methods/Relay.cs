@@ -23,7 +23,7 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                sum += t[i];
+                sum += t[i] * t[i];
             }
 
             return sum;
@@ -31,15 +31,16 @@ namespace Van.Methods
 
         public void LambdaCalculation(List<int> t, double r)
         {
-            lambda = Math.Sqrt(FirstSum(t) / (4 * Math.Sqrt(r)));
+            lambda = Math.Sqrt(FirstSum(t) / (2.0 * r));
         }
 
-        public void LCalculation(List<int> t, List<int> delta, double r) {
+        public void LCalculation(List<int> t, List<int> delta, double r)
+        {
             double firstSum = 0;
 
             for (int i = 0; i < t.Count(); i++)
             {
-                firstSum += delta[i] * Math.Log(t[i] / Math.Pow(lambda, 2));
+                firstSum += delta[i] * Math.Log((t[i] == 0 ? 0.1 : t[i]) / Math.Pow(lambda, 2));
             }
 
             double secondSum = 0;

@@ -534,7 +534,7 @@ namespace Van.ViewModel
 
         public double GetQuality(double LValue, int k, int n)
         {
-            return -2.0 * LValue + 2.0 * k + (double)(2.0 * k * (k + 1.0)) / (double)(n - k - 1.0);
+            return -2.0 * LValue / n + 2.0 * k / n;
         }
 
         public void CalculateSTStandart() {
@@ -565,9 +565,8 @@ namespace Van.ViewModel
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Weibull = Math.Round(
-                    1.0 -
                     Math.Exp(
-                    - Math.Pow(getTValue(currentMortalityTables[i]?.AgeX) / weibull.lambda, weibull.gamma)
+                    -weibull.lambda * Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
                     )
                     , round);
             }
@@ -590,7 +589,7 @@ namespace Van.ViewModel
                 currentSurvivalFunctions[i].Relay = Math.Round(
                     Math.Exp(
                             - Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
-                            Math.Pow(relay.lambda, 2)
+                            (2 * Math.Pow(relay.lambda, 2))
                         )
                     , round);
             }
