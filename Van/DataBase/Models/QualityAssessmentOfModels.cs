@@ -11,8 +11,8 @@ namespace Van.DataBase.Models
         [Key]
         public int ID { get; set; }
 
-        [Description("Стандартный")]
-        public double? Standart { get; set; }
+        [Description("Оценка")]
+        public string Quality { get; set; }
 
         [Description("Вейбулла")]
         public double? Weibull { get; set; }
@@ -33,10 +33,10 @@ namespace Van.DataBase.Models
     public static class QualityAssessmentOfModelsQuery
     { 
         public static string UpdateQuery(int ID) {
-            return $@"UPDATE {nameof(QualityAssessmentOfModels)} SET Standart = @Standart, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
+            return $@"UPDATE {nameof(QualityAssessmentOfModels)} SET Quality = @Quality, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
         }
 
-        public static string InsertQuery => $@"INSERT INTO {nameof(QualityAssessmentOfModels)}(Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+        public static string InsertQuery => $@"INSERT INTO {nameof(QualityAssessmentOfModels)}(Quality, Weibull, Relay, Gompertz, Exponential) VALUES (@Quality, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
     }
 
 

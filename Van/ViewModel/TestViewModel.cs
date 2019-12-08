@@ -54,7 +54,16 @@ namespace Van.ViewModel
 
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
 
-        public QualityAssessmentOfModels qualityAssessmentOfModels = new QualityAssessmentOfModels();
+        /// <summary>
+        /// Акаики
+        /// </summary>
+        public QualityAssessmentOfModels Acaici = new QualityAssessmentOfModels();
+
+        /// <summary>
+        /// Расстояние от табличного
+        /// </summary>
+        public QualityAssessmentOfModels Distance = new QualityAssessmentOfModels();
+
 
         public void LoadTables()
         { 
@@ -499,22 +508,37 @@ namespace Van.ViewModel
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            qualityAssessmentOfModels = new QualityAssessmentOfModels();
+            // Вычислим Акаики и еще функцию выживания ST
+            Acaici = new QualityAssessmentOfModels() { Quality = "Акаики"};
 
-            var taskStandart = new Task(CalculateSTStandart);
-            var taskWeibull = new Task(CalculateSTWeibull);
-            var taskRelay = new Task(CalculateSTRelay);
-            var taskGompertz = new Task(CalculateSTGompertz);
-            var taskExponential = new Task(CalculateSTExponential);
+            var taskAcaiciStandart = new Task(CalculateSTStandart);
+            var taskAcaiciWeibull = new Task(CalculateSTWeibull);
+            var taskAcaiciRelay = new Task(CalculateSTRelay);
+            var taskAcaiciGompertz = new Task(CalculateSTGompertz);
+            var taskAcaiciExponential = new Task(CalculateSTExponential);
 
-            taskStandart.Start();
-            taskWeibull.Start();
-            taskRelay.Start();
-            taskGompertz.Start();
-            taskExponential.Start();
+            taskAcaiciStandart.Start();
+            taskAcaiciWeibull.Start();
+            taskAcaiciRelay.Start();
+            taskAcaiciGompertz.Start();
+            taskAcaiciExponential.Start();
 
-            await Task.WhenAll(taskStandart, taskWeibull, taskRelay, taskGompertz, taskExponential);
+            await Task.WhenAll(taskAcaiciStandart, taskAcaiciWeibull, taskAcaiciRelay, taskAcaiciGompertz, taskAcaiciExponential);
 
+            // Вычислим Расстоение от табличного
+            Distance = new QualityAssessmentOfModels() { Quality = "Расстояние" };
+             
+            var taskDistanceWeibull = new Task(DistanceWeibull);
+            var taskDistanceRelay = new Task(DistanceRelay);
+            var taskDistanceGompertz = new Task(DistanceGompertz);
+            var taskDistanceExponential = new Task(DistanceExponential);
+             
+            taskDistanceWeibull.Start();
+            taskDistanceRelay.Start();
+            taskDistanceGompertz.Start();
+            taskDistanceExponential.Start();
+
+            await Task.WhenAll(taskDistanceWeibull, taskDistanceRelay, taskDistanceGompertz, taskDistanceExponential);
 
             //--------Обновление S(t)
             //Обновим в БД данные исходя из текущего списка
@@ -530,11 +554,6 @@ namespace Van.ViewModel
             stopwatch.Stop();
 
             Loading(false);
-        }
-
-        public double GetQuality(double LValue, int k, int n)
-        {
-            return -2.0 * LValue / n + 2.0 * k / n;
         }
 
         public void CalculateSTStandart() {
@@ -553,13 +572,7 @@ namespace Van.ViewModel
         }
 
         public void CalculateSTWeibull()
-        {
-            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
-
-            if (maxNumberOfSurvivors == null) return;
-
-            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
-
+        { 
             Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
@@ -571,17 +584,11 @@ namespace Van.ViewModel
                     , round);
             }
 
-            qualityAssessmentOfModels.Weibull = GetQuality(weibull.LValue, 2, t.Count());
+            Acaici.Weibull = GetQuality(weibull.LValue, 2, t.Count());
         }
 
         public void CalculateSTRelay()
-        {
-            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
-
-            if (maxNumberOfSurvivors == null) return;
-
-            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
-
+        { 
             Relay relay = new Relay(t, delta, r);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
@@ -594,17 +601,11 @@ namespace Van.ViewModel
                     , round);
             }
 
-            qualityAssessmentOfModels.Relay = GetQuality(relay.LValue, 1, t.Count());
+            Acaici.Relay = GetQuality(relay.LValue, 1, t.Count());
         }
 
         public void CalculateSTGompertz()
-        {
-            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
-
-            if (maxNumberOfSurvivors == null) return;
-
-            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
-
+        { 
             Gompertz gompertz = new Gompertz(t, delta, r, (double)int.MaxValue, epsilon);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
@@ -624,17 +625,11 @@ namespace Van.ViewModel
                     , round);
             }
 
-            qualityAssessmentOfModels.Gompertz = GetQuality(gompertz.LValue, 2, t.Count());
+            Acaici.Gompertz = GetQuality(gompertz.LValue, 2, t.Count());
         }
 
         public void CalculateSTExponential()
-        {
-            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
-
-            if (maxNumberOfSurvivors == null) return;
-
-            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
-
+        { 
             Exponential exponential = new Exponential(t, delta, r);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
@@ -647,7 +642,64 @@ namespace Van.ViewModel
                     , round);
             }
 
-            qualityAssessmentOfModels.Exponential = GetQuality(exponential.LValue, 1, t.Count());
+            Acaici.Exponential = GetQuality(exponential.LValue, 1, t.Count());
+        }
+
+        public double GetDistance(double first, double second) {
+            return Math.Abs(first - second);
+        }
+
+        public void DistanceWeibull()
+        {
+            double sum = 0;
+
+            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
+            {
+                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
+            }
+
+            Distance.Weibull = sum;
+        }
+
+        public void DistanceRelay()
+        {
+            double sum = 0;
+
+            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
+            {
+                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
+            }
+
+            Distance.Relay = sum;
+        }
+
+        public void DistanceGompertz()
+        {
+            double sum = 0;
+
+            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
+            {
+                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
+            }
+
+            Distance.Gompertz = sum;
+        }
+
+        public void DistanceExponential()
+        {
+            double sum = 0;
+
+            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
+            {
+                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
+            }
+
+            Distance.Exponential = sum;
+        }
+
+        public double GetQuality(double LValue, int k, int n)
+        {
+            return -2.0 * LValue / n + 2.0 * k / n;
         }
 
         public void QualityUpdate()
@@ -659,9 +711,12 @@ namespace Van.ViewModel
                 slc.Execute($"DELETE from {nameof(QualityAssessmentOfModels)}");
             }
 
-            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), qualityAssessmentOfModels);
+            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), Acaici);
+            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), Distance);
             SelectQualityAssessmentOfModels();
         }
+
+
 
         #endregion
 
