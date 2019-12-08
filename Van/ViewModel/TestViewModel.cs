@@ -60,10 +60,15 @@ namespace Van.ViewModel
         public QualityAssessmentOfModels Acaici = new QualityAssessmentOfModels();
 
         /// <summary>
-        /// Расстояние от табличного
+        /// Расстояние от табличного первый метод
         /// </summary>
-        public QualityAssessmentOfModels Distance = new QualityAssessmentOfModels();
+        public QualityAssessmentOfModels DistanceFirstMethod = new QualityAssessmentOfModels();
 
+
+        /// <summary>
+        /// Расстояние от табличного второй метод
+        /// </summary>
+        public QualityAssessmentOfModels DistanceSecondMethod = new QualityAssessmentOfModels();
 
         public void LoadTables()
         { 
@@ -525,20 +530,22 @@ namespace Van.ViewModel
 
             await Task.WhenAll(taskAcaiciStandart, taskAcaiciWeibull, taskAcaiciRelay, taskAcaiciGompertz, taskAcaiciExponential);
 
-            // Вычислим Расстоение от табличного
-            Distance = new QualityAssessmentOfModels() { Quality = "Расстояние" };
-             
-            var taskDistanceWeibull = new Task(DistanceWeibull);
-            var taskDistanceRelay = new Task(DistanceRelay);
-            var taskDistanceGompertz = new Task(DistanceGompertz);
-            var taskDistanceExponential = new Task(DistanceExponential);
-             
-            taskDistanceWeibull.Start();
-            taskDistanceRelay.Start();
-            taskDistanceGompertz.Start();
-            taskDistanceExponential.Start();
+            // Вычислим Расстояние от табличного первый метод
+            DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Расстояние первый метод" };
+            DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Расстояние второй метод" };
 
-            await Task.WhenAll(taskDistanceWeibull, taskDistanceRelay, taskDistanceGompertz, taskDistanceExponential);
+            var taskDistanceFirstWeibull = new Task(DistanceFirstWeibull);
+            var taskDistanceFirstRelay = new Task(DistanceFirstRelay);
+            var taskDistanceFirstGompertz = new Task(DistanceFirstGompertz);
+            var taskDistanceFirstExponential = new Task(DistanceFirstExponential);
+             
+            taskDistanceFirstWeibull.Start();
+            taskDistanceFirstRelay.Start();
+            taskDistanceFirstGompertz.Start();
+            taskDistanceFirstExponential.Start();
+
+            await Task.WhenAll(taskDistanceFirstWeibull, taskDistanceFirstRelay, taskDistanceFirstGompertz, taskDistanceFirstExponential);
+
 
             //--------Обновление S(t)
             //Обновим в БД данные исходя из текущего списка
@@ -645,57 +652,74 @@ namespace Van.ViewModel
             Acaici.Exponential = GetQuality(exponential.LValue, 1, t.Count());
         }
 
-        public double GetDistance(double first, double second) {
+        public double GetDistanceFirst(double first, double second) {
             return Math.Abs(first - second);
         }
 
-        public void DistanceWeibull()
+        public double GetDistanceSecond(double first, double second)
         {
-            double sum = 0;
+            return Math.Pow(first - second, 2);
+        }
+
+        public void DistanceFirstWeibull()
+        {
+            double sumFirst = 0;
+            double sumSecond = 0;
 
             for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
             {
-                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
+                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
+                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
             }
 
-            Distance.Weibull = sum;
+            DistanceFirstMethod.Weibull = sumFirst;
+            DistanceSecondMethod.Weibull = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceRelay()
+        public void DistanceFirstRelay()
         {
-            double sum = 0;
+            double sumFirst = 0;
+            double sumSecond = 0;
 
             for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
             {
-                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
+                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
+                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
             }
 
-            Distance.Relay = sum;
+            DistanceFirstMethod.Relay = sumFirst;
+            DistanceSecondMethod.Relay = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceGompertz()
+        public void DistanceFirstGompertz()
         {
-            double sum = 0;
+            double sumFirst = 0;
+            double sumSecond = 0;
 
             for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
             {
-                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
+                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
+                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
             }
 
-            Distance.Gompertz = sum;
+            DistanceFirstMethod.Gompertz = sumFirst;
+            DistanceSecondMethod.Gompertz = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceExponential()
+        public void DistanceFirstExponential()
         {
-            double sum = 0;
+            double sumFirst = 0;
+            double sumSecond = 0;
 
             for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
             {
-                sum += GetDistance((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
+                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
+                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
             }
 
-            Distance.Exponential = sum;
-        }
+            DistanceFirstMethod.Exponential = sumFirst;
+            DistanceSecondMethod.Exponential = Math.Sqrt(sumSecond);
+        } 
 
         public double GetQuality(double LValue, int k, int n)
         {
@@ -712,7 +736,9 @@ namespace Van.ViewModel
             }
 
             SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), Acaici);
-            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), Distance);
+            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), DistanceFirstMethod);
+            SQLExecutor.InsertExecutor(nameof(QualityAssessmentOfModels), DistanceSecondMethod);
+            
             SelectQualityAssessmentOfModels();
         }
 
