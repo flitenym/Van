@@ -14,6 +14,7 @@ namespace Van.View
             SurvivalFunctionTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             LifeTimesTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             QualityAssessmentOfModelsTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+            DensityTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
         }
 
         public void Dispose()
@@ -22,6 +23,7 @@ namespace Van.View
             SurvivalFunctionTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             LifeTimesTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             QualityAssessmentOfModelsTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
+            DensityTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
         }
     }
 }

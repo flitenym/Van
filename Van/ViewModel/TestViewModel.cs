@@ -52,6 +52,8 @@ namespace Van.ViewModel
 
         public List<SurvivalFunction> currentSurvivalFunctions = new List<SurvivalFunction>();
 
+        public List<Density> currentDensitys = new List<Density>(); 
+
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
 
         /// <summary>
@@ -64,7 +66,6 @@ namespace Van.ViewModel
         /// </summary>
         public QualityAssessmentOfModels DistanceFirstMethod = new QualityAssessmentOfModels();
 
-
         /// <summary>
         /// Расстояние от табличного второй метод
         /// </summary>
@@ -76,8 +77,11 @@ namespace Van.ViewModel
             {
                 SelectMortality();
                 SelectSurvivalFunction();
+                SelectDensity();
                 SelectLifeTimesFunction();
                 SelectQualityAssessmentOfModels();
+
+                RefreshChartsDivides();
             });
         }
 
@@ -159,10 +163,7 @@ namespace Van.ViewModel
                 survivalFunctionTable?.Columns.Clear();
                 survivalFunctionTable?.Rows.Clear();
 
-                survivalFunctionTable = value;
-                Task.Factory.StartNew(() =>
-                   SelectLifeTimesFunction()
-                );
+                survivalFunctionTable = value; 
 
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionTable)));
             }
@@ -180,7 +181,45 @@ namespace Van.ViewModel
 
             if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any())
             {
-                RefreshCharts();
+                RefreshChartsSurvivalFunctions();
+            }
+        }
+
+        #endregion
+
+        #region Таблица f(t)
+
+        private DataTable densityTable;
+
+        public DataTable DensityTable
+        {
+            get { return densityTable; }
+            set
+            {
+                if (value == null) return;
+                densityTable?.Clear();
+                densityTable?.Columns.Clear();
+                densityTable?.Rows.Clear();
+
+                densityTable = value;
+
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DensityTable)));
+            }
+        }
+
+        private void SelectDensity(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                DensityTable = SQLExecutor.SelectExecutor(nameof(Density));
+                DensityTable.AcceptChanges();
+            }
+
+            currentDensitys = SQLExecutor.Select<Density>($"SELECT * FROM {nameof(Density)}").ToList();
+
+            if (!currentDensitys.Where(x => x.Standart == null).Any())
+            {
+                RefreshChartsDensitys();
             }
         }
 
@@ -506,52 +545,57 @@ namespace Van.ViewModel
             }
         }
 
+        private void UpdateD()
+        {
+            for (int i = 0; i < currentDensitys.Count(); i++)
+            {
+                SQLExecutor.UpdateExecutor(nameof(Density), currentDensitys[i], currentDensitys[i].ID);
+            }
+        }
+
         public async Task CalculateMethodsAsync()
         {
             Loading(true); 
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-
-            // Вычислим Акаики и еще функцию выживания ST
+             
             Acaici = new QualityAssessmentOfModels() { Quality = "Акаики"};
-
-            var taskAcaiciStandart = new Task(CalculateSTStandart);
-            var taskAcaiciWeibull = new Task(CalculateSTWeibull);
-            var taskAcaiciRelay = new Task(CalculateSTRelay);
-            var taskAcaiciGompertz = new Task(CalculateSTGompertz);
-            var taskAcaiciExponential = new Task(CalculateSTExponential);
-
-            taskAcaiciStandart.Start();
-            taskAcaiciWeibull.Start();
-            taskAcaiciRelay.Start();
-            taskAcaiciGompertz.Start();
-            taskAcaiciExponential.Start();
-
-            await Task.WhenAll(taskAcaiciStandart, taskAcaiciWeibull, taskAcaiciRelay, taskAcaiciGompertz, taskAcaiciExponential);
-
-            // Вычислим Расстояние от табличного первый метод
+             
             DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Расстояние первый метод" };
             DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Расстояние второй метод" };
+            
+            var taskStandart = new Task(CalculateSTStandart);
+            var taskWeibull = new Task(CalculateSTWeibull);
+            var taskRelay = new Task(CalculateSTRelay);
+            var taskGompertz = new Task(CalculateSTGompertz);
+            var taskExponential = new Task(CalculateSTExponential);
 
-            var taskDistanceFirstWeibull = new Task(DistanceFirstWeibull);
-            var taskDistanceFirstRelay = new Task(DistanceFirstRelay);
-            var taskDistanceFirstGompertz = new Task(DistanceFirstGompertz);
-            var taskDistanceFirstExponential = new Task(DistanceFirstExponential);
-             
-            taskDistanceFirstWeibull.Start();
-            taskDistanceFirstRelay.Start();
-            taskDistanceFirstGompertz.Start();
-            taskDistanceFirstExponential.Start();
+            taskStandart.Start();
+            taskWeibull.Start();
+            taskRelay.Start();
+            taskGompertz.Start();
+            taskExponential.Start();
 
-            await Task.WhenAll(taskDistanceFirstWeibull, taskDistanceFirstRelay, taskDistanceFirstGompertz, taskDistanceFirstExponential);
+            await Task.WhenAll(
+                taskStandart, 
+                taskWeibull, 
+                taskRelay, 
+                taskGompertz, 
+                taskExponential);
 
 
-            //--------Обновление S(t)
-            //Обновим в БД данные исходя из текущего списка
-            UpdateST(); 
-            //обновим таблицу через БД
-            SelectSurvivalFunction();
+            var taskST = new Task(UpdateAndSelectST);
+            var taskD = new Task(UpdateAndSelectD);
+
+            taskST.Start();
+            taskD.Start();
+
+            await Task.WhenAll(
+                taskST,
+                taskD);
+
+            RefreshChartsDivides();
 
             //--------Обновление оценки качества
             QualityUpdate();
@@ -561,6 +605,17 @@ namespace Van.ViewModel
             stopwatch.Stop();
 
             Loading(false);
+        }
+
+        public void UpdateAndSelectST() {
+            UpdateST();
+            SelectSurvivalFunction();
+        }
+
+        public void UpdateAndSelectD()
+        {
+            UpdateD();
+            SelectDensity();
         }
 
         public void CalculateSTStandart() {
@@ -574,6 +629,10 @@ namespace Van.ViewModel
                 currentSurvivalFunctions[i].Standart = Math.Round(
                     (double)currentMortalityTables[i]?.NumberOfSurvivors / 
                     (double)maxNumberOfSurvivors
+                    , round);
+
+                currentDensitys[i].Standart = Math.Round(
+                    0.0
                     , round);
             }
         }
@@ -589,9 +648,20 @@ namespace Van.ViewModel
                     -weibull.lambda * Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
                     )
                     , round);
+
+                currentDensitys[i].Weibull = Math.Round(
+                    weibull.lambda * 
+                    weibull.gamma * 
+                    Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma - 1) *
+                    Math.Exp(
+                    -weibull.lambda * Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
+                    )
+                    , round);
             }
 
             Acaici.Weibull = GetQuality(weibull.LValue, 2, t.Count());
+
+            DistanceWeibull();
         }
 
         public void CalculateSTRelay()
@@ -606,13 +676,24 @@ namespace Van.ViewModel
                             (2 * Math.Pow(relay.lambda, 2))
                         )
                     , round);
+
+                currentDensitys[i].Relay = Math.Round(
+                    getTValue(currentMortalityTables[i]?.AgeX) *
+                    Math.Exp(
+                            -Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
+                            (2 * Math.Pow(relay.lambda, 2))
+                        ) / Math.Pow(relay.lambda, 2)
+                    , round);
+
             }
 
             Acaici.Relay = GetQuality(relay.LValue, 1, t.Count());
+
+            DistanceRelay();
         }
 
         public void CalculateSTGompertz()
-        { 
+        {
             Gompertz gompertz = new Gompertz(t, delta, r, (double)int.MaxValue, epsilon);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
@@ -630,9 +711,30 @@ namespace Van.ViewModel
                     )
                     )
                     , round);
+
+                currentDensitys[i].Gompertz = Math.Round(
+                    gompertz.lambda *
+                    Math.Exp(
+                                    gompertz.alpha *
+                                    getTValue(currentMortalityTables[i]?.AgeX)
+                                ) *
+                    Math.Exp(
+                    gompertz.lambda /
+                    gompertz.alpha *
+                    (
+                        1 -
+                        Math.Exp(
+                                    gompertz.alpha *
+                                    getTValue(currentMortalityTables[i]?.AgeX)
+                                )
+                    )
+                    )
+                    , round);
             }
 
             Acaici.Gompertz = GetQuality(gompertz.LValue, 2, t.Count());
+
+            DistanceGompertz();
         }
 
         public void CalculateSTExponential()
@@ -647,9 +749,19 @@ namespace Van.ViewModel
                                 getTValue(currentMortalityTables[i]?.AgeX)
                             )
                     , round);
+
+                currentDensitys[i].Exponential = Math.Round(
+                    exponential.lambda *
+                    Math.Exp(
+                                -exponential.lambda *
+                                getTValue(currentMortalityTables[i]?.AgeX)
+                            )
+                    , round);
             }
 
             Acaici.Exponential = GetQuality(exponential.LValue, 1, t.Count());
+
+            DistanceExponential();
         }
 
         public double GetDistanceFirst(double first, double second) {
@@ -661,7 +773,7 @@ namespace Van.ViewModel
             return Math.Pow(first - second, 2);
         }
 
-        public void DistanceFirstWeibull()
+        public void DistanceWeibull()
         {
             double sumFirst = 0;
             double sumSecond = 0;
@@ -676,7 +788,7 @@ namespace Van.ViewModel
             DistanceSecondMethod.Weibull = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceFirstRelay()
+        public void DistanceRelay()
         {
             double sumFirst = 0;
             double sumSecond = 0;
@@ -691,7 +803,7 @@ namespace Van.ViewModel
             DistanceSecondMethod.Relay = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceFirstGompertz()
+        public void DistanceGompertz()
         {
             double sumFirst = 0;
             double sumSecond = 0;
@@ -706,7 +818,7 @@ namespace Van.ViewModel
             DistanceSecondMethod.Gompertz = Math.Sqrt(sumSecond);
         }
 
-        public void DistanceFirstExponential()
+        public void DistanceExponential()
         {
             double sumFirst = 0;
             double sumSecond = 0;
@@ -746,10 +858,12 @@ namespace Van.ViewModel
 
         #endregion
 
-        public void RefreshCharts() {
+        #region SurvivalFunctions
+
+        public void RefreshChartsSurvivalFunctions() {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                SeriesCollection = new SeriesCollection();
+                SurvivalFunctionsCollection = new SeriesCollection();
                 var strokeThickness = 2;
                 var standart = new LineSeries
                 {
@@ -759,7 +873,7 @@ namespace Van.ViewModel
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
                 }; 
-                SeriesCollection.Add(standart);
+                SurvivalFunctionsCollection.Add(standart);
 
                 var weibull = new LineSeries
                 {
@@ -769,7 +883,7 @@ namespace Van.ViewModel
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
                 };
-                SeriesCollection.Add(weibull);
+                SurvivalFunctionsCollection.Add(weibull);
 
                 var exponential = new LineSeries
                 {
@@ -779,7 +893,7 @@ namespace Van.ViewModel
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
                 };
-                SeriesCollection.Add(exponential);
+                SurvivalFunctionsCollection.Add(exponential);
 
                 var gompertz = new LineSeries
                 {
@@ -789,7 +903,7 @@ namespace Van.ViewModel
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
                 };
-                SeriesCollection.Add(gompertz);
+                SurvivalFunctionsCollection.Add(gompertz);
 
                 var relay = new LineSeries
                 {
@@ -799,37 +913,235 @@ namespace Van.ViewModel
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
                 };
-                SeriesCollection.Add(relay);
+                SurvivalFunctionsCollection.Add(relay);
 
 
-                YFormatter = value => Math.Round(value, 3).ToString();
+                SurvivalFunctionsYFormatter = value => Math.Round(value, 3).ToString();
             }));
 
         }
          
-        private SeriesCollection seriesCollection;
+        private SeriesCollection survivalFunctionsCollection;
 
-        public SeriesCollection SeriesCollection
+        public SeriesCollection SurvivalFunctionsCollection
         {
-            get { return seriesCollection; }
+            get { return survivalFunctionsCollection; }
             set
             {
-                seriesCollection = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SeriesCollection)));
+                survivalFunctionsCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionsCollection)));
             }
         }
 
-        private Func<double, string> yFormatter;
+        private Func<double, string> survivalFunctionsYFormatter;
 
-        public Func<double, string> YFormatter
+        public Func<double, string> SurvivalFunctionsYFormatter
         {
-            get { return yFormatter; }
+            get { return survivalFunctionsYFormatter; }
             set
             {
-                yFormatter = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(YFormatter)));
+                survivalFunctionsYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SurvivalFunctionsYFormatter)));
             }
         }
+
+        #endregion
+
+        #region Density
+
+        public void RefreshChartsDensitys()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                DensitysCollection = new SeriesCollection();
+                var strokeThickness = 2;
+                var standart = new LineSeries
+                {
+                    Title = "Стандартное",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Standart.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DensitysCollection.Add(standart);
+
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Weibull.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DensitysCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Exponential.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DensitysCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Gompertz.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DensitysCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Relay.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DensitysCollection.Add(relay);
+
+
+                DensitysYFormatter = value => Math.Round(value, 3).ToString();
+            }));
+
+        }
+
+        private SeriesCollection densitysCollection;
+
+        public SeriesCollection DensitysCollection
+        {
+            get { return densitysCollection; }
+            set
+            {
+                densitysCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DensitysCollection)));
+            }
+        }
+
+        private Func<double, string> densitysYFormatter;
+
+        public Func<double, string> DensitysYFormatter
+        {
+            get { return densitysYFormatter; }
+            set
+            {
+                densitysYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DensitysYFormatter)));
+            }
+        }
+
+        #endregion
+
+        #region Density/SurvivalFunctions
+
+        public void RefreshChartsDivides()
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (!currentDensitys.Where(x=>x.Weibull != null).Any() || !currentSurvivalFunctions.Where(x => x.Weibull != null).Any()) return;
+
+                List<Density> divides = new List<Density>();
+
+                for (int i = 0; i < currentDensitys.Count(); i++)
+                {
+                    divides.Add(new Density()
+                    {
+                        Standart = currentDensitys[i].Standart / (currentSurvivalFunctions[i].Standart == 0 ? 1 : currentSurvivalFunctions[i].Standart),
+                        Weibull = currentDensitys[i].Weibull / (currentSurvivalFunctions[i].Weibull == 0 ? 1 : currentSurvivalFunctions[i].Weibull),
+                        Exponential = currentDensitys[i].Exponential / (currentSurvivalFunctions[i].Exponential == 0 ? 1 : currentSurvivalFunctions[i].Exponential),
+                        Gompertz = currentDensitys[i].Gompertz / (currentSurvivalFunctions[i].Gompertz == 0 ? 1 : currentSurvivalFunctions[i].Gompertz),
+                        Relay = currentDensitys[i].Relay / (currentSurvivalFunctions[i].Relay == 0 ? 1 : currentSurvivalFunctions[i].Relay)
+                    });
+                }
+
+                DividesCollection = new SeriesCollection();
+                var strokeThickness = 2;
+                var standart = new LineSeries
+                {
+                    Title = "Стандартное",
+                    Values = new ChartValues<double>(divides.Select(x => x.Standart.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DividesCollection.Add(standart);
+
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(divides.Select(x => x.Weibull.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DividesCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(divides.Select(x => x.Exponential.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DividesCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(divides.Select(x => x.Gompertz.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DividesCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(divides.Select(x => x.Relay.Value)),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                DividesCollection.Add(relay);
+
+
+                DensitysYFormatter = value => Math.Round(value, 3).ToString();
+            }));
+
+        }
+
+        private SeriesCollection dividesCollection;
+
+        public SeriesCollection DividesCollection
+        {
+            get { return dividesCollection; }
+            set
+            {
+                dividesCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DividesCollection)));
+            }
+        }
+
+        private Func<double, string> dividesYFormatter;
+
+        public Func<double, string> DividesYFormatter
+        {
+            get { return dividesYFormatter; }
+            set
+            {
+                dividesYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DividesYFormatter)));
+            }
+        }
+
+        #endregion
 
     }
 }

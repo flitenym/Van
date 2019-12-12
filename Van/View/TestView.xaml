@@ -140,15 +140,57 @@
                           CanUserSortColumns="True"> 
             </DataGrid>
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
-                <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                <lvc:CartesianChart Series="{Binding SurvivalFunctionsCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Значение" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding SurvivalFunctionsYFormatter}"></lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
             </Grid> 
             
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
-  
+
+            <TextBlock Height="20" Text="Плотность распределения f(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="DensityTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DensityTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DensitysCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DensitysYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="f(t)/s(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DividesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DividesYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
             <TextBlock Height="20" Text="Оценка качества моделей" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
             <DataGrid Height="150"
                         x:Name="QualityAssessmentOfModelsTableDataGrid"
@@ -169,35 +211,10 @@
                         SelectionUnit="FullRow" 
                         ColumnWidth="*"
                         CanUserSortColumns="True">
-            </DataGrid>  
+            </DataGrid>
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
-            <!--<Expander Background="Transparent" >
-                <Expander.Header>
-                    <Grid Height="35">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="70" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Плотность f(t)" /> 
-                        <Button Grid.Column="1" 
-                                Width="auto"
-                                Height="auto" 
-                                ToolTip="Пересчитать плотность f(t)"
-                                Style="{DynamicResource ButtonZoom}">
-                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
-                        </Button>
-                    </Grid>
-                </Expander.Header>
-                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
-                        
-                    </Grid>
-                </StackPanel>
-            </Expander>
-            
-            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>-->
 
         </StackPanel>
     </ScrollViewer>
