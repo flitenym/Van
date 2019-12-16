@@ -149,9 +149,11 @@
     <Compile Include="Helper\Types.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\RelayCommand.cs" />
+    <Compile Include="Methods\Helper\Shared.cs" />
     <Compile Include="Methods\Relay.cs" />
     <Compile Include="Methods\Exponential.cs" />
     <Compile Include="Methods\Gompertz.cs" />
+    <Compile Include="Methods\Standart.cs" />
     <Compile Include="Methods\Weibull.cs" />
     <Compile Include="Model\DataBaseBrowsingModel.cs" />
     <Compile Include="Model\AboutModel.cs" />

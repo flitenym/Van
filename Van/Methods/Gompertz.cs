@@ -8,23 +8,47 @@ namespace Van.Methods
 {
     public class Gompertz
     {
-        public Gompertz(List<int> t, List<int> delta, double r, double b, double epsilon, double? a = null)
+        public Gompertz(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r, double b, double epsilon, double? a = null)
         {
+            this.StandartValues = StandartValues;
+            this.round = round;
             this.b = b;
             this.epsilon = epsilon;
             this.a = a != null ? (double)a : epsilon;
-
             ParamterCalculation(t, delta, r);
+            this.Quality = Helper.Shared.GetQuality(this.LValue, 2, t.Count);
+            GetSurvivalFunctions(tValue);
+            GetDistances();
         }
 
+        public List<double> StandartValues { get; set; }
+
+        public List<double> SurvivalFunctions { get; set; }
+
+        public List<double> Densitys { get; set; }
+
+        /// <summary>
+        /// Параметр округления
+        /// </summary>
+        public int round;
+
         public double b { get; set; }
+
         public double epsilon { get; set; }
+
         public double a { get; set; }
 
         public double alpha { get; set; }
+
         public double lambda { get; set; }
 
         public double LValue { get; set; }
+
+        public double DistanceFirstMethod { get; set; }
+
+        public double DistanceSecondMethod { get; set; }
+
+        public double Quality { get; set; }
 
         public double FirstSum(List<int> t, List<int> delta, double x)
         {
@@ -114,6 +138,51 @@ namespace Van.Methods
             lambda = alpha * r * Math.Pow(sum - t.Count(), -1);
 
             LCalculation(t, delta, r, sum);
+        }
+
+        public void GetSurvivalFunctions(List<double> tValue)
+        {
+            SurvivalFunctions = new List<double>();
+            Densitys = new List<double>();
+
+            for (int i = 0; i < tValue.Count; i++)
+            {
+                SurvivalFunctions.Add(SurvivalFunction(tValue[i]));
+                Densitys.Add(GetDensity(tValue[i]));
+            }
+        }
+
+        public double SurvivalFunction(double tValue)
+        {
+            return Math.Round(
+                    Math.Exp(this.lambda / this.alpha * (1 - Math.Exp(this.alpha * tValue)))
+                    , round);
+        }
+
+        public double GetDensity(double tValue)
+        {
+            return Math.Round(
+                    this.lambda *
+                    Math.Exp(this.alpha * tValue) *
+                    Math.Exp(this.lambda / this.alpha * (1 - Math.Exp(this.alpha * tValue)))
+                    , round);
+        }
+
+        public void GetDistances()
+        {
+            if (!StandartValues.Any()) return;
+
+            double sumFirst = 0;
+            double sumSecond = 0;
+
+            for (int i = 0; i < StandartValues.Count(); i++)
+            {
+                sumFirst += Helper.Shared.GetDistanceFirst(StandartValues[i], SurvivalFunctions[i]);
+                sumSecond += Helper.Shared.GetDistanceSecond(StandartValues[i], SurvivalFunctions[i]);
+            }
+
+            DistanceFirstMethod = sumFirst;
+            DistanceSecondMethod = Math.Sqrt(sumSecond);
         }
 
     }

@@ -34,6 +34,10 @@ namespace Van.ViewModel
             Loading(false);
         }
 
+        public List<double> ageValues = new List<double>();
+
+        public List<double> standartValues = new List<double>();
+
         public List<int> t = new List<int>();
 
         public List<int> delta = new List<int>();
@@ -145,6 +149,14 @@ namespace Van.ViewModel
             if (currentMortalityTables.Where(x => x.Probability == null).Any())
                 HaveNullProbability = true;
             else HaveNullProbability = false;
+
+
+            ageValues = new List<double>();
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                ageValues.Add(getTValue(currentMortalityTables[i]?.AgeX));
+            }
         }
 
         #endregion
@@ -183,6 +195,9 @@ namespace Van.ViewModel
             {
                 RefreshChartsSurvivalFunctions();
             }
+
+            standartValues.Clear();
+            standartValues = currentSurvivalFunctions.Select(x => x.Standart ?? 0).ToList();
         }
 
         #endregion
@@ -564,24 +579,23 @@ namespace Van.ViewModel
              
             DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Расстояние первый метод" };
             DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Расстояние второй метод" };
-            
-            var taskStandart = new Task(CalculateSTStandart);
+
+            CalculateSTStandart();
+
             var taskWeibull = new Task(CalculateSTWeibull);
             var taskRelay = new Task(CalculateSTRelay);
             var taskGompertz = new Task(CalculateSTGompertz);
             var taskExponential = new Task(CalculateSTExponential);
 
-            taskStandart.Start();
             taskWeibull.Start();
             taskRelay.Start();
             taskGompertz.Start();
             taskExponential.Start();
 
             await Task.WhenAll(
-                taskStandart, 
-                taskWeibull, 
-                taskRelay, 
-                taskGompertz, 
+                taskWeibull,
+                taskRelay,
+                taskGompertz,
                 taskExponential);
 
 
@@ -631,211 +645,69 @@ namespace Van.ViewModel
                     (double)maxNumberOfSurvivors
                     , round);
 
-                currentDensitys[i].Standart = Math.Round(
-                    0.0
-                    , round);
+                currentDensitys[i].Standart = Math.Round(0.0, round);
             }
         }
 
         public void CalculateSTWeibull()
-        { 
-            Weibull weibull = new Weibull(t, delta, r, (double)int.MaxValue, epsilon);
+        {
+            Weibull weibull = new Weibull(standartValues, ageValues, t, delta, round, r, (double)int.MaxValue, epsilon);
+
+            Acaici.Weibull = weibull.Quality;
+            DistanceFirstMethod.Weibull = weibull.DistanceFirstMethod;
+            DistanceSecondMethod.Weibull = weibull.DistanceSecondMethod;
+
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Weibull = Math.Round(
-                    Math.Exp(
-                    -weibull.lambda * Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
-                    )
-                    , round);
-
-                currentDensitys[i].Weibull = Math.Round(
-                    weibull.lambda * 
-                    weibull.gamma * 
-                    Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma - 1) *
-                    Math.Exp(
-                    -weibull.lambda * Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), weibull.gamma)
-                    )
-                    , round);
+                currentSurvivalFunctions[i].Weibull = weibull.SurvivalFunctions[i];
+                currentDensitys[i].Weibull = weibull.Densitys[i];
             }
-
-            Acaici.Weibull = GetQuality(weibull.LValue, 2, t.Count());
-
-            DistanceWeibull();
         }
 
         public void CalculateSTRelay()
-        { 
-            Relay relay = new Relay(t, delta, r);
+        {
+            Relay relay = new Relay(standartValues, ageValues, t, delta, round, r);
+
+            Acaici.Relay = relay.Quality;
+            DistanceFirstMethod.Relay = relay.DistanceFirstMethod;
+            DistanceSecondMethod.Relay = relay.DistanceSecondMethod;
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Relay = Math.Round(
-                    Math.Exp(
-                            - Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
-                            (2 * Math.Pow(relay.lambda, 2))
-                        )
-                    , round);
-
-                currentDensitys[i].Relay = Math.Round(
-                    getTValue(currentMortalityTables[i]?.AgeX) *
-                    Math.Exp(
-                            -Math.Pow(getTValue(currentMortalityTables[i]?.AgeX), 2) /
-                            (2 * Math.Pow(relay.lambda, 2))
-                        ) / Math.Pow(relay.lambda, 2)
-                    , round);
-
+                currentSurvivalFunctions[i].Relay = relay.SurvivalFunctions[i];
+                currentDensitys[i].Relay = relay.Densitys[i];
             }
-
-            Acaici.Relay = GetQuality(relay.LValue, 1, t.Count());
-
-            DistanceRelay();
         }
 
         public void CalculateSTGompertz()
         {
-            Gompertz gompertz = new Gompertz(t, delta, r, (double)int.MaxValue, epsilon);
+            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, round, r, (double)int.MaxValue, epsilon);
+
+            Acaici.Gompertz = gompertz.Quality;
+            DistanceFirstMethod.Gompertz = gompertz.DistanceFirstMethod;
+            DistanceSecondMethod.Gompertz = gompertz.DistanceSecondMethod;
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Gompertz = Math.Round(
-                    Math.Exp(
-                    gompertz.lambda /
-                    gompertz.alpha *
-                    (
-                        1 -
-                        Math.Exp(
-                                    gompertz.alpha *
-                                    getTValue(currentMortalityTables[i]?.AgeX)
-                                )
-                    )
-                    )
-                    , round);
-
-                currentDensitys[i].Gompertz = Math.Round(
-                    gompertz.lambda *
-                    Math.Exp(
-                                    gompertz.alpha *
-                                    getTValue(currentMortalityTables[i]?.AgeX)
-                                ) *
-                    Math.Exp(
-                    gompertz.lambda /
-                    gompertz.alpha *
-                    (
-                        1 -
-                        Math.Exp(
-                                    gompertz.alpha *
-                                    getTValue(currentMortalityTables[i]?.AgeX)
-                                )
-                    )
-                    )
-                    , round);
+                currentSurvivalFunctions[i].Gompertz = gompertz.SurvivalFunctions[i];
+                currentDensitys[i].Gompertz = gompertz.Densitys[i];
             }
-
-            Acaici.Gompertz = GetQuality(gompertz.LValue, 2, t.Count());
-
-            DistanceGompertz();
         }
 
         public void CalculateSTExponential()
-        { 
-            Exponential exponential = new Exponential(t, delta, r);
+        {
+            Exponential exponential = new Exponential(standartValues, ageValues, t, delta, round, r);
+
+            Acaici.Exponential = exponential.Quality;
+            DistanceFirstMethod.Exponential = exponential.DistanceFirstMethod;
+            DistanceSecondMethod.Exponential = exponential.DistanceSecondMethod;
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Exponential = Math.Round(
-                    Math.Exp(
-                                -exponential.lambda *
-                                getTValue(currentMortalityTables[i]?.AgeX)
-                            )
-                    , round);
-
-                currentDensitys[i].Exponential = Math.Round(
-                    exponential.lambda *
-                    Math.Exp(
-                                -exponential.lambda *
-                                getTValue(currentMortalityTables[i]?.AgeX)
-                            )
-                    , round);
+                currentSurvivalFunctions[i].Exponential = exponential.SurvivalFunctions[i];
+                currentDensitys[i].Exponential = exponential.Densitys[i];
             }
-
-            Acaici.Exponential = GetQuality(exponential.LValue, 1, t.Count());
-
-            DistanceExponential();
-        }
-
-        public double GetDistanceFirst(double first, double second) {
-            return Math.Abs(first - second);
-        }
-
-        public double GetDistanceSecond(double first, double second)
-        {
-            return Math.Pow(first - second, 2);
-        }
-
-        public void DistanceWeibull()
-        {
-            double sumFirst = 0;
-            double sumSecond = 0;
-
-            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
-            {
-                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
-                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Weibull);
-            }
-
-            DistanceFirstMethod.Weibull = sumFirst;
-            DistanceSecondMethod.Weibull = Math.Sqrt(sumSecond);
-        }
-
-        public void DistanceRelay()
-        {
-            double sumFirst = 0;
-            double sumSecond = 0;
-
-            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
-            {
-                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
-                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Relay);
-            }
-
-            DistanceFirstMethod.Relay = sumFirst;
-            DistanceSecondMethod.Relay = Math.Sqrt(sumSecond);
-        }
-
-        public void DistanceGompertz()
-        {
-            double sumFirst = 0;
-            double sumSecond = 0;
-
-            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
-            {
-                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
-                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Gompertz);
-            }
-
-            DistanceFirstMethod.Gompertz = sumFirst;
-            DistanceSecondMethod.Gompertz = Math.Sqrt(sumSecond);
-        }
-
-        public void DistanceExponential()
-        {
-            double sumFirst = 0;
-            double sumSecond = 0;
-
-            for (int i = 0; i < currentSurvivalFunctions.Count(); i++)
-            {
-                sumFirst += GetDistanceFirst((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
-                sumSecond += GetDistanceSecond((double)currentSurvivalFunctions[i].Standart, (double)currentSurvivalFunctions[i].Exponential);
-            }
-
-            DistanceFirstMethod.Exponential = sumFirst;
-            DistanceSecondMethod.Exponential = Math.Sqrt(sumSecond);
-        } 
-
-        public double GetQuality(double LValue, int k, int n)
-        {
-            return -2.0 * LValue / n + 2.0 * k / n;
         }
 
         public void QualityUpdate()
@@ -853,8 +725,6 @@ namespace Van.ViewModel
             
             SelectQualityAssessmentOfModels();
         }
-
-
 
         #endregion
 
