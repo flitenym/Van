@@ -13,6 +13,11 @@ using Dragablz;
 using MaterialDesignThemes.Wpf;
 using System.Threading;
 using Van.Helper.StaticInfo;
+using Van.DataBase;
+using Van.LocalDataBase.Models;
+using System.Data.SQLite;
+using Van.LocalDataBase;
+using Dapper;
 
 namespace Van.Windows.ViewModel
 {
@@ -41,6 +46,12 @@ namespace Van.Windows.ViewModel
              
             DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
             SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
+
+            //загрузка тем из локальной БД
+            GetThemes();
+
+            //подключение к внешней БД (загрузка connectionString из локальной БД)
+            DatabaseOperation.ConnectionString();
         }
 
         #region Fields
@@ -182,6 +193,48 @@ namespace Van.Windows.ViewModel
         #endregion
 
         #region Methods
+
+        public void GetThemes()
+        {
+            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
+            Settings selectedThemeData;
+            Settings selectedThemeDarkOrLightData;
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                slc.Open();
+                //обычная тема
+                selectedThemeData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeKey}'").FirstOrDefault();
+            }
+
+            if (selectedThemeData != null && !string.IsNullOrEmpty(selectedThemeData.Value))
+            {
+                SelectedTheme = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme && x.Name == selectedThemeData.Value).FirstOrDefault();
+            }
+            else
+            {
+                SelectedTheme = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).FirstOrDefault();
+                selectedThemeData = new Settings() { Name = InfoKeys.SelectedThemeKey, Value = SelectedTheme.Name };
+                SQLExecutor.InsertExecutor(selectedThemeData, selectedThemeData);
+            }
+
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                slc.Open();
+                //глобальная тема
+                selectedThemeDarkOrLightData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeDarkOrLightKey}'").FirstOrDefault();
+            }
+
+            if (selectedThemeDarkOrLightData != null && !string.IsNullOrEmpty(selectedThemeDarkOrLightData.Value))
+            {
+                SelectedThemeDarkOrLight = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme && x.Name == selectedThemeDarkOrLightData.Value).FirstOrDefault();
+            }
+            else
+            {
+                SelectedThemeDarkOrLight = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).FirstOrDefault();
+                selectedThemeDarkOrLightData = new Settings() { Name = InfoKeys.SelectedThemeDarkOrLightKey, Value = SelectedThemeDarkOrLight.Name };
+                SQLExecutor.InsertExecutor(selectedThemeDarkOrLightData, selectedThemeDarkOrLightData);
+            }
+        }
 
         public void SetViewModels()
         {

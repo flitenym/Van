@@ -4,7 +4,7 @@ using Van.Helper.Attributes;
 
 namespace Van.LocalDataBase.Models
 {
-    [ModelClass(TableTitle = "Настройки")]
+    [ModelClass(TableTitle = "Настройки", CanDelete = false, CanInsert = false, CanUpdate = false, CanLoad = false)]
     public class Settings : ModelClass
     {
         [ColumnData(ShowInTable = false)]

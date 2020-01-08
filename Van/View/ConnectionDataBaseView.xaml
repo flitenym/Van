@@ -37,6 +37,8 @@
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="50"/>
                         <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
                     <Grid.Style>
                         <Style TargetType="Grid">
@@ -81,13 +83,18 @@
                      materialDesign:HintAssist.Hint="Пароль" AcceptsReturn="True"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
-                    <TextBox Grid.Row="4" Margin="2"
+                    <CheckBox Grid.Row="4" Margin="2" VerticalAlignment="Center" Content="Безопасное подключение" IsChecked="{Binding TrustedConnection, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <CheckBox Grid.Row="5" Margin="2" VerticalAlignment="Center" Content="Нескольких активных наборов" IsChecked="{Binding MultipleActiveResultSets, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBox Grid.Row="6" Margin="2"
                      Text="{Binding TimeOut, UpdateSourceTrigger=PropertyChanged}"  
                      HorizontalScrollBarVisibility="Auto"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto"
                      materialDesign:HintAssist.Hint="ТаймАут" AcceptsReturn="True"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
                 </Grid>
 
                 <Grid>

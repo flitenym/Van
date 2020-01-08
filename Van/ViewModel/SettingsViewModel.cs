@@ -12,6 +12,11 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using System.Net.Mime;
+using System.Data.SQLite;
+using Van.LocalDataBase;
+using Dapper;
+using Van.LocalDataBase.Models;
+using Van.Helper.StaticInfo;
 
 namespace Van.ViewModel
 {
@@ -69,6 +74,8 @@ namespace Van.ViewModel
             var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
             var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
 
+            var parameters = new { themeName = ThemeName };
+
             if (selectedTheme == null) return;
 
             if (isGlobal)
@@ -76,6 +83,13 @@ namespace Van.ViewModel
                 if (win.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
                 {
                     win.SelectedThemeDarkOrLight = selectedTheme;
+
+                    using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+                    {
+                        slc.Open();
+                        slc.Execute($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeDarkOrLightKey}' ", parameters);
+                    }
+
                     Message("Тема изменена");
                 }
                 else
@@ -88,6 +102,13 @@ namespace Van.ViewModel
                 if (win.SelectedTheme.UriPath != selectedTheme.UriPath)
                 {
                     win.SelectedTheme = selectedTheme;
+
+                    using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+                    {
+                        slc.Open();
+                        slc.Execute($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeKey}' ", parameters);
+                    }
+
                     Message("Тема изменена");
                 }
                 else

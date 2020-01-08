@@ -12,7 +12,7 @@ namespace Van.ViewModel
 
         #region connString из app.config или просто введенный
 
-        private string originalConnectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString; 
+        private string originalConnectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
         public string OriginalConnectionString
         {
             get { return originalConnectionString; }
@@ -30,7 +30,7 @@ namespace Van.ViewModel
 
         public string CustomConnectionString
         {
-            get { return $"{CustomServerAddress}{CustomDBName}{CustomLogin}{CustomPassword}Trusted_Connection = False; MultipleActiveResultSets = True; {CustomTimeOut}"; }
+            get { return $"{CustomServerAddress}{CustomDBName}{CustomLogin}{CustomPassword}{CustomTrustedConnection}{CustomMultipleActiveResultSets}{CustomTimeOut}"; }
             set
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(CustomConnectionString)));
@@ -113,7 +113,7 @@ namespace Van.ViewModel
 
         #region Пароль
 
-        private string CustomPassword => Password == string.Empty ? string.Empty : $"password = {Password}; ";
+        private string CustomPassword => Password == string.Empty ? string.Empty : $"Password = {Password}; ";
         private string password = string.Empty;
         public string Password
         {
@@ -140,6 +140,44 @@ namespace Van.ViewModel
             {
                 timeOut = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(TimeOut)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(CustomConnectionString)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ConnectionString)));
+            }
+        }
+
+        #endregion
+
+        #region Безопасное подключение
+
+        private string CustomTrustedConnection => $"Trusted_Connection = {TrustedConnection.ToString()}; ";
+
+        private bool trustedConnection = true;
+        public bool TrustedConnection
+        {
+            get { return trustedConnection; }
+            set
+            {
+                trustedConnection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(TrustedConnection)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(CustomConnectionString)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ConnectionString)));
+            }
+        }
+
+        #endregion
+
+        #region Нескольких активных наборов
+
+        private string CustomMultipleActiveResultSets => $"MultipleActiveResultSets = {MultipleActiveResultSets.ToString()}; ";
+
+        private bool multipleActiveResultSets = true;
+        public bool MultipleActiveResultSets
+        {
+            get { return multipleActiveResultSets; }
+            set
+            {
+                multipleActiveResultSets = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(MultipleActiveResultSets)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(CustomConnectionString)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ConnectionString)));
             }
