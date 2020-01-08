@@ -13,7 +13,7 @@
 
     <SolidColorBrush x:Key="DataGridRowSelected" Color="{StaticResource Red}" />
     <SolidColorBrush x:Key="AfterCloseWindowButtonForeground" Color="{StaticResource LightWhite}" />
-
+    <SolidColorBrush x:Key="GridSplitterBackground" Color="{StaticResource Red}" />
 
     <Style x:Key="ActionButton" BasedOn="{StaticResource {x:Type Button}}" TargetType="Button"> 
         <Setter Property="Foreground" Value="{DynamicResource ActionButtonForeground}" /> 

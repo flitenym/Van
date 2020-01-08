@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Van.AbstractClasses;
-using Van.Helper;
-using static Van.Helper.Enums;
+﻿using Van.AbstractClasses; 
+using static Van.Helper.StaticInfo.Enums;
 
 namespace Van.ThemesGlobal.Light
 {

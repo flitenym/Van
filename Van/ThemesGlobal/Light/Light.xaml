@@ -4,9 +4,9 @@
                     xmlns:local="clr-namespace:Van.ThemesGlobal.Light"
                     xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
                     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
-                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"> 
- 
-    <Color x:Key="White">#fffafa</Color>
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+    <Color x:Key="White">#ffffff</Color>
     <Color x:Key="DarkBlue">#161a1f</Color>
     <Color x:Key="Transparent">#00000000</Color>
     <Color x:Key="Red">#CCFF3A3A</Color>
@@ -47,6 +47,7 @@
     <SolidColorBrush x:Key="SeparatorBackGround" Color="{StaticResource Gray}" />
 
 
+    <!-- Кнопка в табКонтроле -->
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="{StaticResource PreWindowButtonForeground}" />
         <Setter Property="Background" Value="{StaticResource PreWindowButtonBackground}" />

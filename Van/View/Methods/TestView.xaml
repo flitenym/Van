@@ -1,0 +1,222 @@
+﻿<UserControl x:Class="Van.View.Methods.TestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textbox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource ScrollViewerStyle}">
+        <StackPanel Margin="15,0,0,0">
+            <DataGrid Height="500"
+                  Background="{x:Null}"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Stretch" 
+                  x:Name="MortalityTableDataGrid" 
+                  EnableRowVirtualization="True" 
+                  EnableColumnVirtualization="False" 
+                  ScrollViewer.CanContentScroll="True" 
+                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                  GridLinesVisibility="None" 
+                  HeadersVisibility="Column" 
+                  CanUserAddRows="False"  
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding MortalityTableData, Mode=TwoWay}" 
+                  SelectionUnit="FullRow" 
+                  ColumnWidth="*"
+                  CanUserSortColumns="True"> 
+            </DataGrid>
+            <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="250" 
+                        Margin="5"
+                        Content="Обновить таблицу"
+                        Command="{Binding UpdateMortalityCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+                <Button Width="250"
+                        Margin="5"
+                        Content="Вычислить данные"
+                        Command="{Binding CalculateDataCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </StackPanel>
+            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5" /> 
+
+            <Expander Background="Transparent" >
+                <Expander.Header>
+                    <Grid Height="35">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Время жизни (t)" />
+                        <Button Grid.Column="1" 
+                                Width="auto"
+                                Height="auto" 
+                                ToolTip="Пересчитать t"
+                                Command="{Binding CalculateTCommand}" 
+                                Style="{DynamicResource ButtonZoom}">
+                            <materialDesign:PackIcon Kind="CalculatorVariant" Width="20" Height="Auto" Foreground="{DynamicResource WindowForeground}"/>
+                        </Button>
+                    </Grid>
+                </Expander.Header>
+                <StackPanel Orientation="Vertical" CanVerticallyScroll="True" CanHorizontallyScroll="False">  
+                    <TextBox Grid.Column="1"
+                                Height="50"
+                                Width="300"
+                                Text="{Binding NValue}"  
+                                materialDesign:HintAssist.Hint="Значение n" AcceptsReturn="True"
+                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"/> 
+                    <DataGrid Height="500"
+                          x:Name="LifeTimesTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding LifeTimesTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True"/>
+                </StackPanel>
+            </Expander>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+            
+            <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="250" 
+                        Margin="5"
+                        Content="Вычислить данные методы"
+                        Command="{Binding CalculateMethodsCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </StackPanel>
+
+            <TextBlock Height="20" Text="Функция выживания s(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="SurvivalFunctionTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding SurvivalFunctionTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True"> 
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding SurvivalFunctionsCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding SurvivalFunctionsYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid> 
+            
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="Плотность распределения f(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="DensityTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DensityTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DensitysCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DensitysYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="f(t)/s(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DividesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DividesYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="Оценка качества моделей" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="150"
+                        x:Name="QualityAssessmentOfModelsTableDataGrid"
+                        Background="{x:Null}"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"
+                        EnableRowVirtualization="True" 
+                        EnableColumnVirtualization="False" 
+                        ScrollViewer.CanContentScroll="True" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                        GridLinesVisibility="None" 
+                        HeadersVisibility="Column" 
+                        CanUserAddRows="False" 
+                        CanUserDeleteRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding QualityAssessmentOfModelsTableData, Mode=TwoWay, IsAsync=True}" 
+                        SelectionUnit="FullRow" 
+                        ColumnWidth="*"
+                        CanUserSortColumns="True">
+            </DataGrid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

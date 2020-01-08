@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
-using static Van.Helper.Enums;
+using static Van.Helper.StaticInfo.Enums;
 
 namespace Van.AbstractClasses
 {

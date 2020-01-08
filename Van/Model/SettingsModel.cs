@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using Van.AbstractClasses;
-using Van.Helper;
 using Van.View;
 using Van.ViewModel;
-using static Van.Helper.Enums;
+using Van.Helper.StaticInfo;
+using static Van.Helper.StaticInfo.Enums;
 
 namespace Van.Model
 {

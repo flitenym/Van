@@ -1,8 +1,7 @@
-﻿using Van.View;
+﻿using Van.Windows.View;
+using Van.Windows.ViewModel;
 using System.Threading.Tasks;
 using System.Windows;
-using Van.ViewModel;
-using Van.Windows;
 
 namespace Van
 {
@@ -13,7 +12,7 @@ namespace Van
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var splashScreen = new SplashScreenWindow();
+            var splashScreen = new SplashScreenWindowView();
             this.MainWindow = splashScreen;
             splashScreen.Show();
 

@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Windows;
-using static Van.Helper.Enums;
+using static Van.Helper.StaticInfo.Enums;
 
 namespace Van.AbstractClasses
 {
     abstract class ThemeBase
     {
-        private ResourceDictionary resource;
-
         public abstract string Title { get; }
+
         public abstract string Name { get; }
+
         public abstract int Num { get; }
+
         public abstract ThemeBaseClasses ThemeClass { get; }
+
         public abstract string UriPath { get; }
+
+        private ResourceDictionary resource;
 
         public ResourceDictionary ResourceDictionary
         {

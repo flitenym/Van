@@ -11,12 +11,12 @@ namespace Van.View
         public DataBaseBrowsingView()
         {
             InitializeComponent();
-            DataGrid.AutoGeneratingColumn += Helper.Helper.DataGrid_AutoGeneratingColumn;
+            DataGridTable.AutoGeneratingColumn += Helper.HelperMethods.DataGrid_AutoGeneratingColumn;
         }
 
         public void Dispose()
         {
-            DataGrid.AutoGeneratingColumn -= Helper.Helper.DataGrid_AutoGeneratingColumn;
+            DataGridTable.AutoGeneratingColumn -= Helper.HelperMethods.DataGrid_AutoGeneratingColumn;
         }
     }
 }

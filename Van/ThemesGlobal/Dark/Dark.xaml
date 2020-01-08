@@ -48,7 +48,7 @@
     <SolidColorBrush x:Key="SeparatorBackGround" Color="{StaticResource Gray}" />
 
 
-
+    <!-- Кнопка в табКонтроле -->
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="{StaticResource PreWindowButtonForeground}" />
         <Setter Property="Background" Value="{StaticResource PreWindowButtonBackground}" />

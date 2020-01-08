@@ -5,24 +5,83 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  
              mc:Ignorable="d"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DesignHeight="450" d:DesignWidth="800">     
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Textblock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid x:Name="Main"  >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" MinWidth="200" MaxWidth="450"/>
+                <ColumnDefinition Width="320" MinWidth="200" MaxWidth="450"/>
                 <ColumnDefinition Width="2"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
-                <TextBlock TextAlignment="Center" Margin="20,5,20,10" Height="20" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                    Таблицы с данными
-                </TextBlock> 
-                <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="tableListView"
-                          ItemsSource="{Binding DatabaseModels, Mode=TwoWay}" 
+            <Grid Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="45" />
+                </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                    <RowDefinition Height="45" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Visibility="{Binding SearchVisibility}">
+                    <TextBox x:Name="SearchTextBox"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Поиск"
+                             HorizontalAlignment="Stretch"
+                             Margin="2"
+                             VerticalAlignment="Center"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             />
+                    <Button Width="20"
+                        Height="auto"  
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Right"
+                        Command="{Binding SearchCloseCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="Close" Width="15" Height="Auto"/>
+                    </Button>
+                </Grid>
+                <TextBlock TextAlignment="Center"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Margin="5"
+                           Text="Таблицы с данными"
+                           Visibility="{Binding InfoVisibility}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Stretch"
+                           />
+                <Button Width="auto"
+                        Height="auto"  
+                        Grid.Column="1"
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Center"
+                        ToolTip="Поиск"
+                        ToolTipService.Placement="Bottom"
+                        Command="{Binding SearchCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}">
+                    <materialDesign:PackIcon Kind="Search" Width="30" Height="Auto"/>
+                </Button>
+                
+                <ListView HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          x:Name="tableListView"
+                          Grid.Row="2"
+                          Grid.ColumnSpan="2"
+                          ItemsSource="{Binding DatabaseModels, Mode=OneWay}" 
                           SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
                           Foreground="{DynamicResource WindowForeground}"
-                          Margin="0,0,-15,0"
                           Width="Auto">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -30,7 +89,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>  
-            </StackPanel>
+            </Grid>
 
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="Auto" ShowsPreview="True"/>
  
@@ -38,11 +97,10 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="45"/>
-                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <DataGrid Grid.Row="0" Background="{x:Null}"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                          x:Name="DataGrid" 
+                          x:Name="DataGridTable" 
                           EnableRowVirtualization="True" 
                           EnableColumnVirtualization="False" 
                           ScrollViewer.CanContentScroll="True" 
@@ -52,50 +110,101 @@
                           HeadersVisibility="Column" 
                           CanUserAddRows="False" 
                           CanUserDeleteRows="False"
+                          Foreground="{DynamicResource WindowForeground}"
                           ItemsSource="{Binding TableData, Mode=TwoWay, IsAsync=True}" 
                           SelectionUnit="FullRow" 
                           ColumnWidth="*"
                           CanUserSortColumns="True"> 
                 </DataGrid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <StackPanel.RenderTransform>
+                        <TranslateTransform Y="0"/>
+                    </StackPanel.RenderTransform>
+                    <StackPanel.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path = IsClicked}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                            To="-50"
+                                            Duration="0:0:0.8">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                            To="0"
+                                            Duration="0:0:0.8">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Обновить данные"
-                        Command="{Binding RefreshCommand}"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
+                            Height="auto"  
+                            VerticalAlignment="Center" 
+                            ToolTip="Загрузить из Excel"
+                            ToolTipService.Placement="Top"
+                            Command="{Binding LoadCommand}"
+                            Foreground="{DynamicResource PreWindowButtonForeground}"
+                            Style="{DynamicResource ButtonZoom}">
+                        <materialDesign:PackIcon Kind="ProgressDownload" Width="30" Height="Auto"/>
+                    </Button>
+                    <Button Width="auto"
+                            Height="auto"  
+                            VerticalAlignment="Center" 
+                            ToolTip="Обновить данные"
+                            ToolTipService.Placement="Top"
+                            Command="{Binding RefreshCommand}"
+                            Foreground="{DynamicResource PreWindowButtonForeground}"
+                            Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Refresh" Width="30" Height="Auto"/>
                     </Button>
                     <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        ToolTip="Сохранить изменения"
-                        Command="{Binding UpdateRowCommand}"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
+                            Height="auto"  
+                            VerticalAlignment="Center" 
+                            ToolTip="Сохранить изменения"
+                            ToolTipService.Placement="Top"
+                            Command="{Binding UpdateRowCommand}"
+                            Foreground="{DynamicResource PreWindowButtonForeground}"
+                            Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Check" Width="30" Height="Auto"/>
                     </Button>
                     <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        Command="{Binding InsertRowCommand}"
-                        ToolTip="Добавить запись в таблицу"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
+                            Height="auto"  
+                            VerticalAlignment="Center" 
+                            Command="{Binding InsertRowCommand}"
+                            ToolTip="Добавить запись в таблицу"
+                            ToolTipService.Placement="Top"
+                            Foreground="{DynamicResource PreWindowButtonForeground}"
+                            Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Plus" Width="30" Height="Auto"/>
                     </Button>
                     <Button Width="auto"
-                        Height="auto"  
-                        VerticalAlignment="Center" 
-                        Command="{Binding DeleteRowCommand}"
-                        CommandParameter="{Binding SelectedItems, ElementName=DataGrid}"
-                        ToolTip="Удалить выделенную запись из таблицы"
-                        Foreground="{DynamicResource PreWindowButtonForeground}"
-                        Style="{DynamicResource ButtonZoom}">
+                            Height="auto"  
+                            VerticalAlignment="Center" 
+                            Command="{Binding DeleteRowCommand}"
+                            CommandParameter="{Binding SelectedItems, ElementName=DataGridTable}"
+                            ToolTip="Удалить выделенную запись из таблицы"
+                            ToolTipService.Placement="Top"
+                            Foreground="{DynamicResource PreWindowButtonForeground}"
+                            Style="{DynamicResource ButtonZoom}">
                         <materialDesign:PackIcon Kind="Minus" Width="30" Height="Auto"/>
                     </Button>
                 </StackPanel>
+                <Button Grid.Row="1"
+                        Height="3"
+                        VerticalAlignment="Bottom"
+                        Command="{Binding ReplaceCommand}" 
+                        ToolTip="{Binding HideButtonToolTip, Mode=TwoWay}"/>
             </Grid> 
             
         </Grid>

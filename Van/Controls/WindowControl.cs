@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -27,6 +23,7 @@ namespace Van.Controls
         public WindowControl()
             : base()
         {
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             PreviewMouseMove += OnPreviewMouseMove;
             this.StateChanged += OnStateChanged;
         }
@@ -44,26 +41,22 @@ namespace Van.Controls
 
         public void stateChangeWork() {
             Border border = this.Template.FindName("PART_WindowBorder", this) as Border;
-            StackPanel stackPanel = this.Template.FindName("buttonsStackPanel", this) as StackPanel;
+            StackPanel buttonsStackPanel = this.Template.FindName("buttonsStackPanel", this) as StackPanel;
             Button restoreButton = this.Template.FindName("restoreButton", this) as Button;
-            TextBlock titleTextBlock = this.Template.FindName("titleTextBlock", this) as TextBlock;
-            Grid gridResult = this.Template.FindName("gridResult", this) as Grid;  
+            TextBlock titleTextBlock = this.Template.FindName("titleTextBlock", this) as TextBlock; 
 
             if (WindowState == WindowState.Maximized)
             {
-                border.Margin = new Thickness(-1, 6, -1, -1);
-                stackPanel.Margin = new Thickness(0, 0, 8, 0);
+                border.Margin = new Thickness(-1, 6, -1, -1); 
                 titleTextBlock.Margin = new Thickness(14, 0, 0, 0);
-                gridResult.Margin = new Thickness(7, 2, 7, 8);
+                buttonsStackPanel.Margin = new Thickness(0, 0, 8, 0);
                 restoreButton.Content = 2;
-
             }
             else if (WindowState == WindowState.Normal)
             {
-                border.Margin = new Thickness(0);
-                stackPanel.Margin = new Thickness(0, 0, 4, 0);
+                border.Margin = new Thickness(0); 
                 titleTextBlock.Margin = new Thickness(10, 0, 0, 0);
-                gridResult.Margin = new Thickness(5,2,5,5);
+                buttonsStackPanel.Margin = new Thickness(0, 0, 4, 0);
                 restoreButton.Content = 1;
             }
         }
