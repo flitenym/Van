@@ -191,6 +191,25 @@
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="1" 
+                          ItemsSource="{Binding RangeDataList}"
+                          DisplayMemberPath="AgeX" 
+                          SelectedValue="{Binding FirstAgeX}"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="-" />
+                <ComboBox Grid.Column="3" 
+                          ItemsSource="{Binding RangeDataList}"
+                          DisplayMemberPath="AgeX" 
+                          SelectedValue="{Binding SecondAgeX}"/>
+            </Grid>
+
             <TextBlock Height="20" Text="Оценка качества моделей" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
             <DataGrid Height="150"
                         x:Name="QualityAssessmentOfModelsTableDataGrid"
@@ -215,6 +234,10 @@
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
+            
+            
+            
+            
 
         </StackPanel>
     </ScrollViewer>

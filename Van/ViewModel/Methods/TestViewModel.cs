@@ -16,6 +16,8 @@ using System.Windows;
 using Dapper;
 using System.Threading;
 using Van.LocalDataBase;
+using Van.Helper.HelperClasses;
+using System.Collections.ObjectModel;
 
 namespace Van.ViewModel.Methods
 {
@@ -73,7 +75,7 @@ namespace Van.ViewModel.Methods
         /// Расстояние от табличного второй метод
         /// </summary>
         public QualityAssessmentOfModels DistanceSecondMethod = new QualityAssessmentOfModels();
-
+        
         public void LoadTables()
         { 
             Task.Factory.StartNew(() =>
@@ -87,6 +89,46 @@ namespace Van.ViewModel.Methods
                 RefreshChartsDivides();
             });
         }
+
+        #region Диапазон
+
+        private ObservableCollection<RangeData> rangeDataList = new ObservableCollection<RangeData>();
+
+        public ObservableCollection<RangeData> RangeDataList
+        {
+            get { return rangeDataList; }
+            set
+            {
+            rangeDataList = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(RangeDataList)));
+            }
+        }
+
+        private RangeData firstAgeX = new RangeData();
+
+        public RangeData FirstAgeX
+        {
+            get { return firstAgeX; }
+            set
+            {
+                firstAgeX = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(FirstAgeX)));
+            }
+        }
+
+        private RangeData secondAgeX = new RangeData();
+
+        public RangeData SecondAgeX
+        {
+            get { return secondAgeX; }
+            set
+            {
+                secondAgeX = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(SecondAgeX)));
+            }
+        }
+
+        #endregion
 
         #region Таблица оценка качесва моделей
 
@@ -156,10 +198,17 @@ namespace Van.ViewModel.Methods
 
             ageValues = new List<double>();
 
+            RangeDataList = new ObservableCollection<RangeData>(); 
+
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 ageValues.Add(getTValue(currentMortalityTables[i]?.AgeX));
+
+                RangeDataList.Add(new RangeData() { ID = (currentMortalityTables[i]?.ID).Value, AgeX = currentMortalityTables[i]?.AgeX });
             }
+
+            FirstAgeX = RangeDataList.First();
+            SecondAgeX = RangeDataList.First();
         }
 
         #endregion

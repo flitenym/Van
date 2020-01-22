@@ -145,6 +145,7 @@
     <Compile Include="Helper\Attributes\ColumnDataAttribute.cs" />
     <Compile Include="Helper\Attributes\ModelClassAttribute.cs" />
     <Compile Include="Helper\HelperClasses\Node.cs" />
+    <Compile Include="Helper\HelperClasses\RangeData.cs" />
     <Compile Include="Helper\HelperClasses\TabControlData.cs" />
     <Compile Include="Helper\HelperMethods.cs" />
     <Compile Include="Helper\StaticInfo\Enums.cs" />
