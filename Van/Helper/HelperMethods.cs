@@ -75,7 +75,7 @@ namespace Van.Helper
             return false;
         }
 
-        public static DataTable ToDataTable<T>(this IList<T> data, Type type)
+        public static DataTable ToDataTable<T>(this IList<T> data, Type type, int round)
         {
             DataTable table = new DataTable();
 
@@ -103,7 +103,16 @@ namespace Van.Helper
             {
                 DataRow row = table.NewRow();
                 foreach (PropertyDescriptor prop in properties)
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                {
+                    if (prop.GetValue(item) is double doubleValue)
+                    {
+                        row[prop.Name] = Math.Round(doubleValue, round);
+                    }
+                    else
+                    {
+                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                    }
+                }
                 table.Rows.Add(row);
             }
             return table;

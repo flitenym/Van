@@ -16,7 +16,7 @@ namespace Van.DataBase.Models
         [Description("Возраст X")]
         public string MortalityTableAgeX { get; set; }
 
-        [Description("Стандартный")]
+        [Description("Табличный")]
         public double? Standart { get; set; }
 
         [Description("Вейбулла")]

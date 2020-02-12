@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Van.Helper.HelperClasses
+namespace Van.Helper.StaticInfo
 {
-    public class RangeData
+    public static class SettingsDictionary
     {
-        public int ID { get; set; }
-        public int AgeX { get; set; }
+        public static int round = 5;
     }
 }

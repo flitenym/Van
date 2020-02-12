@@ -18,6 +18,7 @@ using System.Threading;
 using Van.LocalDataBase;
 using Van.Helper.HelperClasses;
 using System.Collections.ObjectModel;
+using Van.Helper.StaticInfo;
 
 namespace Van.ViewModel.Methods
 {
@@ -49,9 +50,7 @@ namespace Van.ViewModel.Methods
 
         public bool HaveNullProbability = true;
 
-        public double epsilon = 0.01;
-
-        public int round = 5;
+        public double epsilon = 0.01; 
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
@@ -99,7 +98,7 @@ namespace Van.ViewModel.Methods
             get { return rangeDataList; }
             set
             {
-            rangeDataList = value;
+                rangeDataList = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(RangeDataList)));
             }
         }
@@ -151,7 +150,7 @@ namespace Van.ViewModel.Methods
 
         private void SelectQualityAssessmentOfModels()
         {
-            QualityAssessmentOfModelsTableData = SQLExecutor.SelectExecutor(typeof(QualityAssessmentOfModels), nameof(QualityAssessmentOfModels));
+            QualityAssessmentOfModelsTableData = SQLExecutor.SelectExecutor(typeof(QualityAssessmentOfModels), nameof(QualityAssessmentOfModels), SettingsDictionary.round);
             QualityAssessmentOfModelsTableData.AcceptChanges(); 
         }
 
@@ -180,7 +179,7 @@ namespace Van.ViewModel.Methods
         {
             if (needTableRefresh)
             {
-                MortalityTableData = SQLExecutor.SelectExecutor(typeof(MortalityTable), nameof(MortalityTable));
+                MortalityTableData = SQLExecutor.SelectExecutor(typeof(MortalityTable), nameof(MortalityTable), SettingsDictionary.round);
                 MortalityTableData.AcceptChanges();
             }
 
@@ -198,17 +197,19 @@ namespace Van.ViewModel.Methods
 
             ageValues = new List<double>();
 
-            RangeDataList = new ObservableCollection<RangeData>(); 
+            var temp = new ObservableCollection<RangeData>(); 
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 ageValues.Add(getTValue(currentMortalityTables[i]?.AgeX));
 
-                RangeDataList.Add(new RangeData() { ID = (currentMortalityTables[i]?.ID).Value, AgeX = currentMortalityTables[i]?.AgeX });
+                temp.Add(new RangeData() { ID = (currentMortalityTables[i]?.ID).Value, AgeX = (int)getTValue(currentMortalityTables[i]?.AgeX) });
             }
 
-            FirstAgeX = RangeDataList.First();
-            SecondAgeX = RangeDataList.First();
+            RangeDataList = temp;
+
+            //FirstAgeX = RangeDataList.First();
+            //SecondAgeX = RangeDataList.First();
         }
 
         #endregion
@@ -237,7 +238,7 @@ namespace Van.ViewModel.Methods
         {
             if (needTableRefresh)
             {
-                SurvivalFunctionTable = SQLExecutor.SelectExecutor(typeof(SurvivalFunction), nameof(SurvivalFunction));
+                SurvivalFunctionTable = SQLExecutor.SelectExecutor(typeof(SurvivalFunction), nameof(SurvivalFunction), SettingsDictionary.round);
                 SurvivalFunctionTable.AcceptChanges();
             }
 
@@ -282,7 +283,7 @@ namespace Van.ViewModel.Methods
         {
             if (needTableRefresh)
             {
-                DensityTable = SQLExecutor.SelectExecutor(typeof(Density), nameof(Density));
+                DensityTable = SQLExecutor.SelectExecutor(typeof(Density), nameof(Density), SettingsDictionary.round);
                 DensityTable.AcceptChanges();
             }
 
@@ -322,7 +323,7 @@ namespace Van.ViewModel.Methods
         {
             if (needTableRefresh)
             {
-                LifeTimesTable = SQLExecutor.SelectExecutor(typeof(LifeTimes), nameof(LifeTimes));
+                LifeTimesTable = SQLExecutor.SelectExecutor(typeof(LifeTimes), nameof(LifeTimes), SettingsDictionary.round);
                 LifeTimesTable.AcceptChanges();
             }
 
@@ -642,10 +643,11 @@ namespace Van.ViewModel.Methods
              
             Acaici = new QualityAssessmentOfModels() { Quality = "Акаики"};
              
-            DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Расстояние первый метод" };
-            DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Расстояние второй метод" };
+            DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Первая метрика" };
+            DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Вторая метрика" };
 
             CalculateSTStandart();
+
 
             var taskWeibull = new Task(CalculateSTWeibull);
             var taskRelay = new Task(CalculateSTRelay);
@@ -708,15 +710,18 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Standart = Math.Round(
                     (double)currentMortalityTables[i]?.NumberOfSurvivors / 
                     (double)maxNumberOfSurvivors
-                    , round);
+                    , SettingsDictionary.round);
 
-                currentDensitys[i].Standart = Math.Round(0.0, round);
+                currentDensitys[i].Standart = Math.Round(
+                    (double)currentMortalityTables[i]?.NumberOfDead /
+                    (double)maxNumberOfSurvivors
+                    , SettingsDictionary.round);
             }
         }
 
         public void CalculateSTWeibull()
         {
-            Weibull weibull = new Weibull(standartValues, ageValues, t, delta, round, r, (double)int.MaxValue, epsilon);
+            Weibull weibull = new Weibull(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
             Acaici.Weibull = weibull.Quality;
             DistanceFirstMethod.Weibull = weibull.DistanceFirstMethod;
@@ -732,7 +737,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTRelay()
         {
-            Relay relay = new Relay(standartValues, ageValues, t, delta, round, r);
+            Relay relay = new Relay(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
             Acaici.Relay = relay.Quality;
             DistanceFirstMethod.Relay = relay.DistanceFirstMethod;
@@ -747,7 +752,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTGompertz()
         {
-            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, round, r, (double)int.MaxValue, epsilon);
+            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
             Acaici.Gompertz = gompertz.Quality;
             DistanceFirstMethod.Gompertz = gompertz.DistanceFirstMethod;
@@ -762,7 +767,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTExponential()
         {
-            Exponential exponential = new Exponential(standartValues, ageValues, t, delta, round, r);
+            Exponential exponential = new Exponential(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
             Acaici.Exponential = exponential.Quality;
             DistanceFirstMethod.Exponential = exponential.DistanceFirstMethod;
@@ -802,8 +807,8 @@ namespace Van.ViewModel.Methods
                 var strokeThickness = 2;
                 var standart = new LineSeries
                 {
-                    Title = "Стандартное",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Standart.Value)),
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -813,7 +818,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Weibull.Value)),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -823,7 +828,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Exponential.Value)),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -833,7 +838,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Gompertz.Value)),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -843,7 +848,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => x.Relay.Value)),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -892,8 +897,8 @@ namespace Van.ViewModel.Methods
                 var strokeThickness = 2;
                 var standart = new LineSeries
                 {
-                    Title = "Стандартное",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Standart.Value)),
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -903,7 +908,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Weibull.Value)),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -913,7 +918,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Exponential.Value)),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -923,7 +928,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Gompertz.Value)),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -933,7 +938,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => x.Relay.Value)),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -998,8 +1003,8 @@ namespace Van.ViewModel.Methods
                 var strokeThickness = 2;
                 var standart = new LineSeries
                 {
-                    Title = "Стандартное",
-                    Values = new ChartValues<double>(divides.Select(x => x.Standart.Value)),
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1009,7 +1014,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(divides.Select(x => x.Weibull.Value)),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1019,7 +1024,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(divides.Select(x => x.Exponential.Value)),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1029,7 +1034,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(divides.Select(x => x.Gompertz.Value)),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1039,7 +1044,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(divides.Select(x => x.Relay.Value)),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1059,6 +1064,7 @@ namespace Van.ViewModel.Methods
             get { return dividesCollection; }
             set
             {
+
                 dividesCollection = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(DividesCollection)));
             }

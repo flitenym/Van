@@ -17,6 +17,7 @@ using Van.Windows.ViewModel;
 using IronXL;
 using Microsoft.Win32;
 using static Van.Helper.HelperMethods;
+using Van.Helper.StaticInfo;
 
 namespace Van.ViewModel
 {
@@ -358,7 +359,7 @@ namespace Van.ViewModel
         private void Select()
         {
             Loading(true);
-            TableData = SQLExecutor.SelectExecutor(SelectedModelType, SelectedModelName);
+            TableData = SQLExecutor.SelectExecutor(SelectedModelType, SelectedModelName, SettingsDictionary.round);
             TableData.AcceptChanges();
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
             Loading(false);

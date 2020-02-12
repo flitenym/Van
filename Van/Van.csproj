@@ -148,6 +148,7 @@
     <Compile Include="Helper\HelperClasses\RangeData.cs" />
     <Compile Include="Helper\HelperClasses\TabControlData.cs" />
     <Compile Include="Helper\HelperMethods.cs" />
+    <Compile Include="Helper\StaticInfo\SettingsDictionary.cs" />
     <Compile Include="Helper\StaticInfo\Enums.cs" />
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
     <Compile Include="Helper\StaticInfo\Types.cs" />

@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Van.Helper.HelperClasses;
 
 namespace Van.Methods
 {
     public class Exponential
     {
-        public Exponential(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r)
+        public Exponential(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r, RangeData FirstAgeX, RangeData SecondAgeX)
         {
             this.StandartValues = StandartValues;
             this.round = round;
             ParamterCalculation(t, r);
             this.Quality = Helper.Shared.GetQuality(this.LValue, 1, t.Count);
             GetSurvivalFunctions(tValue);
-            GetDistances();
+            this.FirstAgeX = FirstAgeX;
+            this.SecondAgeX = SecondAgeX;
+            GetDistances(); 
         }
+
+        public RangeData FirstAgeX;
+
+        public RangeData SecondAgeX;
 
         public List<double> StandartValues { get; set; }
 
@@ -83,7 +90,8 @@ namespace Van.Methods
             double sumFirst = 0;
             double sumSecond = 0;
 
-            for (int i = 0; i < StandartValues.Count(); i++)
+
+            for (int i = FirstAgeX.AgeX; i < SecondAgeX.AgeX; i++)
             {
                 sumFirst += Helper.Shared.GetDistanceFirst(StandartValues[i], SurvivalFunctions[i]);
                 sumSecond += Helper.Shared.GetDistanceSecond(StandartValues[i], SurvivalFunctions[i]);

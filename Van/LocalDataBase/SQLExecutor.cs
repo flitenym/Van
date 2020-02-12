@@ -14,14 +14,14 @@ namespace Van.LocalDataBase
     {
         public static string LoadConnectionString => ConfigurationManager.ConnectionStrings["LocalDataBase"].ConnectionString;
 
-        public static DataTable SelectExecutor(Type type, string tableName)
+        public static DataTable SelectExecutor(Type type, string tableName, int round)
         {
             try
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
                     slc.Open();
-                    return slc.Query(type, $"SELECT * FROM {tableName}").ToList().ToDataTable(type) ?? new DataTable();
+                    return slc.Query(type, $"SELECT * FROM {tableName}").ToList().ToDataTable(type, round) ?? new DataTable();
                 }
             }
             catch (Exception ex)

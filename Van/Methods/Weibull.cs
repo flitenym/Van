@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Van.Helper.HelperClasses;
 
 namespace Van.Methods
 {
     public class Weibull
     {
-        public Weibull(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r, double b, double epsilon, double? a = null)
+        public Weibull(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r, double b, double epsilon, RangeData FirstAgeX, RangeData SecondAgeX, double? a = null)
         {
             this.StandartValues = StandartValues;
             this.b = b;
@@ -18,8 +19,14 @@ namespace Van.Methods
             ParamterCalculation(t, delta, r);
             this.Quality = Helper.Shared.GetQuality(this.LValue, 2, t.Count);
             GetSurvivalFunctions(tValue);
+            this.FirstAgeX = FirstAgeX;
+            this.SecondAgeX = SecondAgeX;
             GetDistances();
         }
+
+        public RangeData FirstAgeX;
+
+        public RangeData SecondAgeX;
 
         public List<double> StandartValues { get; set; }
 
@@ -173,13 +180,15 @@ namespace Van.Methods
                     , round);
         }
 
-        public void GetDistances() {
+        public void GetDistances()
+        {
             if (!StandartValues.Any()) return;
 
             double sumFirst = 0;
             double sumSecond = 0;
 
-            for (int i = 0; i < StandartValues.Count(); i++)
+
+            for (int i = FirstAgeX.AgeX; i < SecondAgeX.AgeX; i++)
             {
                 sumFirst += Helper.Shared.GetDistanceFirst(StandartValues[i], SurvivalFunctions[i]);
                 sumSecond += Helper.Shared.GetDistanceSecond(StandartValues[i], SurvivalFunctions[i]);
