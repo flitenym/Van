@@ -12,5 +12,13 @@
 
         #endregion
 
+        #region Ключи для карточки Singleton
+
+        public static string ModulesKey = "Modules";
+
+        public static string ThemesKey = "Themes";
+
+        #endregion
+
     }
 }

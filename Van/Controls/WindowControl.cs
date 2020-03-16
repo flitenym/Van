@@ -23,7 +23,7 @@ namespace Van.Controls
         public WindowControl()
             : base()
         {
-            //this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             PreviewMouseMove += OnPreviewMouseMove;
             this.StateChanged += OnStateChanged;
         }

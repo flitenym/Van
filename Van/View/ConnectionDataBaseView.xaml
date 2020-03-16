@@ -18,11 +18,11 @@
         <ScrollViewer Style="{DynamicResource ScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.25*"/>
                     <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.25*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,20,0,0">
+                <StackPanel MaxWidth="600" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,20,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -38,13 +38,13 @@
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
+                            <RowDefinition MinHeight="50"/>
                         </Grid.RowDefinitions>
                         <Grid.Style>
                             <Style TargetType="Grid">
@@ -100,17 +100,10 @@
                          VerticalScrollBarVisibility="Auto"
                          materialDesign:HintAssist.Hint="ТаймАут" AcceptsReturn="True"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-
+                    
                     </Grid>
 
                     <Grid>
-                        <TextBox Height="100" Margin="5"
-                         Text="{Binding OriginalConnectionString, UpdateSourceTrigger=PropertyChanged}"  
-                         HorizontalScrollBarVisibility="Auto"
-                         TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Auto"
-                         materialDesign:HintAssist.Hint="Задать с помощью строки подключения" AcceptsReturn="True"
-                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                         <Grid.Style>
                             <Style TargetType="Grid">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -121,9 +114,16 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
+                        <TextBox Width="auto" Margin="5"
+                         Text="{Binding OriginalConnectionString, UpdateSourceTrigger=PropertyChanged}"  
+                         HorizontalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         materialDesign:HintAssist.Hint="Задать с помощью строки подключения" AcceptsReturn="True"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                     </Grid>
 
-                    <TextBox Height="100" Margin="5"
+                    <TextBox Margin="5"
                          Text="{Binding ConnectionString}"  
                          HorizontalScrollBarVisibility="Auto"
                          TextWrapping="Wrap"
@@ -139,7 +139,8 @@
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource MaterialDesignRaisedButton}" >
                     </Button>
-                </StackPanel>
+                    
+                </StackPanel> 
             </Grid>
         </ScrollViewer>
     </Grid>

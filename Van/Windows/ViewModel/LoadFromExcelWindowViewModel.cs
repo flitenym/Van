@@ -1,4 +1,5 @@
 ﻿using Van.AbstractClasses;
+using Van.Commands;
 using Van.Helper;
 using Van.LocalDataBase;
 using IronXL;
@@ -89,29 +90,17 @@ $@"При загрузке из Excel следует придерживатьс�
 
         #region Команда для старта загрузки
 
-        private RelayCommand startCommand;
-        public RelayCommand StartCommand
-        {
-            get
-            {
-                return startCommand ??
-                  (startCommand = new RelayCommand(async obj =>
-                  {
-                      await StartLoadingAsync(obj as Window);
-                  }));
-            }
-        }
+        private AsyncCommand startCommand;
+        public AsyncCommand StartCommand => startCommand ?? (startCommand = new AsyncCommand(obj => StartLoadingAsync(obj as Window)));
 
         public async Task StartLoadingAsync(Window window)
         {
-            await Task.Factory.StartNew(() =>
-                Load()
-            );
+            await LoadAsync();
 
             window.DialogResult = true;
         }
 
-        public void Load()
+        public async Task LoadAsync()
         {
             try
             {
@@ -123,21 +112,21 @@ $@"При загрузке из Excel следует придерживатьс�
                 }
                 if (listObj.Count > 0)
                 {
-                    HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
+                    await HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
                     for (int i = 0; i < listObj.Count; i++)
                     {
-                        SQLExecutor.InsertExecutor(modelClassItem, listObj[i]);
+                        await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
                     }
-                    HelperMethods.Message($"Данные загружены");
+                    await HelperMethods.Message($"Данные загружены");
                 }
                 else
                 {
-                    HelperMethods.Message($"Данные не найдены");
+                    await HelperMethods.Message($"Данные не найдены");
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message($"{ex.Message}");
+                await HelperMethods.Message($"{ex.Message}");
             }
         }
 
@@ -146,16 +135,11 @@ $@"При загрузке из Excel следует придерживатьс�
         #region Команда для отмены загрузки
 
         private RelayCommand cancelCommand;
-        public RelayCommand CancelCommand
+        public RelayCommand CancelCommand => cancelCommand ?? (cancelCommand = new RelayCommand(obj => CancelFunction(obj)));
+
+        public void CancelFunction(object obj)
         {
-            get
-            {
-                return cancelCommand ??
-                  (cancelCommand = new RelayCommand(obj =>
-                  {
-                      (obj as Window).DialogResult = false;
-                  }));
-            }
+            (obj as Window).DialogResult = false;
         }
 
         #endregion

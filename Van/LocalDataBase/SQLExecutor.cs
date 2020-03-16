@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.Linq;
 using Van.AbstractClasses;
 using Van.Helper;
+using System.Threading.Tasks;
 
 namespace Van.LocalDataBase
 {
@@ -14,40 +15,69 @@ namespace Van.LocalDataBase
     {
         public static string LoadConnectionString => ConfigurationManager.ConnectionStrings["LocalDataBase"].ConnectionString;
 
-        public static DataTable SelectExecutor(Type type, string tableName, int round)
+        public static async Task<DataTable> SelectExecutorAsync(Type type, string tableName)
         {
             try
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
-                    slc.Open();
-                    return slc.Query(type, $"SELECT * FROM {tableName}").ToList().ToDataTable(type, round) ?? new DataTable();
+                    await slc.OpenAsync(); 
+
+                    var task = await Task.Run(async () =>
+                    {
+                        return await slc.QueryAsync(type, $"SELECT * FROM {tableName}");
+                    });
+
+                    return task.ToList().ToDataTable(type) ?? new DataTable();
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message(ex.ToString());
+                await HelperMethods.Message(ex.ToString());
                 return new DataTable();
             }
         }
 
-        public static void DeleteExecutor(string tableName, List<int> IDs)
+        public static async Task<List<T>> SelectExecutorAsync<T>(string tableName)
         {
             try
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
-                    slc.Open();
-                    slc.Execute($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray());
+                    await slc.OpenAsync();
+
+                    var task = await Task.Run(async () =>
+                    {
+                        return await slc.QueryAsync<T>($"SELECT * FROM {tableName}");
+                    });
+
+                    return task.ToList();
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message(ex.ToString());
+                await HelperMethods.Message(ex.ToString());
+                return new List<T>();
             }
         }
 
-        public static int InsertExecutor(ModelClass item, object objData)
+        public static async Task DeleteExecutor(string tableName, List<int> IDs)
+        {
+            try
+            {
+                using (var slc = new SQLiteConnection(LoadConnectionString))
+                {
+                    await slc.OpenAsync();
+                    await Task.Run(() => slc.ExecuteAsync($"DELETE FROM {tableName} WHERE ID = @ID", IDs.Select(x => new { Id = x }).ToArray())); 
+                }
+            }
+            catch (Exception ex)
+            {
+                await HelperMethods.Message(ex.ToString());
+            }
+        }
+
+        public static async Task<int> InsertExecutorAsync(ModelClass item, object objData)
         {
             if (string.IsNullOrEmpty(item.InsertQuery)) return -1;
 
@@ -55,18 +85,24 @@ namespace Van.LocalDataBase
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
-                    slc.Open();
-                    return slc.ExecuteScalar<int>(item.InsertQuery, objData);
+                    await slc.OpenAsync(); 
+
+                    var task = await Task.Run(async () =>
+                    {
+                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery, objData);
+                    });
+
+                    return task;
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message(ex.ToString());
+                await HelperMethods.Message(ex.ToString());
                 return -1;
             }
         }
 
-        public static void UpdateExecutor(ModelClass item, Type type, DataRow row, int ID)
+        public static async Task UpdateExecutorAsync(ModelClass item, Type type, DataRow row, int ID)
         {
             if (string.IsNullOrEmpty(item.UpdateQuery(ID))) return;
 
@@ -74,30 +110,31 @@ namespace Van.LocalDataBase
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
-                    slc.Open();
-                    slc.Execute(item.UpdateQuery(ID), row.ToObject(type));
+                    await slc.OpenAsync();
+                    await Task.Run(() => slc.ExecuteAsync(item.UpdateQuery(ID), row.ToObject(type))); 
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message(ex.ToString());
+                await HelperMethods.Message(ex.ToString());
             }
         }
 
-        public static void UpdateExecutor(ModelClass item, object obj, int ID)
+        public static async Task UpdateExecutorAsync(ModelClass item, object obj, int ID)
         {
             if (string.IsNullOrEmpty(item.UpdateQuery(ID))) return;
             try
             {
                 using (var slc = new SQLiteConnection(LoadConnectionString))
                 {
-                    slc.Open();
-                    slc.Execute(item.UpdateQuery(ID), obj);
+                    await slc.OpenAsync();
+                    var result = slc.ExecuteAsync(item.UpdateQuery(ID), obj).Result;
+                    await Task.Run(() => slc.ExecuteAsync(item.UpdateQuery(ID), obj));
                 }
             }
             catch (Exception ex)
             {
-                HelperMethods.Message(ex.ToString());
+                await HelperMethods.Message(ex.ToString());
             }
         }
     }

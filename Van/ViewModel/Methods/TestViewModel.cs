@@ -19,6 +19,7 @@ using Van.LocalDataBase;
 using Van.Helper.HelperClasses;
 using System.Collections.ObjectModel;
 using Van.Helper.StaticInfo;
+using Van.Commands;
 
 namespace Van.ViewModel.Methods
 {
@@ -28,12 +29,9 @@ namespace Van.ViewModel.Methods
 
         public TestViewModel()
         {
-            HelperMethods.Loading(true);
-
-            Thread thread = new Thread(LoadTables);
-            thread.Start();
-
-            HelperMethods.Loading(false);
+            Task.Factory.StartNew(async () =>
+                await LoadTables()
+            );
         }
 
         public List<double> ageValues = new List<double>();
@@ -74,19 +72,16 @@ namespace Van.ViewModel.Methods
         /// Расстояние от табличного второй метод
         /// </summary>
         public QualityAssessmentOfModels DistanceSecondMethod = new QualityAssessmentOfModels();
-        
-        public void LoadTables()
-        { 
-            Task.Factory.StartNew(() =>
-            {
-                SelectMortality();
-                SelectSurvivalFunction();
-                SelectDensity();
-                SelectLifeTimesFunction();
-                SelectQualityAssessmentOfModels();
 
-                RefreshChartsDivides();
-            });
+        public async Task LoadTables()
+        {  
+            await SelectMortalityAsync();
+            await SelectSurvivalFunctionAsync();
+            await SelectDensity();
+            await SelectLifeTimesFunction();
+            await SelectQualityAssessmentOfModelsAsync();
+
+            await RefreshChartsDivides();
         }
 
         #region Диапазон
@@ -148,9 +143,9 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private void SelectQualityAssessmentOfModels()
+        private async Task SelectQualityAssessmentOfModelsAsync()
         {
-            QualityAssessmentOfModelsTableData = SQLExecutor.SelectExecutor(typeof(QualityAssessmentOfModels), nameof(QualityAssessmentOfModels), SettingsDictionary.round);
+            QualityAssessmentOfModelsTableData = await SQLExecutor.SelectExecutorAsync(typeof(QualityAssessmentOfModels), nameof(QualityAssessmentOfModels));
             QualityAssessmentOfModelsTableData.AcceptChanges(); 
         }
 
@@ -175,19 +170,15 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private void SelectMortality(bool needTableRefresh = true)
+        private async Task SelectMortalityAsync(bool needTableRefresh = true)
         {
             if (needTableRefresh)
             {
-                MortalityTableData = SQLExecutor.SelectExecutor(typeof(MortalityTable), nameof(MortalityTable), SettingsDictionary.round);
+                MortalityTableData = await SQLExecutor.SelectExecutorAsync(typeof(MortalityTable), nameof(MortalityTable));
                 MortalityTableData.AcceptChanges();
             }
 
-            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                slc.Open();
-                currentMortalityTables = slc.Query<MortalityTable>($"SELECT * FROM {nameof(MortalityTable)}").ToList();
-            }
+            currentMortalityTables = await SQLExecutor.SelectExecutorAsync<MortalityTable>(nameof(MortalityTable));
 
             NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
             if (currentMortalityTables.Where(x => x.Probability == null).Any())
@@ -234,23 +225,19 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private void SelectSurvivalFunction(bool needTableRefresh = true)
+        private async Task SelectSurvivalFunctionAsync(bool needTableRefresh = true)
         {
             if (needTableRefresh)
             {
-                SurvivalFunctionTable = SQLExecutor.SelectExecutor(typeof(SurvivalFunction), nameof(SurvivalFunction), SettingsDictionary.round);
+                SurvivalFunctionTable = await SQLExecutor.SelectExecutorAsync(typeof(SurvivalFunction), nameof(SurvivalFunction));
                 SurvivalFunctionTable.AcceptChanges();
             }
 
-            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                slc.Open();
-                currentSurvivalFunctions = slc.Query<SurvivalFunction>($"SELECT * FROM {nameof(SurvivalFunction)}").ToList();
-            }
+            currentSurvivalFunctions = await SQLExecutor.SelectExecutorAsync<SurvivalFunction>(nameof(SurvivalFunction));
 
             if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any())
             {
-                RefreshChartsSurvivalFunctions();
+                await RefreshChartsSurvivalFunctions();
             }
 
             standartValues.Clear();
@@ -279,23 +266,19 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private void SelectDensity(bool needTableRefresh = true)
+        private async Task SelectDensity(bool needTableRefresh = true)
         {
             if (needTableRefresh)
             {
-                DensityTable = SQLExecutor.SelectExecutor(typeof(Density), nameof(Density), SettingsDictionary.round);
+                DensityTable = await SQLExecutor.SelectExecutorAsync(typeof(Density), nameof(Density));
                 DensityTable.AcceptChanges();
             }
 
-            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                slc.Open();
-                currentDensitys = slc.Query<Density>($"SELECT * FROM {nameof(Density)}").ToList();
-            }
+            currentDensitys = await SQLExecutor.SelectExecutorAsync<Density>(nameof(Density));
 
             if (!currentDensitys.Where(x => x.Standart == null).Any())
             {
-                RefreshChartsDensitys();
+                await RefreshChartsDensitys();
             }
         }
 
@@ -319,20 +302,15 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private void SelectLifeTimesFunction(bool needTableRefresh = true)
+        private async Task SelectLifeTimesFunction(bool needTableRefresh = true)
         {
             if (needTableRefresh)
             {
-                LifeTimesTable = SQLExecutor.SelectExecutor(typeof(LifeTimes), nameof(LifeTimes), SettingsDictionary.round);
+                LifeTimesTable = await SQLExecutor.SelectExecutorAsync(typeof(LifeTimes), nameof(LifeTimes));
                 LifeTimesTable.AcceptChanges();
             }
 
-
-            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                slc.Open();
-                currentLifeTimes = slc.Query<LifeTimes>($"SELECT * FROM {nameof(LifeTimes)}").ToList();
-            }
+            currentLifeTimes = await SQLExecutor.SelectExecutorAsync<LifeTimes>(nameof(LifeTimes));
 
             t = currentLifeTimes.Select(x => x.LifeTime.Value).ToList();
             delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
@@ -358,29 +336,17 @@ namespace Van.ViewModel.Methods
 
         #region Комманда для вычисления T
 
-        private RelayCommand calculateTCommand;
-        public RelayCommand CalculateTCommand
-        {
-            get
-            {
-                return calculateTCommand ??
-                  (calculateTCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          CalculateT()
-                      );
-                  }, CanCalculateT));
-            }
-        }
+        private AsyncCommand calculateTCommand;
 
-        private bool CanCalculateT(object x)
+        public AsyncCommand CalculateTCommand => calculateTCommand ?? (calculateTCommand = new AsyncCommand(x => CalculateT(), y => CanCalculateT()));
+
+        private bool CanCalculateT()
         {
             return !HaveNullProbability;
         }
 
-        public void CalculateT()
+        public async Task CalculateT()
         {
-            HelperMethods.Loading(true);
             t = new List<int>(); 
 
             var stopwatch = new Stopwatch();
@@ -388,21 +354,19 @@ namespace Van.ViewModel.Methods
 
             GenerateT();
             
-            RewriteLifeTimesTable();
+            await RewriteLifeTimesTable();
             
-            SelectLifeTimesFunction();
+            await SelectLifeTimesFunction();
 
-            HelperMethods.Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            await HelperMethods.Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             stopwatch.Stop();
-
-            HelperMethods.Loading(false);
         }
 
         public void GenerateT()
         {
             var minimalProb = currentMortalityTables.Select(x => x.Probability).Min().Value;
             var maxsurv = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
-            minimalProb = minimalProb / 2; 
+            minimalProb /= 2; 
 
             for (int i = 0; i < NValue; i++)
             {
@@ -429,9 +393,8 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        public void RewriteLifeTimesTable()
+        public async Task RewriteLifeTimesTable()
         {
-
             currentLifeTimes = new List<LifeTimes>();
             delta = new List<int>();
 
@@ -443,13 +406,13 @@ namespace Van.ViewModel.Methods
 
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                cn.Open();
+                await cn.OpenAsync();
                 using (var transaction = cn.BeginTransaction())
                 {
                     using (var cmd = cn.CreateCommand())
                     {
                         cmd.CommandText = $"DELETE FROM LifeTimes";
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                     transaction.Commit();
                 }
@@ -459,7 +422,7 @@ namespace Van.ViewModel.Methods
 
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                cn.Open();
+                await cn.OpenAsync();
                 using (var transaction = cn.BeginTransaction())
                 {
                     using (var cmd = cn.CreateCommand())
@@ -469,7 +432,7 @@ namespace Van.ViewModel.Methods
                         {
                             cmd.Parameters.AddWithValue("@LifeTime", currentLifeTimes[i].LifeTime);
                             cmd.Parameters.AddWithValue("@Censor", currentLifeTimes[i].Censor);
-                            cmd.ExecuteNonQuery();
+                            await cmd.ExecuteNonQueryAsync();
                         }
                     }
                     transaction.Commit();
@@ -494,50 +457,35 @@ namespace Van.ViewModel.Methods
 
         #region Комманда для вычисления числа умерших d(x)    
 
-        private RelayCommand calculateDataCommand;
-        public RelayCommand CalculateDataCommand
-        {
-            get
-            {
-                return calculateDataCommand ??
-                  (calculateDataCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                            CalculateMortality()
-                      );
-                  }));
-            }
-        }
+        private AsyncCommand calculateDataCommand;
 
-        public void CalculateMortality()
+        public AsyncCommand CalculateDataCommand => calculateDataCommand ?? (calculateDataCommand = new AsyncCommand(x => CalculateMortalityAsync()));
+
+        public async Task CalculateMortalityAsync()
         {
-            HelperMethods.Loading(true); 
-            
             //обновим таблицу через БД
-            SelectMortality(false);
+            await SelectMortalityAsync(false);
 
             if (currentMortalityTables.Count() < 2)
             {
-                SelectMortality();
-                HelperMethods.Message("Слишком мало данных");
-                HelperMethods.Loading(false);
+                await SelectMortalityAsync();
+                await HelperMethods.Message("Слишком мало данных");
                 return;
             }
 
-            CalculateNumberOfDead();
+            await CalculateNumberOfDead();
 
-            CalculateProbability();
+            await CalculateProbability();
 
             //Обновим в БД данные исходя из текущего списка
-            UpdateMortality(); 
+            await UpdateMortality(); 
             //обновим таблицу через БД
-            SelectMortality();
+            await SelectMortalityAsync();
 
-            HelperMethods.Message("Вычисление прошло успешно");
-            HelperMethods.Loading(false);
+            await HelperMethods.Message("Вычисление прошло успешно");
         }
 
-        private void CalculateNumberOfDead() {
+        private Task CalculateNumberOfDead() {
             int mortalityTableCount = currentMortalityTables.Count() - 1;
 
             for (int i = 0; i < mortalityTableCount; i++)
@@ -545,52 +493,42 @@ namespace Van.ViewModel.Methods
                 currentMortalityTables[i].NumberOfDead = currentMortalityTables[i].NumberOfSurvivors - currentMortalityTables[i + 1].NumberOfSurvivors;
             }
             currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
+
+            return Task.CompletedTask;
         }
 
-        private void CalculateProbability()
+        private Task CalculateProbability()
         {
             for (int i = 0; i < currentMortalityTables.Count(); i++)
             {
                 currentMortalityTables[i].Probability = (double?)currentMortalityTables[i].NumberOfDead / (double)currentMortalityTables.First().NumberOfSurvivors;
             }
+
+            return Task.CompletedTask;
         }
 
         #endregion
 
         #region Комманда для обновления таблицы (используется после вычислений)
 
-        private RelayCommand updateMortalityCommand;
-        public RelayCommand UpdateMortalityCommand
-        {
-            get
-            {
-                return updateMortalityCommand ??
-                  (updateMortalityCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          UpdateMortalityTable()
-                      );
-                  }));
-            }
-        }
+        private AsyncCommand updateMortalityCommand;
 
-        public void UpdateMortalityTable()
-        {
-            HelperMethods.Loading(true);
+        public AsyncCommand UpdateMortalityCommand => updateMortalityCommand ?? (updateMortalityCommand = new AsyncCommand(x => UpdateMortalityTable()));
 
+        public async Task UpdateMortalityTable()
+        {
             //обновим таблицу через БД
-            SelectMortality();
+            await SelectMortalityAsync();
 
-            HelperMethods.Message("Таблица обновлена");
-            HelperMethods.Loading(false);
+            await HelperMethods.Message("Таблица обновлена");
         }
 
 
-        private void UpdateMortality()
+        private async Task UpdateMortality()
         {
             for (int i = 0; i < currentMortalityTables.Count(); i++)
             {
-                SQLExecutor.UpdateExecutor(currentMortalityTables[i], currentMortalityTables[i], currentMortalityTables[i].ID);
+                await SQLExecutor.UpdateExecutorAsync(currentMortalityTables[i], currentMortalityTables[i], currentMortalityTables[i].ID);
             }
         }
 
@@ -598,46 +536,33 @@ namespace Van.ViewModel.Methods
 
         #region Комманда для методов
 
-        private RelayCommand calculateMethodsCommand;
-        public RelayCommand CalculateMethodsCommand
-        {
-            get
-            {
-                return calculateMethodsCommand ??
-                  (calculateMethodsCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          CalculateMethodsAsync()
-                      );
-                  }, CanCalculateMethods));
-            }
-        }
+        private AsyncCommand calculateMethodsCommand;
 
-        private bool CanCalculateMethods(object x)
+        public AsyncCommand CalculateMethodsCommand => calculateMethodsCommand ?? (calculateMethodsCommand = new AsyncCommand(x => CalculateMethodsAsync(), y => CanCalculateMethods()));
+
+        private bool CanCalculateMethods()
         {
             return t.Any() && currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
         }
 
-        private void UpdateST()
+        private async Task UpdateSTAsync()
         {
             for (int i = 0; i < currentSurvivalFunctions.Count(); i++) 
             {
-                SQLExecutor.UpdateExecutor(currentSurvivalFunctions[i], currentSurvivalFunctions[i], currentSurvivalFunctions[i].ID);
+                await SQLExecutor.UpdateExecutorAsync(currentSurvivalFunctions[i], currentSurvivalFunctions[i], currentSurvivalFunctions[i].ID);
             }
         }
 
-        private void UpdateD()
+        private async Task UpdateD()
         {
             for (int i = 0; i < currentDensitys.Count(); i++)
             {
-                SQLExecutor.UpdateExecutor(currentDensitys[i], currentDensitys[i], currentDensitys[i].ID);
+                await SQLExecutor.UpdateExecutorAsync(currentDensitys[i], currentDensitys[i], currentDensitys[i].ID);
             }
         }
 
         public async Task CalculateMethodsAsync()
         {
-            HelperMethods.Loading(true); 
-
             var stopwatch = new Stopwatch();
             stopwatch.Start();
              
@@ -646,63 +571,41 @@ namespace Van.ViewModel.Methods
             DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Первая метрика" };
             DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Вторая метрика" };
 
-            CalculateSTStandart();
-
-
-            var taskWeibull = new Task(CalculateSTWeibull);
-            var taskRelay = new Task(CalculateSTRelay);
-            var taskGompertz = new Task(CalculateSTGompertz);
-            var taskExponential = new Task(CalculateSTExponential);
-
-            taskWeibull.Start();
-            taskRelay.Start();
-            taskGompertz.Start();
-            taskExponential.Start();
+            await CalculateSTStandart();
 
             await Task.WhenAll(
-                taskWeibull,
-                taskRelay,
-                taskGompertz,
-                taskExponential);
+                new[] { CalculateSTWeibull(), CalculateSTRelay(), CalculateSTGompertz(), CalculateSTExponential() }
+            );
 
 
-            var taskST = new Task(UpdateAndSelectST);
-            var taskD = new Task(UpdateAndSelectD);
+            await UpdateAndSelectST();
+            await UpdateAndSelectD();
 
-            taskST.Start();
-            taskD.Start();
-
-            await Task.WhenAll(
-                taskST,
-                taskD);
-
-            RefreshChartsDivides();
+            await RefreshChartsDivides();
 
             //--------Обновление оценки качества
-            QualityUpdate();
+            await QualityUpdateAsync();
 
 
-            HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            await HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             stopwatch.Stop();
-
-            HelperMethods.Loading(false);
         }
 
-        public void UpdateAndSelectST() {
-            UpdateST();
-            SelectSurvivalFunction();
+        public async Task UpdateAndSelectST() {
+            await UpdateSTAsync();
+            await SelectSurvivalFunctionAsync();
         }
 
-        public void UpdateAndSelectD()
+        public async Task UpdateAndSelectD()
         {
-            UpdateD();
-            SelectDensity();
+            await UpdateD();
+            await SelectDensity();
         }
 
-        public void CalculateSTStandart() {
+        public Task CalculateSTStandart() {
             var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
 
-            if (maxNumberOfSurvivors == null) return;
+            if (maxNumberOfSurvivors == null) return Task.CompletedTask;
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
@@ -717,9 +620,11 @@ namespace Van.ViewModel.Methods
                     (double)maxNumberOfSurvivors
                     , SettingsDictionary.round);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CalculateSTWeibull()
+        public Task CalculateSTWeibull()
         {
             Weibull weibull = new Weibull(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
@@ -733,9 +638,11 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Weibull = weibull.SurvivalFunctions[i];
                 currentDensitys[i].Weibull = weibull.Densitys[i];
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CalculateSTRelay()
+        public Task CalculateSTRelay()
         {
             Relay relay = new Relay(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
@@ -748,9 +655,11 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Relay = relay.SurvivalFunctions[i];
                 currentDensitys[i].Relay = relay.Densitys[i];
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CalculateSTGompertz()
+        public Task CalculateSTGompertz()
         {
             Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
@@ -763,9 +672,11 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Gompertz = gompertz.SurvivalFunctions[i];
                 currentDensitys[i].Gompertz = gompertz.Densitys[i];
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CalculateSTExponential()
+        public Task CalculateSTExponential()
         {
             Exponential exponential = new Exponential(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
@@ -778,9 +689,11 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Exponential = exponential.SurvivalFunctions[i];
                 currentDensitys[i].Exponential = exponential.Densitys[i];
             }
+
+            return Task.CompletedTask;
         }
 
-        public void QualityUpdate()
+        public async Task QualityUpdateAsync()
         {
             //Удалим значение из таблицы
             using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
@@ -789,19 +702,19 @@ namespace Van.ViewModel.Methods
                 slc.Execute($"DELETE from {nameof(QualityAssessmentOfModels)}");
             }
 
-            SQLExecutor.InsertExecutor(Acaici, Acaici);
-            SQLExecutor.InsertExecutor(DistanceFirstMethod, DistanceFirstMethod);
-            SQLExecutor.InsertExecutor(DistanceFirstMethod, DistanceSecondMethod);
-            
-            SelectQualityAssessmentOfModels();
+            await SQLExecutor.InsertExecutorAsync(Acaici, Acaici);
+            await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod, DistanceFirstMethod);
+            await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod, DistanceSecondMethod);
+
+            await SelectQualityAssessmentOfModelsAsync();
         }
 
         #endregion
 
         #region SurvivalFunctions
 
-        public void RefreshChartsSurvivalFunctions() {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+        public async Task RefreshChartsSurvivalFunctions() {
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 SurvivalFunctionsCollection = new SeriesCollection();
                 var strokeThickness = 2;
@@ -858,7 +771,6 @@ namespace Van.ViewModel.Methods
 
                 SurvivalFunctionsYFormatter = value => Math.Round(value, 3).ToString();
             }));
-
         }
          
         private SeriesCollection survivalFunctionsCollection;
@@ -889,9 +801,9 @@ namespace Van.ViewModel.Methods
 
         #region Density
 
-        public void RefreshChartsDensitys()
+        public async Task RefreshChartsDensitys()
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 DensitysCollection = new SeriesCollection();
                 var strokeThickness = 2;
@@ -948,7 +860,6 @@ namespace Van.ViewModel.Methods
 
                 DensitysYFormatter = value => Math.Round(value, 3).ToString();
             }));
-
         }
 
         private SeriesCollection densitysCollection;
@@ -979,9 +890,9 @@ namespace Van.ViewModel.Methods
 
         #region Density/SurvivalFunctions
 
-        public void RefreshChartsDivides()
+        public async Task RefreshChartsDivides()
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (!currentDensitys.Where(x=>x.Weibull != null).Any() || !currentSurvivalFunctions.Where(x => x.Weibull != null).Any()) return;
 
@@ -1054,7 +965,6 @@ namespace Van.ViewModel.Methods
 
                 DensitysYFormatter = value => Math.Round(value, 3).ToString();
             }));
-
         }
 
         private SeriesCollection dividesCollection;

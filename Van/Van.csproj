@@ -140,6 +140,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AbstractClasses\ModelClass.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Controls\WindowControl.cs" />
     <Compile Include="DataBase\DatabaseOperation.cs" />
     <Compile Include="Helper\Attributes\ColumnDataAttribute.cs" />
@@ -152,7 +154,6 @@
     <Compile Include="Helper\StaticInfo\Enums.cs" />
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
     <Compile Include="Helper\StaticInfo\Types.cs" />
-    <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="LocalDataBase\Models\Density.cs" />
     <Compile Include="LocalDataBase\Models\LifeTimes.cs" />
     <Compile Include="LocalDataBase\Models\MortalityTable.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Model\Methods\TestModel.cs" />
     <Compile Include="Model\MainMenuModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="Provider\SharedProvider.cs" />
     <Compile Include="ThemesGlobal\Light\Light.cs" />
     <Compile Include="Themes\Red\Red.cs" />
     <Compile Include="Themes\Green\Green.cs" />

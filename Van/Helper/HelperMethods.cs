@@ -11,49 +11,39 @@ using System.Windows.Controls;
 using Van.AbstractClasses;
 using Van.Helper.Attributes;
 using Van.Helper.StaticInfo;
+using Van.ViewModel.Provider;
 using Van.Windows.ViewModel;
 
 namespace Van.Helper
 {
     public static class HelperMethods
     {
-        public static async void Loading(bool isLoading)
-        {
-            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-             {
-                 MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-                 win.IsLoadingPanelVisible = isLoading;
-             }));
-        }
-
         /// <summary>
         /// Отправить сообщение через SnackBar
         /// </summary>
         /// <param name="content">Сообщение</param>
         /// <param name="isNoDuplicateConsider">Если true и будет дубликаты сообщений, то они каждый все равно вызовет новое уведомление, если false то выйдет повторное сообщение 1 раз</param>
-        public static async void Message(string content, bool isNoDuplicateConsider = false)
+        public static Task Message(string content, bool isNoDuplicateConsider = false)
         {
-            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
             {
-                MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-                Task.Factory.StartNew(() => win.IsMessagePanelContent.Enqueue(
+                mainWindowViewModel.IsMessagePanelContent.Enqueue(
                 content,
                 "OK",
                 param => Trace.WriteLine("Actioned: " + param),
                 null,
                 false,
-                isNoDuplicateConsider)
-            );
-            }));
+                isNoDuplicateConsider);
+            }
+
+            return Task.CompletedTask;
         }
 
         public static void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             // В случае если референсы или сами ID то будем скрывать, они не нужны пользователю 
-            var dGrid = (sender as DataGrid);
-            if (dGrid == null) return;
-            var view = dGrid.ItemsSource as DataView;
-            if (view == null) return;
+            if (!(sender is DataGrid dGrid)) return;
+            if (!(dGrid.ItemsSource is DataView view)) return;
             var table = view.Table;
             var column = table.Columns[e.Column.Header as string];
             e.Column.Header = table.Columns[e.Column.Header as string].Caption;
@@ -75,7 +65,7 @@ namespace Van.Helper
             return false;
         }
 
-        public static DataTable ToDataTable<T>(this IList<T> data, Type type, int round)
+        public static DataTable ToDataTable<T>(this IList<T> data, Type type)
         {
             DataTable table = new DataTable();
 
@@ -103,16 +93,7 @@ namespace Van.Helper
             {
                 DataRow row = table.NewRow();
                 foreach (PropertyDescriptor prop in properties)
-                {
-                    if (prop.GetValue(item) is double doubleValue)
-                    {
-                        row[prop.Name] = Math.Round(doubleValue, round);
-                    }
-                    else
-                    {
-                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                    }
-                }
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
                 table.Rows.Add(row);
             }
             return table;

@@ -11,5 +11,6 @@ namespace Van.Windows.View
         {
             InitializeComponent();
         }
+
     }
 }

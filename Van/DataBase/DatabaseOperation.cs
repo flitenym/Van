@@ -1,11 +1,12 @@
 ﻿using Dapper;
+using Van.Helper.StaticInfo;
+using Van.LocalDataBase;
+using Van.LocalDataBase.Models;
 using System;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Linq;
-using Van.Helper.StaticInfo;
-using Van.LocalDataBase;
-using Van.LocalDataBase.Models;
+using System.Threading.Tasks;
 using static Van.Helper.HelperMethods;
 
 namespace Van.DataBase
@@ -15,17 +16,17 @@ namespace Van.DataBase
         public static string connectionString = string.Empty;
         public static bool canGetData = false;
 
-        public static string ConnectionString()
+        public static async Task<string> ConnectionStringAsync()
         {
             if (!canGetData)
             {
                 using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
                 {
-                    slc.Open();
-                    var connectionStringData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.ConnectionStringKey}'").FirstOrDefault();
+                    await slc.OpenAsync();
+                    var connectionStringData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.ConnectionStringKey}'")).FirstOrDefault();
                     if (connectionStringData != null && !string.IsNullOrEmpty(connectionStringData.Value))
                     {
-                        TryConnection(connectionStringData.Value, connectionStringData);
+                        await TryConnection(connectionStringData.Value, connectionStringData);
                         if (canGetData)
                         {
                             connectionString = connectionStringData.Value;
@@ -37,50 +38,45 @@ namespace Van.DataBase
             return connectionString;
         }
 
-        public static void TryConnection(string ConnectionString, Settings connectionStringData = null)
+        public static async Task TryConnection(string ConnectionString, Settings connectionStringData = null)
         {
-            Loading(true);
             try
             {
                 connectionString = string.Empty;
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     connection.Close();
                     connectionString = ConnectionString;
                     canGetData = true;
-                    Message("ConnectionString верный");
+                    await Message("ConnectionString верный");
 
                     if (connectionStringData == null)
                     {
                         using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
                         {
-                            slc.Open();
-                            connectionStringData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.ConnectionStringKey}'").FirstOrDefault();
+                            await slc.OpenAsync();
+                            connectionStringData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.ConnectionStringKey}'")).FirstOrDefault();
                         }
 
                         if (connectionStringData == null)
                         {
                             connectionStringData = new Settings() { Name = InfoKeys.ConnectionStringKey, Value = connectionString };
-                            SQLExecutor.InsertExecutor(connectionStringData, connectionStringData);
+                            await SQLExecutor.InsertExecutorAsync(connectionStringData, connectionStringData);
                         }
                     }
 
                     if (connectionStringData != null && connectionStringData.Value != connectionString)
                     {
                         connectionStringData.Value = connectionString;
-                        SQLExecutor.UpdateExecutor(connectionStringData, connectionStringData, connectionStringData.ID);
+                        await SQLExecutor.UpdateExecutorAsync(connectionStringData, connectionStringData, connectionStringData.ID);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Message($"ConnectionString неверный, проверьте адрес сервера {ex.Message}");
+                await Message($"ConnectionString неверный, проверьте адрес сервера {ex.Message}");
                 canGetData = false;
-            }
-            finally
-            {
-                Loading(false);
             }
         }
     }

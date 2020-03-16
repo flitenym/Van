@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Configuration;
-using System.Threading.Tasks;
+using Van.Commands;
 using Van.DataBase;
-using Van.Helper;
 
 namespace Van.ViewModel
 {
@@ -10,9 +9,11 @@ namespace Van.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+        #region Fields
+
         #region connString из app.config или просто введенный
 
-        private string originalConnectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
+        private string originalConnectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString; 
         public string OriginalConnectionString
         {
             get { return originalConnectionString; }
@@ -42,7 +43,7 @@ namespace Van.ViewModel
 
         #region Используется из app.config или строится вручную
 
-        private bool isCustom = true;
+        private bool isCustom = false;
         public bool IsCustom
         {
             get { return isCustom; }
@@ -78,6 +79,7 @@ namespace Van.ViewModel
         #region Название БД
 
         private string CustomDBName => DBName == string.Empty ? string.Empty : $"Database = {DBName}; ";
+
         private string dBName = string.Empty;
         public string DBName
         {
@@ -96,6 +98,7 @@ namespace Van.ViewModel
         #region Логин
 
         private string CustomLogin => Login == string.Empty ? string.Empty : $"User Id = {Login}; ";
+
         private string login = string.Empty;
         public string Login
         {
@@ -114,6 +117,7 @@ namespace Van.ViewModel
         #region Пароль
 
         private string CustomPassword => Password == string.Empty ? string.Empty : $"Password = {Password}; ";
+
         private string password = string.Empty;
         public string Password
         {
@@ -132,6 +136,7 @@ namespace Van.ViewModel
         #region ТаймАут
 
         private string CustomTimeOut => TimeOut == string.Empty ? string.Empty : $"Connect Timeout = {TimeOut}; ";
+
         private string timeOut = "10";
         public string TimeOut
         {
@@ -198,27 +203,12 @@ namespace Van.ViewModel
 
         #endregion
 
+        #endregion
+
         #region Команда для проверки подключения к БД
 
-        private RelayCommand checkConnectionCommand;
-        public RelayCommand CheckConnectionCommand
-        {
-            get
-            {
-                return checkConnectionCommand ??
-                  (checkConnectionCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          CheckConnection()
-                      );
-                  }));
-            }
-        }
-
-        public void CheckConnection()
-        {
-            DatabaseOperation.TryConnection(ConnectionString);
-        }
+        private AsyncCommand checkConnectionCommand;
+        public AsyncCommand CheckConnectionCommand => checkConnectionCommand ?? (checkConnectionCommand = new AsyncCommand(x => DatabaseOperation.TryConnection(ConnectionString)));
 
         #endregion
 

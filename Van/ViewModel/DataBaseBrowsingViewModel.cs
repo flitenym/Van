@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Van.AbstractClasses;
+using Van.Commands;
 using Van.Helper;
 using Van.Helper.Attributes;
 using Van.LocalDataBase;
@@ -17,7 +18,6 @@ using Van.Windows.ViewModel;
 using IronXL;
 using Microsoft.Win32;
 using static Van.Helper.HelperMethods;
-using Van.Helper.StaticInfo;
 
 namespace Van.ViewModel
 {
@@ -27,6 +27,10 @@ namespace Van.ViewModel
 
         public DataBaseBrowsingViewModel()
         {
+            LoadDataBase();
+        }
+
+        public void LoadDataBase() {
             TableData = new DataTable();
 
             var models = StaticReflectionHelper.GetAllInstancesOf<ModelClass>().ToList();
@@ -38,11 +42,13 @@ namespace Van.ViewModel
 
             DatabaseModelsData = new ObservableCollection<ModelClass>(models);
 
-            FilterCollection = new CollectionViewSource();
-            FilterCollection.Source = DatabaseModelsData;
+            FilterCollection = new CollectionViewSource
+            {
+                Source = DatabaseModelsData
+            };
             FilterCollection.Filter += FilterCollection_Filter;
 
-            SelectedModel = DatabaseModelsData.FirstOrDefault();
+            SelectedModel = DatabaseModelsData.FirstOrDefault(); 
         }
 
         #region Fields
@@ -121,7 +127,7 @@ namespace Van.ViewModel
             }
         }
 
-        private readonly CollectionViewSource FilterCollection;
+        private CollectionViewSource FilterCollection;
 
         void FilterCollection_Filter(object sender, FilterEventArgs e)
         {
@@ -179,7 +185,9 @@ namespace Van.ViewModel
                 }
                 else
                 {
-                    Select();
+                    Task.Factory.StartNew(() =>
+                        Select()
+                    );
                 }
             }
         }
@@ -194,7 +202,8 @@ namespace Van.ViewModel
         {
             get
             {
-                return IsClicked ? "Опустить кнопки" : "Поднять кнопки";
+                hideButtonToolTip = IsClicked ? "Опустить кнопки" : "Поднять кнопки";
+                return hideButtonToolTip;
             }
             set
             {
@@ -292,116 +301,88 @@ namespace Van.ViewModel
 
         #region Команда для загрузки из Excel
 
-        private RelayCommand loadCommand;
+        private AsyncCommand loadCommand;
 
-        public RelayCommand LoadCommand
+        public AsyncCommand LoadCommand => loadCommand ?? (loadCommand = new AsyncCommand(x => Load(), (o) => CanLoad()));
+
+        private async Task Load()
         {
-            get
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                return loadCommand ??
-                  (loadCommand = new RelayCommand(x =>
-                  {
-                      OpenFileDialog openFileDialog = new OpenFileDialog();
-                      openFileDialog.Filter = "Excel Files|*.xls;*.xlsx;*.xlsm;*.csv";
-                      if (openFileDialog.ShowDialog() == true)
-                      {
-                          string filePath = openFileDialog.FileName;
-                          LoadFromExcel(filePath);
-                      }
-                  }, CanLoad));
+                Filter = "Excel Files|*.xls;*.xlsx;*.xlsm;*.csv"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fileName = openFileDialog.FileName;
+                WorkBook workbook = WorkBook.Load(fileName);
+                var loadFromExcelWindow = new LoadFromExcelWindowView();
+                var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
+                loadFromExcelWindow.DataContext = vm;
+                if (loadFromExcelWindow.ShowDialog() == true)
+                {
+                    await Select();
+                }
             }
         }
 
-        private bool CanLoad(object x)
+        private bool CanLoad()
         {
             if (SelectedModel == null) return false;
-            return true;
-        }
-
-        private void LoadFromExcel(string fileName)
-        { 
-            WorkBook workbook = WorkBook.Load(fileName);
-            var mainWindow = new LoadFromExcelWindowView();
-            var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
-            mainWindow.DataContext = vm; 
-            if (mainWindow.ShowDialog() == true)
-            {
-                Select();
-            }
+            return SelectedModel.CanLoad;
         }
 
         #endregion
 
         #region Команда для обновления данных из БД, по сути Select
 
-        private RelayCommand refreshCommand;
+        private AsyncCommand refreshCommand;
 
-        public RelayCommand RefreshCommand
-        {
-            get
-            {
-                return refreshCommand ??
-                  (refreshCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          Select()
-                      );
-                  }, CanRefresh));
-            }
-        }
+        public AsyncCommand RefreshCommand => refreshCommand ?? (refreshCommand = new AsyncCommand(x => Select(), (o) => CanRefresh()));
 
-        private bool CanRefresh(object x)
+        private bool CanRefresh()
         {
             if (SelectedModel == null) return false;
             return true;
         }
 
-        private void Select()
+        private async Task Select()
         {
-            Loading(true);
-            TableData = SQLExecutor.SelectExecutor(SelectedModelType, SelectedModelName, SettingsDictionary.round);
+            TableData = await SQLExecutor.SelectExecutorAsync(SelectedModelType, SelectedModelName);
             TableData.AcceptChanges();
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
-            Loading(false);
         }
 
         #endregion
 
         #region Команда для удаления выделенных строк
 
-        private RelayCommand deleteRowCommand;
+        private AsyncCommand deleteRowCommand;
 
-        public RelayCommand DeleteRowCommand
-        {
-            get
-            {
-                return deleteRowCommand ??
-                  (deleteRowCommand = new RelayCommand(obj =>
-                  {
-                      if (obj != null)
-                      {
-                          var selectedItemsCollection = ((IList)obj).Cast<DataRowView>();
-                          DeleteRows(selectedItemsCollection.ToList());
-                      }
-                  }, CanDelete));
-            }
-        }
+        public AsyncCommand DeleteRowCommand => deleteRowCommand ?? (deleteRowCommand = new AsyncCommand(obj => DeleteRows(obj), x => CanDelete()));
 
-        private bool CanDelete(object x)
+        private bool CanDelete()
         {
             if (SelectedModel == null) return false;
             return SelectedModel.CanDelete;
         }
 
-        public void DeleteRows(IList<DataRowView> selectedItems)
+        public async Task DeleteRows(object obj)
         {
-            Loading(true);
+            List<DataRowView> selectedItems = new List<DataRowView>();
+
+            if (obj != null)
+            {
+                selectedItems = ((IList)obj).Cast<DataRowView>().ToList();
+            }
+            else return;
+
+            
             if (selectedItems.Count() == 0)
             {
-                Message("Нет выделенных строк");
-                Loading(false);
+                await Message("Нет выделенных строк");
                 return;
             }
+
             List<int> IDs = new List<int>();
 
             foreach (var selectedItem in selectedItems)
@@ -418,7 +399,8 @@ namespace Van.ViewModel
             }
 
             IDs.RemoveAll(x => x == -1);
-            SQLExecutor.DeleteExecutor(SelectedModelName, IDs);
+
+            await SQLExecutor.DeleteExecutor(SelectedModelName, IDs);
 
 
             foreach (var selectedItem in selectedItems)
@@ -426,35 +408,23 @@ namespace Van.ViewModel
                 TableData.Rows.Remove(selectedItem.Row);
             }
             TableData.AcceptChanges();
-            Message("Удаление успешно");
-            Loading(false);
-
+            await Message("Удаление успешно");
         }
 
         #endregion
 
         #region Команда для добавления новой строки
 
-        private RelayCommand insertRowCommand;
-        public RelayCommand InsertRowCommand
-        {
-            get
-            {
-                return insertRowCommand ??
-                  (insertRowCommand = new RelayCommand(x =>
-                  {
-                      InsertRows();
-                  }, CanInsert));
-            }
-        }
+        private AsyncCommand insertRowCommand;
+        public AsyncCommand InsertRowCommand => insertRowCommand ?? (insertRowCommand = new AsyncCommand(x => InsertRows(), y => CanInsert()));
 
-        private bool CanInsert(object x)
+        private bool CanInsert()
         {
             if (SelectedModel == null) return false;
             return SelectedModel.CanInsert;
         }
 
-        public void InsertRows()
+        public async Task InsertRows()
         {
             var changes = TableData.GetChanges();
 
@@ -464,26 +434,26 @@ namespace Van.ViewModel
                 {
                     if (int.TryParse(changes.Rows[i]["ID"].ToString(), out int IDChangeRow))
                     {
-                        SQLExecutor.UpdateExecutor(SelectedModel, SelectedModelType, changes.Rows[i], IDChangeRow);
+                        await SQLExecutor.UpdateExecutorAsync(SelectedModel, SelectedModelType, changes.Rows[i], IDChangeRow);
                     }
                 }
                 TableData.AcceptChanges();
-                Message("Внесенные изменения сохранены");
+                await Message("Внесенные изменения сохранены");
             }
 
             var newRow = TableData.NewRow();
-            var ID = SQLExecutor.InsertExecutor(SelectedModel, SelectedModel);
+            var ID = await SQLExecutor.InsertExecutorAsync(SelectedModel, SelectedModel);
 
             if (ID != -1)
             {
                 newRow["ID"] = ID;
                 TableData.Rows.Add(newRow);
                 TableData.AcceptChanges();
-                Message("Добавление новой строки успешно");
+                await Message("Добавление новой строки успешно");
             }
             else
             {
-                Message("Добавление произошло неудачно");
+                await Message("Добавление произошло неудачно");
             }
         }
 
@@ -491,47 +461,33 @@ namespace Van.ViewModel
 
         #region Команда для применения изменений
 
-        private RelayCommand updateRowCommand;
-        public RelayCommand UpdateRowCommand
-        {
-            get
-            {
-                return updateRowCommand ??
-                  (updateRowCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          UpdateRows()
-                      );
-                  }, CanUpdate));
-            }
-        }
+        private AsyncCommand updateRowCommand;
+        public AsyncCommand UpdateRowCommand => updateRowCommand ?? (updateRowCommand = new AsyncCommand(x => UpdateRowsAsync(), y => CanUpdate()));
 
-        private bool CanUpdate(object x)
+        private bool CanUpdate()
         {
             if (SelectedModel == null) return false;
             return SelectedModel.CanUpdate;
         }
 
-        public void UpdateRows()
+        public async Task UpdateRowsAsync()
         {
             var tableData = TableData.GetChanges();
 
             if (tableData == null || tableData.Rows.Count == 0)
             {
-                Message("Изменения не найдены");
+                await Message("Изменения не найдены");
                 return;
             }
-            Loading(true);
             for (int i = 0; i < tableData.Rows.Count; i++)
             {
                 if (int.TryParse(tableData.Rows[i]["ID"].ToString(), out int ID))
                 {
-                    SQLExecutor.UpdateExecutor(SelectedModel, SelectedModelType, tableData.Rows[i], ID);
+                    await SQLExecutor.UpdateExecutorAsync(SelectedModel, SelectedModelType, tableData.Rows[i], ID);
                 }
             }
             TableData.AcceptChanges();
-            Message("Изменения сохранены");
-            Loading(false);
+            await Message("Изменения сохранены");
         }
 
         #endregion
@@ -539,55 +495,42 @@ namespace Van.ViewModel
         #region Команда для поиска
 
         private RelayCommand searchCommand;
-        public RelayCommand SearchCommand
+        public RelayCommand SearchCommand => searchCommand ?? (searchCommand = new RelayCommand(x => SearchFunction()));
+
+        public void SearchFunction()
         {
-            get
-            {
-                return searchCommand ??
-                  (searchCommand = new RelayCommand(x =>
-                  {
-                      SearchVisibility = SearchVisibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
-                      InfoVisibility = SearchVisibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
-                      SearchText = string.Empty;
-                  }));
-            }
+            SearchVisibility = SearchVisibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+            InfoVisibility = InfoVisibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+            SearchText = string.Empty;
         }
 
         #endregion
 
-        #region Команда для поиска
-
-        private RelayCommand replaceCommand;
-        public RelayCommand ReplaceCommand
-        {
-            get
-            {
-                return replaceCommand ??
-                  (replaceCommand = new RelayCommand(x =>
-                  {
-                      IsClicked = !IsClicked;
-                  }));
-            }
-        }
-
-        #endregion
-
-        #region Команда для поиска
+        #region Команда для закрытия
 
         private RelayCommand searchCloseCommand;
-        public RelayCommand SearchCloseCommand
+        public RelayCommand SearchCloseCommand => searchCloseCommand ?? (searchCloseCommand = new RelayCommand(x => SearchTextEmpty()));
+
+        public void SearchTextEmpty()
         {
-            get
-            {
-                return searchCloseCommand ??
-                  (searchCloseCommand = new RelayCommand(x =>
-                  {
-                      SearchText = string.Empty;
-                  }));
-            }
+            SearchText = string.Empty; 
         }
 
         #endregion
+
+        #region Команда для перемещения панели
+
+        private RelayCommand replaceCommand;
+        public RelayCommand ReplaceCommand => replaceCommand ?? (replaceCommand = new RelayCommand(x => ReplaceCommandIsClicked()));
+
+        public void ReplaceCommandIsClicked()
+        {
+            IsClicked = !IsClicked;
+        }
+
+        #endregion
+
+
 
     }
 }

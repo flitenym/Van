@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
-using Van.Helper;
 using Van.Helper.HelperClasses;
 using static Van.Helper.StaticInfo.Enums;
 using System.Collections.ObjectModel;
@@ -11,13 +9,15 @@ using System;
 using Van.AbstractClasses;
 using Dragablz;
 using MaterialDesignThemes.Wpf;
-using System.Threading;
 using Van.Helper.StaticInfo;
 using Van.DataBase;
-using Van.LocalDataBase.Models;
-using System.Data.SQLite;
 using Van.LocalDataBase;
+using System.Data.SQLite;
+using Van.LocalDataBase.Models;
 using Dapper;
+using System.Threading.Tasks;
+using Van.ViewModel.Provider;
+using Van.Commands;
 
 namespace Van.Windows.ViewModel
 {
@@ -27,31 +27,27 @@ namespace Van.Windows.ViewModel
 
         public MainWindowViewModel()
         {
-            isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200)); 
+            isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200));
 
-            Modules = StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x=>x.IsActive).ToList();
+            Modules = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ModulesKey) as List<ModuleBase>;
 
-            var leftMenu = Modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x=>x.Num);
+            var leftMenu = Modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x => x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
 
             var rightMenu = Modules.Where(x => x.modelClass == ModelBaseClasses.RightMenu).OrderBy(x => x.Num);
             RightMenuNodes = GetTreeViewItems(rightMenu);
-            
-            SetViewModels(); 
 
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
+            SetViewModels();
 
-            Themes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).OrderBy(m => m.Num).ToList();
-            SelectedTheme = this.Themes.FirstOrDefault();
-             
-            DarkLightThemes = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).OrderBy(m => m.Num).ToList();
-            SelectedThemeDarkOrLight = this.DarkLightThemes.FirstOrDefault();
+            Task.Factory.StartNew(async () =>
+                //загрузка тем из локальной БД
+                await GetThemesAsync()
+            );
 
-            //загрузка тем из локальной БД
-            GetThemes();
-
-            //подключение к внешней БД (загрузка connectionString из локальной БД)
-            DatabaseOperation.ConnectionString();
+            Task.Factory.StartNew(async () =>
+                //подключение к внешней БД (загрузка connectionString из локальной БД)
+                await DatabaseOperation.ConnectionStringAsync()
+            );
         }
 
         #region Fields
@@ -124,7 +120,7 @@ namespace Van.Windows.ViewModel
             }
             set
             {
-                isLoadingPanelVisible = value;
+                isLoadingPanelVisible = SharedProvider.AnyActiveTask();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsLoadingPanelVisible)));
             }
         }
@@ -194,16 +190,18 @@ namespace Van.Windows.ViewModel
 
         #region Methods
 
-        public void GetThemes()
+        public async Task GetThemesAsync()
         {
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
+            var themes = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ThemesKey) as List<ThemeBase>;
+
             Settings selectedThemeData;
             Settings selectedThemeDarkOrLightData;
+
             using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                slc.Open();
+                await slc.OpenAsync();
                 //обычная тема
-                selectedThemeData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeKey}'").FirstOrDefault();
+                selectedThemeData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeKey}'")).FirstOrDefault();
             }
 
             if (selectedThemeData != null && !string.IsNullOrEmpty(selectedThemeData.Value))
@@ -214,14 +212,14 @@ namespace Van.Windows.ViewModel
             {
                 SelectedTheme = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).FirstOrDefault();
                 selectedThemeData = new Settings() { Name = InfoKeys.SelectedThemeKey, Value = SelectedTheme.Name };
-                SQLExecutor.InsertExecutor(selectedThemeData, selectedThemeData);
+                await SQLExecutor.InsertExecutorAsync(selectedThemeData, selectedThemeData);
             }
 
             using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
-                slc.Open();
+                await slc.OpenAsync();
                 //глобальная тема
-                selectedThemeDarkOrLightData = slc.Query<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeDarkOrLightKey}'").FirstOrDefault();
+                selectedThemeDarkOrLightData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.SelectedThemeDarkOrLightKey}'")).FirstOrDefault();
             }
 
             if (selectedThemeDarkOrLightData != null && !string.IsNullOrEmpty(selectedThemeDarkOrLightData.Value))
@@ -232,7 +230,7 @@ namespace Van.Windows.ViewModel
             {
                 SelectedThemeDarkOrLight = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).FirstOrDefault();
                 selectedThemeDarkOrLightData = new Settings() { Name = InfoKeys.SelectedThemeDarkOrLightKey, Value = SelectedThemeDarkOrLight.Name };
-                SQLExecutor.InsertExecutor(selectedThemeDarkOrLightData, selectedThemeDarkOrLightData);
+                await SQLExecutor.InsertExecutorAsync(selectedThemeDarkOrLightData, selectedThemeDarkOrLightData);
             }
         }
 
@@ -252,19 +250,23 @@ namespace Van.Windows.ViewModel
         /// <summary>
         /// Выбор всех элементов в виде дерева
         /// </summary>
-        public ObservableCollection<Node> GetTreeViewItems(IEnumerable<ModuleBase> items) {
+        public ObservableCollection<Node> GetTreeViewItems(IEnumerable<ModuleBase> items)
+        {
 
             var nodes = new ObservableCollection<Node>();
 
-            foreach (var module in items) {
+            foreach (var module in items)
+            {
                 if (module.ParentID == null)
                 {
-                    var node = new Node();
-                    node.ID = module.ID;
-                    node.Name = module.Name;
-                    node.ParentName = string.Empty; 
-                    node.View = module;
-                    node.Nodes = GetNodes(module.ID);
+                    var node = new Node
+                    {
+                        ID = module.ID,
+                        Name = module.Name,
+                        ParentName = string.Empty,
+                        View = module,
+                        Nodes = GetNodes(module.ID)
+                    };
 
                     nodes.Add(node);
                 }
@@ -276,18 +278,22 @@ namespace Van.Windows.ViewModel
         /// <summary>
         /// Добавляет корни в дерево
         /// </summary>
-        public ObservableCollection<Node> GetNodes(Guid moduleID) {
+        public ObservableCollection<Node> GetNodes(Guid moduleID)
+        {
             var nodes = new ObservableCollection<Node>();
 
-            foreach (var module in Modules) {
+            foreach (var module in Modules)
+            {
                 if (module.ParentID != null && module.ParentID == moduleID)
                 {
-                    var node = new Node();
-                    node.ID = module.ID;
-                    node.Name = module.Name;
-                    node.ParentName = Modules.Where(x=>x.ID == moduleID).FirstOrDefault().Name; 
-                    node.View = module;
-                    node.Nodes = GetNodes(module.ID);
+                    var node = new Node
+                    {
+                        ID = module.ID,
+                        Name = module.Name,
+                        ParentName = Modules.Where(x => x.ID == moduleID).FirstOrDefault().Name,
+                        View = module,
+                        Nodes = GetNodes(module.ID)
+                    };
 
                     nodes.Add(node);
                 }
@@ -300,61 +306,33 @@ namespace Van.Windows.ViewModel
 
         #region Команда для вызова настроек
 
-        private RelayCommand setSettingsView;
-        public RelayCommand SetSettingsView
-        {
-            get
-            {
-                return setSettingsView ??
-                    (setSettingsView = new RelayCommand(obj =>
-                    {
-                        Thread thread = new Thread(new ThreadStart(() =>
-                        {
-                            Application.Current.Dispatcher.BeginInvoke(
-                               System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
-                               {
-                                   SetSettings();
-                               }); 
-                        }));
-                        thread.Start(); 
-                    }));
-            }
-        }
+        private AsyncCommand setSettingsView;
+        public AsyncCommand SetSettingsView => setSettingsView ?? (setSettingsView = new AsyncCommand(x => SetSettings()));
 
-        private void SetSettings()
+        private Task SetSettings()
         {
             var settings = Modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
             AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID, settings);
+            return Task.CompletedTask;
         }
 
         #endregion
 
         #region Команда для добавления в ТабКонтрол
 
-        private RelayCommand setSelectedTreeViewItem;
-        public RelayCommand SetSelectedTreeViewItem
+        private AsyncCommand setSelectedTreeViewItem;
+        public AsyncCommand SetSelectedTreeViewItem => setSelectedTreeViewItem ?? (setSelectedTreeViewItem = new AsyncCommand(obj => SetSelectedFunction(obj)));
+
+        public Task SetSelectedFunction(object obj)
         {
-            get
+            var Node = (Node)obj;
+            if (Node != null)
             {
-                return setSelectedTreeViewItem ??
-                    (setSelectedTreeViewItem = new RelayCommand(obj =>
-                    {
-                        var Node = (Node)obj;
-                        if (Node != null)
-                        {
-                            Thread thread = new Thread(new ThreadStart(() =>
-                            {
-                                Application.Current.Dispatcher.BeginInvoke(
-                                   System.Windows.Threading.DispatcherPriority.Normal, (Action)delegate
-                                   {
-                                       AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
-                                       Node.Selected = false;
-                                   });
-                            }));
-                            thread.Start();
-                        }
-                    }));
+                AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
+                Node.Selected = false;
             }
+
+            return Task.CompletedTask;
         }
 
         private void AddItemInTabControl(string name, UserControl userInterface, Guid id, ModuleBase moduleBase)
@@ -369,20 +347,21 @@ namespace Van.Windows.ViewModel
             if (index == null)
             {
                 var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
-                
+
                 var TabControlViewModel = new TabControlData() { Name = name, ViewContent = userInterface, ID = id, ModuleBaseItem = moduleBase };
                 ViewModels.Add(TabControlViewModel);
                 SelectedViewModel = TabControlViewModel;
 
-                if (mainmenu != null) {
+                if (mainmenu != null)
+                {
                     ViewModels.Remove(mainmenu);
                 }
             }
             else
-            { 
-                SelectedViewModel = existingViewModel; 
+            {
+                SelectedViewModel = existingViewModel;
             }
-        } 
+        }
 
         #endregion
 
@@ -392,15 +371,16 @@ namespace Van.Windows.ViewModel
         {
             get { return ClosingTabItemHandlerImpl; }
         }
-        
+
         private void ClosingTabItemHandlerImpl(ItemActionCallbackArgs<TabablzControl> args)
         {
             var viewModel = args.DragablzItem.DataContext as TabControlData;
-            if (ViewModels.Count() == 1) {
-                SetViewModels(); 
+            if (ViewModels.Count() == 1)
+            {
+                SetViewModels();
             }
             viewModel.ModuleBaseItem.Deactivate();
-            ViewModels.Remove(viewModel); 
+            ViewModels.Remove(viewModel);
         }
 
         #endregion

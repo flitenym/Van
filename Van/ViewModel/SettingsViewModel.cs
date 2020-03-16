@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using Van.AbstractClasses;
-using Van.Helper;
 using Van.Windows.ViewModel;
 using static Van.Helper.HelperMethods;
 using System;
@@ -12,11 +11,14 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using System.Net.Mime;
-using System.Data.SQLite;
-using Van.LocalDataBase;
-using Dapper;
 using Van.LocalDataBase.Models;
 using Van.Helper.StaticInfo;
+using Van.LocalDataBase;
+using System.Data.SQLite;
+using Dapper;
+using Van.ViewModel.Provider;
+using System.Collections.Generic;
+using Van.Commands;
 
 namespace Van.ViewModel
 {
@@ -28,92 +30,79 @@ namespace Van.ViewModel
 
         #region Команда для применения обычной темы
 
-        private RelayCommand themeAcceptor;
-        public RelayCommand ThemeAcceptor
-        {
-            get
-            {
-                return themeAcceptor ??
-                  (themeAcceptor = new RelayCommand(obj =>
-                  {
-                      if (obj != null && obj is string ThemeName)
-                      {
-                          AcceptTheme(ThemeName, false);
-                      }
-                  }));
-            }
-        }
+        private AsyncCommand themeAcceptor;
+
+        public AsyncCommand ThemeAcceptor => themeAcceptor ?? (themeAcceptor = new AsyncCommand(obj => SelectTheme(obj, false)));
 
         #endregion
 
         #region Команда для применения глобальной темы
 
-        private RelayCommand globalThemeAcceptor;
-        public RelayCommand GlobalThemeAcceptor
-        {
-            get
-            {
-                return globalThemeAcceptor ??
-                  (globalThemeAcceptor = new RelayCommand(obj =>
-                  {
-                      if (obj != null && obj is string ThemeName)
-                      {
-                          AcceptTheme(ThemeName, true);
-                      }
-                  }));
-            }
-        }
+        private AsyncCommand globalThemeAcceptor;
 
-        #endregion
+        public AsyncCommand GlobalThemeAcceptor => globalThemeAcceptor ?? (globalThemeAcceptor = new AsyncCommand(obj => SelectTheme(obj, true)));
+
+        #endregion 
 
         #region Shared Methods
 
-        public void AcceptTheme(string ThemeName, bool isGlobal)
+        public async Task SelectTheme(object obj, bool isGlobal)
         {
-            MainWindowViewModel win = (MainWindowViewModel)Application.Current.MainWindow.DataContext;
-            var themes = StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList();
-            var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
-
-            var parameters = new { themeName = ThemeName };
-
-            if (selectedTheme == null) return;
-
-            if (isGlobal)
+            if (obj != null && obj is string ThemeName)
             {
-                if (win.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
-                {
-                    win.SelectedThemeDarkOrLight = selectedTheme;
-
-                    using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-                    {
-                        slc.Open();
-                        slc.Execute($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeDarkOrLightKey}' ", parameters);
-                    }
-
-                    Message("Тема изменена");
-                }
-                else
-                {
-                    Message("Тема уже применена");
-                }
+                await AcceptThemeAsync(ThemeName, isGlobal);
             }
-            else
+        }
+
+        public async Task AcceptThemeAsync(string ThemeName, bool isGlobal)
+        {
+            if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
             {
-                if (win.SelectedTheme.UriPath != selectedTheme.UriPath)
+                var themes = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ThemesKey) as List<ThemeBase>;
+
+                var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
+
+                var parameters = new { themeName = ThemeName };
+
+                if (selectedTheme == null) return;
+
+                if (isGlobal)
                 {
-                    win.SelectedTheme = selectedTheme;
-
-                    using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+                    if (mainWindowViewModel.SelectedThemeDarkOrLight.UriPath != selectedTheme.UriPath)
                     {
-                        slc.Open();
-                        slc.Execute($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeKey}' ", parameters);
-                    }
+                        mainWindowViewModel.SelectedThemeDarkOrLight = selectedTheme;
 
-                    Message("Тема изменена");
+                        using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+                        {
+                            await slc.OpenAsync();
+                            await slc.ExecuteAsync($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeDarkOrLightKey}' ", parameters);
+                        }
+
+                        await Message("Тема изменена");
+                    }
+                    else
+                    {
+                        await Message("Тема уже применена");
+                    }
                 }
                 else
                 {
-                    Message("Тема уже применена");
+                    if (mainWindowViewModel.SelectedTheme.UriPath != selectedTheme.UriPath)
+                    {
+                        mainWindowViewModel.SelectedTheme = selectedTheme;
+
+                        using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+                        {
+                            await slc.OpenAsync();
+                            await slc.ExecuteAsync($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeKey}' ", parameters);
+                        }
+
+                        await Message("Тема изменена");
+                    }
+                    else
+                    {
+                        await Message("Тема уже применена");
+                    }
                 }
             }
         }
@@ -305,22 +294,10 @@ $@"1. Файл должен скачиваться по ссылке.
 
         #region Команда для начала обновления программы
 
-        private RelayCommand updateCommand;
-        public RelayCommand UpdateCommand
-        {
-            get
-            {
-                return updateCommand ??
-                  (updateCommand = new RelayCommand(x =>
-                  {
-                      Task.Factory.StartNew(() =>
-                          UpdateProgram()
-                      );
-                  }, UpdateCanUse));
-            }
-        }
+        private AsyncCommand updateCommand;
+        public AsyncCommand UpdateCommand => updateCommand ?? (updateCommand = new AsyncCommand(x => UpdateProgramAsync(), y => UpdateCanUse()));
 
-        public bool UpdateCanUse(object x)
+        public bool UpdateCanUse()
         {
             return !IsDownload;
         }
@@ -362,9 +339,8 @@ $@"1. Файл должен скачиваться по ссылке.
         /// <summary>
         /// Обновление программы
         /// </summary>
-        public void UpdateProgram()
+        public async Task UpdateProgramAsync()
         {
-            Loading(true);
             IsDownload = true;
             try
             {
@@ -380,11 +356,11 @@ $@"1. Файл должен скачиваться по ссылке.
 
                 if (fileName.Contains(Assembly.GetExecutingAssembly().GetName().Version.ToString()))
                 {
-                    Message("Программа уже последней версии");
+                    await Message("Программа уже последней версии");
                     client.Dispose();
                     return;
                 }
-                else Message("Начинается скачивание новой версии");
+                else await Message("Начинается скачивание новой версии");
 
                 GetLength(contentStream);
                 TempFolderWithFilePath = $@"{TempFolderPath}\{fileName}";
@@ -394,18 +370,16 @@ $@"1. Файл должен скачиваться по ссылке.
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
                 sw = new Stopwatch();
                 sw.Start();
-                client.DownloadFileAsync(new Uri(LinkData), TempFolderWithFilePath);
+                await client.DownloadFileTaskAsync(new Uri(LinkData), TempFolderWithFilePath);
             }
             catch (Exception ex)
             {
-                Message(ex.Message);
-                Loading(false);
+                await Message(ex.Message);
                 IsDownload = false;
             }
             finally
             {
                 client.Dispose();
-                Loading(false);
             }
 
         }
@@ -434,15 +408,14 @@ $@"1. Файл должен скачиваться по ссылке.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CompletedAsync(object sender, AsyncCompletedEventArgs e)
+        private async void CompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
             IsDownload = false;
-            Loading(false);
             sw.Reset();
             sw.Stop();
             if (e.Cancelled == true)
             {
-                Message("Скачивание отменено");
+                await Message("Скачивание отменено");
                 if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
                 client.Dispose();
 
@@ -456,13 +429,13 @@ $@"1. Файл должен скачиваться по ссылке.
             else if (e.Error != null)
             {
                 string error = e.Error.ToString();
-                Message(error);
+                await Message(error);
                 if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
                 return;
             }
             else
             {
-                Message("Скачивание завершено");
+                await Message("Скачивание завершено");
 
                 try
                 {
@@ -471,15 +444,14 @@ $@"1. Файл должен скачиваться по ссылке.
                     pc.StartInfo.Arguments = $@"/C cd C:\\ && timeout /t 3 /nobreak>nul && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && timeout /t 2 /nobreak>nul && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe && powershell Remove-Item {TempFolderPath} -Recurse -Force";
                     pc.Start();
 
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         Application.Current.MainWindow.Close();
                     }));
-
                 }
                 catch (Exception ex)
                 {
-                    Message(ex.Message);
+                    await Message(ex.Message);
                 }
             }
         }
@@ -525,19 +497,8 @@ $@"1. Файл должен скачиваться по ссылке.
         #region Команда для отмены обновления
 
         private RelayCommand cancelDownloadCommand;
-        public RelayCommand CancelDownloadCommand
-        {
-            get
-            {
-                return cancelDownloadCommand ??
-                  (cancelDownloadCommand = new RelayCommand(x =>
-                  {
-                      Cancel();
-                  }, CancelCanUse));
-            }
-        }
-
-        public bool CancelCanUse(object x)
+        public RelayCommand CancelDownloadCommand => cancelDownloadCommand ?? (cancelDownloadCommand = new RelayCommand(x => Cancel(), y => CancelCanUse()));
+        public bool CancelCanUse()
         {
             if (ProgressBarValue >= 0 && ProgressBarValue < 100)
             {

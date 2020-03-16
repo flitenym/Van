@@ -32,7 +32,7 @@
     </UserControl.Resources> 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" MinWidth="222" />
             <ColumnDefinition Width="2" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>

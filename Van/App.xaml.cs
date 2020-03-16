@@ -1,7 +1,13 @@
-﻿using Van.Windows.View;
-using Van.Windows.ViewModel;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Van.AbstractClasses;
+using Van.Helper;
+using Van.Helper.StaticInfo;
+using Van.ViewModel.Provider;
+using Van.Windows.View;
+using Van.Windows.ViewModel;
 
 namespace Van
 {
@@ -17,28 +23,48 @@ namespace Van
             splashScreen.Show();
 
             Task.Factory.StartNew(() =>
-            {  
+            {
                 this.Dispatcher.Invoke(() =>
-                {  
+                {
+                    //Все вьюшки
+                    SharedProvider.SetToSingletonAsync(
+                        InfoKeys.ModulesKey,
+                        StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x => x.IsActive).ToList());
+
+                    //Все темы
+                    SharedProvider.SetToSingletonAsync(
+                        InfoKeys.ThemesKey,
+                        StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList());
+
+                    //Основная ViewModel
+                    var vm = new MainWindowViewModel();
+                    SharedProvider.SetToSingletonAsync(nameof(MainWindowViewModel), vm);
+
                     var mainWindow = new MainWindowView();
-                    var vm = new MainWindowViewModel(); 
                     mainWindow.DataContext = vm;
-                    this.MainWindow = mainWindow; 
+                    this.MainWindow = mainWindow;
                     mainWindow.Show();
                     splashScreen.Close();
-                    mainWindow.Closing += (s, args) =>
+                    mainWindow.Closing += async (s, args) =>
                     {
-                        if (vm.SelectedTheme != null)
-                            vm.SelectedTheme.Deactivate();
+                        try
+                        {
+                            if (vm.SelectedTheme != null)
+                                vm.SelectedTheme.Deactivate();
 
-                        if (vm.SelectedThemeDarkOrLight != null)
-                            vm.SelectedThemeDarkOrLight.Deactivate();
+                            if (vm.SelectedThemeDarkOrLight != null)
+                                vm.SelectedThemeDarkOrLight.Deactivate();
 
-                        if (vm.SelectedViewModel != null)
-                            vm.SelectedViewModel.ModuleBaseItem.Deactivate();
-                    }; 
+                            if (vm.SelectedViewModel != null)
+                                vm.SelectedViewModel.ModuleBaseItem.Deactivate();
+                        }
+                        catch (Exception ex)
+                        {
+                            await Helper.HelperMethods.Message($"{ex.Message}");
+                        }
+                    };
                 });
-            }); 
+            });
         }
     }
 }

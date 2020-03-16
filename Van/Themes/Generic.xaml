@@ -7,7 +7,7 @@
     xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
     xmlns:dragablzTheme="clr-namespace:Dragablz.Themes;assembly=Dragablz" >
- 
+
 
     <!--  Button style -->
     <Style TargetType="{x:Type Button}" x:Key="WindowButtonStyle">
@@ -120,7 +120,7 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition /> 
+                                    <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
@@ -353,6 +353,7 @@
                                    Orientation="Horizontal"
                                    Grid.Row="1"
                                    Grid.Column="0"
+                                   MinHeight ="0"
                                    Style="{StaticResource ScrollBarStyle}"
                                    Value="{TemplateBinding HorizontalOffset}" 
                                    Maximum="{TemplateBinding ScrollableWidth}" 
@@ -362,8 +363,8 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style> 
-  
+    </Style>
+
     <Style TargetType="{x:Type TreeView}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
@@ -585,7 +586,7 @@
             </Style>
         </Style.Resources>
     </Style>
- 
+
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="BorderThickness" Value="1"/>

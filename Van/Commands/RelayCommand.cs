@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Van.Helper
+namespace Van.Commands
 {
     public class RelayCommand : ICommand
     {
