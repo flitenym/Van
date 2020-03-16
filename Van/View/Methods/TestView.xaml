@@ -234,11 +234,87 @@
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
-            
-            
-            
-            
+            <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Width="400" 
+                        Margin="5"
+                        Content="Вычислить для остаточного времени жизни"
+                        Command="{Binding CalculateResidualCommand}" 
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource MaterialDesignRaisedButton}" >
+                </Button>
+            </StackPanel>
 
+            <TextBlock Height="20" Text="Функция выживания s(t) для остаточного времени жизни" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="ResidualSurvivalFunctionTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding ResidualSurvivalFunctionTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding ResidualSurvivalFunctionsCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding ResidualSurvivalFunctionsYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="Плотность распределения f(t) для остаточного времени жизни" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="ResidualDensityTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding ResidualDensityTable, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding ResidualDensitysCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding ResidualDensitysYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
+            <TextBlock Height="20" Text="f(t)/s(t)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding ResidualDividesCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding ResidualDividesYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+            
         </StackPanel>
     </ScrollViewer>
 

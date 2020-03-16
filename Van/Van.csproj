@@ -154,11 +154,13 @@
     <Compile Include="Helper\StaticInfo\Enums.cs" />
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
     <Compile Include="Helper\StaticInfo\Types.cs" />
+    <Compile Include="LocalDataBase\Models\ResidualDensity.cs" />
     <Compile Include="LocalDataBase\Models\Density.cs" />
     <Compile Include="LocalDataBase\Models\LifeTimes.cs" />
     <Compile Include="LocalDataBase\Models\MortalityTable.cs" />
     <Compile Include="LocalDataBase\Models\QualityAssessmentOfModels.cs" />
     <Compile Include="LocalDataBase\Models\Settings.cs" />
+    <Compile Include="LocalDataBase\Models\ResidualSurvivalFunction.cs" />
     <Compile Include="LocalDataBase\Models\SurvivalFunction.cs" />
     <Compile Include="LocalDataBase\SQLExecutor.cs" />
     <Compile Include="Methods\Helper\Shared.cs" />

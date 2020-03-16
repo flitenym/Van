@@ -20,6 +20,7 @@ using Van.Helper.HelperClasses;
 using System.Collections.ObjectModel;
 using Van.Helper.StaticInfo;
 using Van.Commands;
+using Van.AbstractClasses;
 
 namespace Van.ViewModel.Methods
 {
@@ -48,13 +49,17 @@ namespace Van.ViewModel.Methods
 
         public bool HaveNullProbability = true;
 
-        public double epsilon = 0.01; 
+        public double epsilon = 0.01;
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
         public List<SurvivalFunction> currentSurvivalFunctions = new List<SurvivalFunction>();
 
-        public List<Density> currentDensitys = new List<Density>(); 
+        public List<Density> currentDensitys = new List<Density>();
+
+        public List<ResidualSurvivalFunction> currentResidualSurvivalFunctions = new List<ResidualSurvivalFunction>();
+
+        public List<ResidualDensity> currentResidualDensitys = new List<ResidualDensity>();
 
         public List<LifeTimes> currentLifeTimes = new List<LifeTimes>();
 
@@ -81,7 +86,13 @@ namespace Van.ViewModel.Methods
             await SelectLifeTimesFunction();
             await SelectQualityAssessmentOfModelsAsync();
 
+            await SelectResidualSurvivalFunctionAsync();
+            await SelectResidualDensity();
+
             await RefreshChartsDivides();
+            await RefreshChartsResidualDivides();
+
+            
         }
 
         #region Диапазон
@@ -199,8 +210,8 @@ namespace Van.ViewModel.Methods
 
             RangeDataList = temp;
 
-            //FirstAgeX = RangeDataList.First();
-            //SecondAgeX = RangeDataList.First();
+            FirstAgeX = RangeDataList.First();
+            SecondAgeX = RangeDataList.Last();
         }
 
         #endregion
@@ -279,6 +290,82 @@ namespace Van.ViewModel.Methods
             if (!currentDensitys.Where(x => x.Standart == null).Any())
             {
                 await RefreshChartsDensitys();
+            }
+        }
+
+        #endregion
+
+        #region Таблица s(t) для остаточного времени жизни
+
+        private DataTable residualSurvivalFunctionTable;
+
+        public DataTable ResidualSurvivalFunctionTable
+        {
+            get { return residualSurvivalFunctionTable; }
+            set
+            {
+                if (value == null) return;
+                residualSurvivalFunctionTable?.Clear();
+                residualSurvivalFunctionTable?.Columns.Clear();
+                residualSurvivalFunctionTable?.Rows.Clear();
+
+                residualSurvivalFunctionTable = value;
+
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualSurvivalFunctionTable)));
+            }
+        }
+
+        private async Task SelectResidualSurvivalFunctionAsync(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                ResidualSurvivalFunctionTable = await SQLExecutor.SelectExecutorAsync(typeof(ResidualSurvivalFunction), nameof(ResidualSurvivalFunction));
+                ResidualSurvivalFunctionTable.AcceptChanges();
+            }
+
+            currentResidualSurvivalFunctions = await SQLExecutor.SelectExecutorAsync<ResidualSurvivalFunction>(nameof(ResidualSurvivalFunction));
+
+            if (!currentResidualSurvivalFunctions.Where(x => x.Standart == null).Any())
+            {
+                await RefreshChartsResidualSurvivalFunctions();
+            }
+        }
+
+        #endregion
+
+        #region Таблица f(t) для остаточного времени жизни
+
+        private DataTable residualDensityTable;
+
+        public DataTable ResidualDensityTable
+        {
+            get { return residualDensityTable; }
+            set
+            {
+                if (value == null) return;
+                residualDensityTable?.Clear();
+                residualDensityTable?.Columns.Clear();
+                residualDensityTable?.Rows.Clear();
+
+                residualDensityTable = value;
+
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualDensityTable)));
+            }
+        }
+
+        private async Task SelectResidualDensity(bool needTableRefresh = true)
+        {
+            if (needTableRefresh)
+            {
+                ResidualDensityTable = await SQLExecutor.SelectExecutorAsync(typeof(ResidualDensity), nameof(ResidualDensity));
+                ResidualDensityTable.AcceptChanges();
+            }
+
+            currentResidualDensitys = await SQLExecutor.SelectExecutorAsync<ResidualDensity>(nameof(ResidualDensity));
+
+            if (!currentResidualDensitys.Where(x => x.Standart == null).Any())
+            {
+                await RefreshChartsResidualDensitys();
             }
         }
 
@@ -531,7 +618,6 @@ namespace Van.ViewModel.Methods
             await HelperMethods.Message("Таблица обновлена");
         }
 
-
         private async Task UpdateMortality()
         {
             for (int i = 0; i < currentMortalityTables.Count(); i++)
@@ -640,6 +726,9 @@ namespace Van.ViewModel.Methods
                     (double)maxNumberOfSurvivors
                     , SettingsDictionary.round);
             }
+
+            standartValues.Clear();
+            standartValues = currentSurvivalFunctions.Select(x => x.Standart ?? 0).ToList();
         }
 
         public void CalculateSTWeibull()
@@ -717,6 +806,148 @@ namespace Van.ViewModel.Methods
             await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod, DistanceSecondMethod);
 
             await SelectQualityAssessmentOfModelsAsync();
+        }
+
+        #endregion
+
+        #region Комманда для вычисления остаточных значений
+
+        private AsyncCommand calculateResidualCommand;
+
+        public AsyncCommand CalculateResidualCommand => calculateResidualCommand ?? (calculateResidualCommand = new AsyncCommand(x => CalculateResidual(), y => CanCalculateResidual()));
+
+        public async Task CalculateResidual()
+        {
+            var firstSF = currentSurvivalFunctions.Where(x => (int)getTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)getTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
+            var survival = currentSurvivalFunctions.First(x => (int)getTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
+
+            currentResidualSurvivalFunctions.Clear();
+
+            for (int i = 0; i < firstSF.Count(); i++)
+            {
+                currentResidualSurvivalFunctions.Add(new ResidualSurvivalFunction()
+                {
+                    MortalityTableID = firstSF[i].MortalityTableID,
+                    MortalityTableAgeX = firstSF[i].MortalityTableAgeX,
+                    Standart = firstSF[i].Standart / survival.Standart,
+                    Weibull = firstSF[i].Weibull / survival.Weibull,
+                    Relay = firstSF[i].Relay / survival.Relay,
+                    Gompertz = firstSF[i].Gompertz / survival.Gompertz,
+                    Exponential = firstSF[i].Exponential / survival.Exponential
+                });
+            }
+
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await cn.OpenAsync();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $"DELETE FROM ResidualSurvivalFunction";
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    transaction.Commit();
+                }
+                cn.Close();
+            }
+
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await cn.OpenAsync();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualSurvivalFunction)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+                        for (int i = 0; i < currentResidualSurvivalFunctions.Count(); i++)
+                        {
+                            cmd.Parameters.AddWithValue("@MortalityTableID", currentResidualSurvivalFunctions[i].MortalityTableID); 
+                            cmd.Parameters.AddWithValue("@MortalityTableAgeX", currentResidualSurvivalFunctions[i].MortalityTableAgeX);
+                            cmd.Parameters.AddWithValue("@Standart", currentResidualSurvivalFunctions[i].Standart);
+                            cmd.Parameters.AddWithValue("@Weibull", currentResidualSurvivalFunctions[i].Weibull);
+                            cmd.Parameters.AddWithValue("@Relay", currentResidualSurvivalFunctions[i].Relay);
+                            cmd.Parameters.AddWithValue("@Gompertz", currentResidualSurvivalFunctions[i].Gompertz);
+                            cmd.Parameters.AddWithValue("@Exponential", currentResidualSurvivalFunctions[i].Exponential);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                }
+                cn.Close();
+            }
+
+            await SelectResidualSurvivalFunctionAsync();
+
+
+            var firstD = currentDensitys.Where(x => (int)getTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)getTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
+            var density = currentDensitys.First(x => (int)getTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
+
+            currentResidualDensitys.Clear();
+
+            for (int i = 0; i < firstD.Count(); i++)
+            {
+                currentResidualDensitys.Add(new ResidualDensity()
+                {
+                    MortalityTableID = firstD[i].MortalityTableID,
+                    MortalityTableAgeX = firstD[i].MortalityTableAgeX,
+                    Standart = firstD[i].Standart / density.Standart,
+                    Weibull = firstD[i].Weibull / density.Weibull,
+                    Relay = firstD[i].Relay / density.Relay,
+                    Gompertz = firstD[i].Gompertz / density.Gompertz,
+                    Exponential = firstD[i].Exponential / density.Exponential
+                });
+            }
+
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await cn.OpenAsync();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $"DELETE FROM ResidualDensity";
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    transaction.Commit();
+                }
+                cn.Close();
+            }
+
+            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await cn.OpenAsync();
+                using (var transaction = cn.BeginTransaction())
+                {
+                    using (var cmd = cn.CreateCommand())
+                    {
+                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualDensity)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+                        for (int i = 0; i < currentResidualDensitys.Count(); i++)
+                        {
+                            cmd.Parameters.AddWithValue("@MortalityTableID", currentResidualDensitys[i].MortalityTableID);
+                            cmd.Parameters.AddWithValue("@MortalityTableAgeX", currentResidualDensitys[i].MortalityTableAgeX);
+                            cmd.Parameters.AddWithValue("@Standart", currentResidualDensitys[i].Standart);
+                            cmd.Parameters.AddWithValue("@Weibull", currentResidualDensitys[i].Weibull);
+                            cmd.Parameters.AddWithValue("@Relay", currentResidualDensitys[i].Relay);
+                            cmd.Parameters.AddWithValue("@Gompertz", currentResidualDensitys[i].Gompertz);
+                            cmd.Parameters.AddWithValue("@Exponential", currentResidualDensitys[i].Exponential);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                }
+                cn.Close();
+            }
+
+            await SelectResidualDensity();
+
+
+            await RefreshChartsResidualDivides();
+        }
+
+        private bool CanCalculateResidual()
+        {
+            return currentDensitys.Any(x => x.Standart != null) && currentSurvivalFunctions.Any(x=>x.Standart != null) && FirstAgeX != null && RangeDataList != null && FirstAgeX != RangeDataList?.First();
         }
 
         #endregion
@@ -898,6 +1129,184 @@ namespace Van.ViewModel.Methods
 
         #endregion
 
+        #region ResidualSurvivalFunctions
+
+        public async Task RefreshChartsResidualSurvivalFunctions()
+        {
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ResidualSurvivalFunctionsCollection = new SeriesCollection();
+                var strokeThickness = 2;
+                var standart = new LineSeries
+                {
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualSurvivalFunctionsCollection.Add(standart);
+
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualSurvivalFunctionsCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualSurvivalFunctionsCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualSurvivalFunctionsCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualSurvivalFunctionsCollection.Add(relay);
+
+
+                ResidualSurvivalFunctionsYFormatter = value => Math.Round(value, 3).ToString();
+            }));
+        }
+
+        private SeriesCollection residualSurvivalFunctionsCollection;
+
+        public SeriesCollection ResidualSurvivalFunctionsCollection
+        {
+            get { return residualSurvivalFunctionsCollection; }
+            set
+            {
+                residualSurvivalFunctionsCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualSurvivalFunctionsCollection)));
+            }
+        }
+
+        private Func<double, string> residualSurvivalFunctionsYFormatter;
+
+        public Func<double, string> ResidualSurvivalFunctionsYFormatter
+        {
+            get { return residualSurvivalFunctionsYFormatter; }
+            set
+            {
+                residualSurvivalFunctionsYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualSurvivalFunctionsYFormatter)));
+            }
+        }
+
+        #endregion
+
+        #region ResidualDensity
+
+        public async Task RefreshChartsResidualDensitys()
+        {
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ResidualDensitysCollection = new SeriesCollection();
+                var strokeThickness = 2;
+                var standart = new LineSeries
+                {
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDensitysCollection.Add(standart);
+
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDensitysCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDensitysCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDensitysCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDensitysCollection.Add(relay);
+
+
+                ResidualDensitysYFormatter = value => Math.Round(value, 3).ToString();
+            }));
+        }
+
+        private SeriesCollection residualDensitysCollection;
+
+        public SeriesCollection ResidualDensitysCollection
+        {
+            get { return residualDensitysCollection; }
+            set
+            {
+                residualDensitysCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualDensitysCollection)));
+            }
+        }
+
+        private Func<double, string> residualDensitysYFormatter;
+
+        public Func<double, string> ResidualDensitysYFormatter
+        {
+            get { return residualDensitysYFormatter; }
+            set
+            {
+                residualDensitysYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualDensitysYFormatter)));
+            }
+        }
+
+        #endregion
+
         #region Density/SurvivalFunctions
 
         public async Task RefreshChartsDivides()
@@ -973,7 +1382,7 @@ namespace Van.ViewModel.Methods
                 DividesCollection.Add(relay);
 
 
-                DensitysYFormatter = value => Math.Round(value, 3).ToString();
+                DividesYFormatter = value => Math.Round(value, 3).ToString();
             }));
         }
 
@@ -984,7 +1393,6 @@ namespace Van.ViewModel.Methods
             get { return dividesCollection; }
             set
             {
-
                 dividesCollection = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(DividesCollection)));
             }
@@ -999,6 +1407,112 @@ namespace Van.ViewModel.Methods
             {
                 dividesYFormatter = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(DividesYFormatter)));
+            }
+        }
+
+        #endregion
+
+        #region ResidualDensity/ResidualSurvivalFunctions
+
+        public async Task RefreshChartsResidualDivides()
+        {
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (!currentResidualDensitys.Where(x => x.Weibull != null).Any() || !currentResidualSurvivalFunctions.Where(x => x.Weibull != null).Any()) return;
+
+                List<Density> residualDivides = new List<Density>();
+
+                for (int i = 0; i < currentResidualDensitys.Count(); i++)
+                {
+                    residualDivides.Add(new Density()
+                    {
+                        Standart = currentResidualDensitys[i].Standart / (currentResidualSurvivalFunctions[i].Standart == 0 ? 1 : currentResidualSurvivalFunctions[i].Standart),
+                        Weibull = currentResidualDensitys[i].Weibull / (currentResidualSurvivalFunctions[i].Weibull == 0 ? 1 : currentResidualSurvivalFunctions[i].Weibull),
+                        Exponential = currentResidualDensitys[i].Exponential / (currentResidualSurvivalFunctions[i].Exponential == 0 ? 1 : currentResidualSurvivalFunctions[i].Exponential),
+                        Gompertz = currentResidualDensitys[i].Gompertz / (currentResidualSurvivalFunctions[i].Gompertz == 0 ? 1 : currentResidualSurvivalFunctions[i].Gompertz),
+                        Relay = currentResidualDensitys[i].Relay / (currentResidualSurvivalFunctions[i].Relay == 0 ? 1 : currentResidualSurvivalFunctions[i].Relay)
+                    });
+                }
+
+                ResidualDividesCollection = new SeriesCollection();
+                var strokeThickness = 2;
+                var standart = new LineSeries
+                {
+                    Title = "Табличное",
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDividesCollection.Add(standart);
+
+                var weibull = new LineSeries
+                {
+                    Title = "Вейбулл",
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDividesCollection.Add(weibull);
+
+                var exponential = new LineSeries
+                {
+                    Title = "Экспоненциальное",
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDividesCollection.Add(exponential);
+
+                var gompertz = new LineSeries
+                {
+                    Title = "Гомпертц",
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDividesCollection.Add(gompertz);
+
+                var relay = new LineSeries
+                {
+                    Title = "Рэлея",
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                ResidualDividesCollection.Add(relay);
+
+
+                ResidualDividesYFormatter = value => Math.Round(value, 3).ToString();
+            }));
+        }
+
+        private SeriesCollection residualDividesCollection;
+
+        public SeriesCollection ResidualDividesCollection
+        {
+            get { return residualDividesCollection; }
+            set
+            {
+
+                residualDividesCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualDividesCollection)));
+            }
+        }
+
+        private Func<double, string> residualDividesYFormatter;
+
+        public Func<double, string> ResidualDividesYFormatter
+        {
+            get { return residualDividesYFormatter; }
+            set
+            {
+                residualDividesYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResidualDividesYFormatter)));
             }
         }
 
