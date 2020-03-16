@@ -352,7 +352,7 @@ namespace Van.ViewModel.Methods
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            GenerateT();
+            await GenerateT();
             
             await RewriteLifeTimesTable();
             
@@ -362,35 +362,39 @@ namespace Van.ViewModel.Methods
             stopwatch.Stop();
         }
 
-        public void GenerateT()
+        public async Task GenerateT()
         {
-            var minimalProb = currentMortalityTables.Select(x => x.Probability).Min().Value;
-            var maxsurv = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
-            minimalProb /= 2; 
-
-            for (int i = 0; i < NValue; i++)
-            {
-                int randomNumber = random.Next(0, maxsurv + 1);
-                double z = (double)randomNumber / maxsurv;
-                z -= minimalProb;
-
-                double sumProbubility = 0;
-
-                for (int j = 0; j < currentMortalityTables.Count(); j++)
+            await Task.Run(
+                () =>
                 {
-                    if (z < currentMortalityTables[j].Probability)
+                    var minimalProb = currentMortalityTables.Select(x => x.Probability).Min().Value;
+                    var maxsurv = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
+                    minimalProb /= 2;
+
+                    for (int i = 0; i < NValue; i++)
                     {
-                        t.Add((int)getTValue(currentMortalityTables[j].AgeX));
-                        break;
+                        int randomNumber = random.Next(0, maxsurv + 1);
+                        double z = (double)randomNumber / maxsurv;
+                        z -= minimalProb;
+
+                        double sumProbubility = 0;
+
+                        for (int j = 0; j < currentMortalityTables.Count(); j++)
+                        {
+                            if (z < currentMortalityTables[j].Probability)
+                            {
+                                t.Add((int)getTValue(currentMortalityTables[j].AgeX));
+                                break;
+                            }
+                            else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
+                            {
+                                t.Add((int)getTValue(currentMortalityTables[j].AgeX));
+                                break;
+                            }
+                            sumProbubility += currentMortalityTables[j].Probability.Value;
+                        }
                     }
-                    else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
-                    {
-                        t.Add((int)getTValue(currentMortalityTables[j].AgeX));
-                        break;
-                    }
-                    sumProbubility += currentMortalityTables[j].Probability.Value;
-                }
-            }
+                });
         }
 
         public async Task RewriteLifeTimesTable()
@@ -485,26 +489,30 @@ namespace Van.ViewModel.Methods
             await HelperMethods.Message("Вычисление прошло успешно");
         }
 
-        private Task CalculateNumberOfDead() {
-            int mortalityTableCount = currentMortalityTables.Count() - 1;
+        private async Task CalculateNumberOfDead() {
+            await Task.Run(
+                () =>
+                {
+                    int mortalityTableCount = currentMortalityTables.Count() - 1;
 
-            for (int i = 0; i < mortalityTableCount; i++)
-            {
-                currentMortalityTables[i].NumberOfDead = currentMortalityTables[i].NumberOfSurvivors - currentMortalityTables[i + 1].NumberOfSurvivors;
-            }
-            currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
-
-            return Task.CompletedTask;
+                    for (int i = 0; i < mortalityTableCount; i++)
+                    {
+                        currentMortalityTables[i].NumberOfDead = currentMortalityTables[i].NumberOfSurvivors - currentMortalityTables[i + 1].NumberOfSurvivors;
+                    }
+                    currentMortalityTables[mortalityTableCount].NumberOfDead = currentMortalityTables[mortalityTableCount].NumberOfSurvivors;
+                });
         }
 
-        private Task CalculateProbability()
+        private async Task CalculateProbability()
         {
-            for (int i = 0; i < currentMortalityTables.Count(); i++)
-            {
-                currentMortalityTables[i].Probability = (double?)currentMortalityTables[i].NumberOfDead / (double)currentMortalityTables.First().NumberOfSurvivors;
-            }
-
-            return Task.CompletedTask;
+            await Task.Run(
+                () =>
+                {
+                    for (int i = 0; i < currentMortalityTables.Count(); i++)
+                    {
+                        currentMortalityTables[i].Probability = (double?)currentMortalityTables[i].NumberOfDead / (double)currentMortalityTables.First().NumberOfSurvivors;
+                    }
+                });
         }
 
         #endregion
@@ -560,7 +568,7 @@ namespace Van.ViewModel.Methods
                 await SQLExecutor.UpdateExecutorAsync(currentDensitys[i], currentDensitys[i], currentDensitys[i].ID);
             }
         }
-
+        
         public async Task CalculateMethodsAsync()
         {
             var stopwatch = new Stopwatch();
@@ -571,12 +579,24 @@ namespace Van.ViewModel.Methods
             DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Первая метрика" };
             DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Вторая метрика" };
 
-            await CalculateSTStandart();
+            CalculateSTStandart();
+
+
+            var taskWeibull = new Task(CalculateSTWeibull);
+            var taskRelay = new Task(CalculateSTRelay);
+            var taskGompertz = new Task(CalculateSTGompertz);
+            var taskExponential = new Task(CalculateSTExponential);
+
+            taskWeibull.Start();
+            taskRelay.Start();
+            taskGompertz.Start();
+            taskExponential.Start();
 
             await Task.WhenAll(
-                new[] { CalculateSTWeibull(), CalculateSTRelay(), CalculateSTGompertz(), CalculateSTExponential() }
-            );
-
+                taskWeibull,
+                taskRelay,
+                taskGompertz,
+                taskExponential);
 
             await UpdateAndSelectST();
             await UpdateAndSelectD();
@@ -602,10 +622,10 @@ namespace Van.ViewModel.Methods
             await SelectDensity();
         }
 
-        public Task CalculateSTStandart() {
+        public void CalculateSTStandart() {
             var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
 
-            if (maxNumberOfSurvivors == null) return Task.CompletedTask;
+            if (maxNumberOfSurvivors == null) return;
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
@@ -620,11 +640,9 @@ namespace Van.ViewModel.Methods
                     (double)maxNumberOfSurvivors
                     , SettingsDictionary.round);
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task CalculateSTWeibull()
+        public void CalculateSTWeibull()
         {
             Weibull weibull = new Weibull(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
@@ -638,11 +656,9 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Weibull = weibull.SurvivalFunctions[i];
                 currentDensitys[i].Weibull = weibull.Densitys[i];
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task CalculateSTRelay()
+        public void CalculateSTRelay()
         {
             Relay relay = new Relay(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
@@ -655,11 +671,9 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Relay = relay.SurvivalFunctions[i];
                 currentDensitys[i].Relay = relay.Densitys[i];
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task CalculateSTGompertz()
+        public void CalculateSTGompertz()
         {
             Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
 
@@ -672,11 +686,9 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Gompertz = gompertz.SurvivalFunctions[i];
                 currentDensitys[i].Gompertz = gompertz.Densitys[i];
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task CalculateSTExponential()
+        public void CalculateSTExponential()
         {
             Exponential exponential = new Exponential(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
 
@@ -689,8 +701,6 @@ namespace Van.ViewModel.Methods
                 currentSurvivalFunctions[i].Exponential = exponential.SurvivalFunctions[i];
                 currentDensitys[i].Exponential = exponential.Densitys[i];
             }
-
-            return Task.CompletedTask;
         }
 
         public async Task QualityUpdateAsync()

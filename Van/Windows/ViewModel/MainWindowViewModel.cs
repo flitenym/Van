@@ -306,33 +306,30 @@ namespace Van.Windows.ViewModel
 
         #region Команда для вызова настроек
 
-        private AsyncCommand setSettingsView;
-        public AsyncCommand SetSettingsView => setSettingsView ?? (setSettingsView = new AsyncCommand(x => SetSettings()));
+        private RelayCommand setSettingsView;
+        public RelayCommand SetSettingsView => setSettingsView ?? (setSettingsView = new RelayCommand(x => SetSettings()));
 
-        private Task SetSettings()
-        {
+        private void SetSettings()
+        { 
             var settings = Modules.Where(x => x.modelClass == Enums.ModelBaseClasses.Settings).FirstOrDefault();
-            AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID, settings);
-            return Task.CompletedTask;
+            AddItemInTabControl(settings.Name, settings.UserInterface, settings.ID, settings); 
         }
 
         #endregion
 
         #region Команда для добавления в ТабКонтрол
 
-        private AsyncCommand setSelectedTreeViewItem;
-        public AsyncCommand SetSelectedTreeViewItem => setSelectedTreeViewItem ?? (setSelectedTreeViewItem = new AsyncCommand(obj => SetSelectedFunction(obj)));
+        private RelayCommand setSelectedTreeViewItem;
+        public RelayCommand SetSelectedTreeViewItem => setSelectedTreeViewItem ?? (setSelectedTreeViewItem = new RelayCommand(obj => SetSelectedFunction(obj)));
 
-        public Task SetSelectedFunction(object obj)
-        {
+        public void SetSelectedFunction(object obj)
+        { 
             var Node = (Node)obj;
             if (Node != null)
             {
                 AddItemInTabControl(Node.Name, Node.View.UserInterface, Node.ID, Node.View);
                 Node.Selected = false;
-            }
-
-            return Task.CompletedTask;
+            } 
         }
 
         private void AddItemInTabControl(string name, UserControl userInterface, Guid id, ModuleBase moduleBase)
