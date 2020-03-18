@@ -494,7 +494,18 @@ namespace Van.ViewModel.Methods
                 currentLifeTimes.Add(new LifeTimes() { LifeTime = t[i], Censor = 1 });
                 delta.Add(1);
             }
+            await Task.Run(async () =>
+            {
+                await DeleteLifeTimes();
+            });
 
+            await Task.Run(async () =>
+            {
+                await InsertLifeTimes();
+            });
+        }
+
+        public async Task DeleteLifeTimes() {
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
                 await cn.OpenAsync();
@@ -509,8 +520,10 @@ namespace Van.ViewModel.Methods
                 }
                 cn.Close();
             }
+        }
 
-
+        public async Task InsertLifeTimes()
+        {
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
                 await cn.OpenAsync();
@@ -636,7 +649,7 @@ namespace Van.ViewModel.Methods
 
         private bool CanCalculateMethods()
         {
-            return t.Any() && currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
+            return currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
         }
 
         private async Task UpdateSTAsync()
@@ -962,7 +975,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -972,7 +985,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -982,7 +995,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -992,7 +1005,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1002,7 +1015,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentSurvivalFunctions.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1051,7 +1064,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1061,7 +1074,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1071,7 +1084,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1081,7 +1094,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1091,7 +1104,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentDensitys.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1140,7 +1153,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1150,7 +1163,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1160,7 +1173,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1170,7 +1183,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1180,7 +1193,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualSurvivalFunctions.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1229,7 +1242,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1239,7 +1252,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1249,7 +1262,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1259,7 +1272,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1269,7 +1282,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(currentResidualDensitys.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1334,7 +1347,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1344,7 +1357,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1354,7 +1367,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1364,7 +1377,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1374,7 +1387,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(divides.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1439,7 +1452,7 @@ namespace Van.ViewModel.Methods
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Standart.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1449,7 +1462,7 @@ namespace Van.ViewModel.Methods
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Weibull.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1459,7 +1472,7 @@ namespace Van.ViewModel.Methods
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Exponential.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1469,7 +1482,7 @@ namespace Van.ViewModel.Methods
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Gompertz.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -1479,7 +1492,7 @@ namespace Van.ViewModel.Methods
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Relay.Value, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(residualDivides.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null

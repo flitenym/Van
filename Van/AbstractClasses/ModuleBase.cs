@@ -38,12 +38,9 @@ namespace Van.AbstractClasses
         {
             if (view != null)
             {
-                var d = view as IDisposable;
-                if (d != null) d.Dispose(); 
+                if (view is IDisposable d) d.Dispose();
                 view.DataContext = null;
                 view = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
             }
         }
 
