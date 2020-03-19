@@ -1,11 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Van.AbstractClasses;
 using Van.Helper.Attributes;
+using Van.LocalDataBase.ModelsHelper;
 
 namespace Van.DataBase.Models
 {
     [ModelClass(TableTitle = "Плотность гамма распределения (остаточная)", CanInsert = false)]
-    public class ResidualDensity : ModelClass
+    public class ResidualDensity : ModelClass, IMortalityTable, IMethod, ICloneable
     {
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }
@@ -36,6 +38,21 @@ namespace Van.DataBase.Models
         public override string UpdateQuery(int ID)
         {
             return $@"UPDATE {nameof(ResidualDensity)} SET Standart = @Standart, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
+        }
+
+        public object Clone()
+        {
+            return new ResidualDensity
+            {
+                ID = this.ID,
+                MortalityTableID = this.MortalityTableID,
+                MortalityTableAgeX = this.MortalityTableAgeX,
+                Standart = this.Standart,
+                Weibull = this.Weibull,
+                Relay = this.Relay,
+                Gompertz = this.Gompertz,
+                Exponential = this.Exponential
+            };
         }
     }
 }

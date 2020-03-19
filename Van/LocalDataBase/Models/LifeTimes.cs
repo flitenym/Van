@@ -1,11 +1,12 @@
-﻿ using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Van.AbstractClasses;
 using Van.Helper.Attributes;
 
 namespace Van.DataBase.Models
 {
     [ModelClass(TableTitle = "Время жизни")]
-    public class LifeTimes : ModelClass
+    public class LifeTimes : ModelClass, ICloneable
     {
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; } 
@@ -21,6 +22,16 @@ namespace Van.DataBase.Models
         public override string UpdateQuery(int ID)
         {
             return $@"UPDATE {nameof(LifeTimes)} SET LifeTime = @LifeTime, Censor = @Censor WHERE ID = {ID}";
+        }
+
+        public object Clone()
+        {
+            return new LifeTimes
+            {
+                ID = this.ID,
+                LifeTime = this.LifeTime,
+                Censor = this.Censor
+            };
         }
     }
 }

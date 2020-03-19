@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Van.AbstractClasses;
 using Van.Helper.Attributes;
 
 namespace Van.DataBase.Models
 {
     [ModelClass(TableTitle = "Таблица выживаемости")]
-    public class MortalityTable : ModelClass
+    public class MortalityTable : ModelClass, ICloneable
     {
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }
@@ -30,6 +31,19 @@ namespace Van.DataBase.Models
         public override string UpdateQuery(int ID)
         {
             return $@"UPDATE {nameof(MortalityTable)} SET AgeX = @AgeX, NumberOfSurvivors = @NumberOfSurvivors, NumberOfDead = @NumberOfDead, Probability = @Probability, ExpectedDuration = @ExpectedDuration WHERE ID = {ID}";
+        }
+
+        public object Clone()
+        {
+            return new MortalityTable
+            {
+                ID = this.ID,
+                AgeX = this.AgeX,
+                NumberOfSurvivors = this.NumberOfSurvivors,
+                NumberOfDead = this.NumberOfDead,
+                Probability = this.Probability,
+                ExpectedDuration = this.ExpectedDuration
+            };
         }
     }
 }

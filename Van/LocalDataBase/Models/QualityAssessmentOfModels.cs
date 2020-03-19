@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Van.AbstractClasses;
 using Van.Helper.Attributes;
 
 namespace Van.DataBase.Models
 {
     [ModelClass(TableTitle = "Оценка качесва моделей", CanInsert = false)]
-    public class QualityAssessmentOfModels : ModelClass
+    public class QualityAssessmentOfModels : ModelClass, ICloneable
     {
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }
@@ -30,6 +31,19 @@ namespace Van.DataBase.Models
         public override string UpdateQuery(int ID)
         {
             return $@"UPDATE {nameof(QualityAssessmentOfModels)} SET Quality = @Quality, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
+        }
+
+        public object Clone()
+        {
+            return new QualityAssessmentOfModels
+            {
+                ID = this.ID,
+                Quality = this.Quality,
+                Weibull = this.Weibull,
+                Relay = this.Relay,
+                Gompertz = this.Gompertz,
+                Exponential = this.Exponential
+            };
         }
     }
 }

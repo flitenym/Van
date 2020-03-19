@@ -154,6 +154,8 @@
     <Compile Include="Helper\StaticInfo\Enums.cs" />
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
     <Compile Include="Helper\StaticInfo\Types.cs" />
+    <Compile Include="LocalDataBase\ModelsHelper\IMortalityTable.cs" />
+    <Compile Include="LocalDataBase\ModelsHelper\IMethod.cs" />
     <Compile Include="LocalDataBase\Models\ResidualDensity.cs" />
     <Compile Include="LocalDataBase\Models\Density.cs" />
     <Compile Include="LocalDataBase\Models\LifeTimes.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="LocalDataBase\Models\ResidualSurvivalFunction.cs" />
     <Compile Include="LocalDataBase\Models\SurvivalFunction.cs" />
     <Compile Include="LocalDataBase\SQLExecutor.cs" />
+    <Compile Include="Methods\Helper\CreateGraphics.cs" />
     <Compile Include="Methods\Helper\Shared.cs" />
     <Compile Include="Methods\Relay.cs" />
     <Compile Include="Methods\Exponential.cs" />

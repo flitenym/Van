@@ -74,6 +74,25 @@ namespace Van.LocalDataBase
             });
         }
 
+        public static async Task DeleteExecutor(string tableName)
+        {
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    using (var slc = new SQLiteConnection(LoadConnectionString))
+                    {
+                        await slc.OpenAsync();
+                        await slc.ExecuteAsync($"DELETE FROM {tableName}");
+                    } 
+                }
+                catch (Exception ex)
+                {
+                    await HelperMethods.Message(ex.ToString());
+                }
+            });
+        }
+
         public static async Task<int> InsertExecutorAsync(ModelClass item, object objData)
         {
             return await Task.Run(async () =>

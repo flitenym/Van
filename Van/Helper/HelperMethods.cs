@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,8 @@ namespace Van.Helper
 {
     public static class HelperMethods
     {
+        #region SnackBar
+
         /// <summary>
         /// Отправить сообщение через SnackBar
         /// </summary>
@@ -40,6 +43,10 @@ namespace Van.Helper
                     }
                 });
         }
+
+        #endregion
+
+        #region DataGrid and DataTable
 
         public static void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
@@ -137,5 +144,29 @@ namespace Van.Helper
             return expandoDict;
         }
 
+        public static bool ClearDataTable(DataTable dataTable, object value)
+        {
+            if (value == null) return false;
+
+            dataTable?.Clear();
+            dataTable?.Columns.Clear();
+            dataTable?.Rows.Clear();
+
+            return true;
+        }
+
+        #endregion
+
+        #region Clone
+
+        /// <summary>
+        /// Клонирование Списка
+        /// </summary>
+        public static List<T> Clone<T>(this List<T> listToClone) where T : ICloneable
+        {
+            return listToClone.Select(item => (T)item.Clone()).ToList();
+        }
+
+        #endregion
     }
 }
