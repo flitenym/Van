@@ -11,11 +11,12 @@ using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using Van.LocalDataBase;
-using Van.Helper.HelperClasses;
+using Van.Helper.Classes;
 using System.Collections.ObjectModel;
 using Van.Helper.StaticInfo;
 using Van.Commands;
 using Van.Methods.Helper;
+
 
 namespace Van.ViewModel.Methods
 {
@@ -38,13 +39,9 @@ namespace Van.ViewModel.Methods
 
         public List<int> delta = new List<int>();
 
-        double r => delta.Where(x => x == 1).Count();
-
-        public Random random = new Random();
+        double r => delta.Where(x => x == 1).Count(); 
 
         public bool HaveNullProbability = true;
-
-        public double epsilon = 0.01;
 
         public List<MortalityTable> currentMortalityTables = new List<MortalityTable>();
 
@@ -258,10 +255,7 @@ namespace Van.ViewModel.Methods
 
             currentDensitys = await SQLExecutor.SelectExecutorAsync<Density>(nameof(Density));
 
-            if (!currentDensitys.Where(x => x.Standart == null).Any())
-            {
-                await RefreshChartsDensitys();
-            }
+            await RefreshChartsDensitys();
         }
 
         #endregion
@@ -413,6 +407,8 @@ namespace Van.ViewModel.Methods
                     var maxsurv = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
                     minimalProb /= 2;
 
+                    Random random = new Random();
+
                     for (int i = 0; i < NValue; i++)
                     {
                         int randomNumber = random.Next(0, maxsurv + 1);
@@ -458,7 +454,8 @@ namespace Van.ViewModel.Methods
             });
         }
 
-        public async Task DeleteLifeTimes() {
+        public async Task DeleteLifeTimes()
+        {
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
             {
                 await cn.OpenAsync();
@@ -501,7 +498,8 @@ namespace Van.ViewModel.Methods
         /// <summary>
         /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
         /// </summary>
-        public double getTValue(string ageX) {
+        public double getTValue(string ageX)
+        {
             // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
             if (double.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out double value))
             {
@@ -542,7 +540,8 @@ namespace Van.ViewModel.Methods
             await HelperMethods.Message("Вычисление прошло успешно");
         }
 
-        private async Task CalculateNumberOfDead() {
+        private async Task CalculateNumberOfDead()
+        {
             await Task.Run(
                 () =>
                 {
@@ -633,7 +632,6 @@ namespace Van.ViewModel.Methods
 
             CalculateSTStandart();
 
-
             var taskWeibull = new Task(CalculateSTWeibull);
             var taskRelay = new Task(CalculateSTRelay);
             var taskGompertz = new Task(CalculateSTGompertz);
@@ -663,7 +661,8 @@ namespace Van.ViewModel.Methods
             stopwatch.Stop();
         }
 
-        public async Task UpdateAndSelectST() {
+        public async Task UpdateAndSelectST()
+        {
             await UpdateSTAsync();
             await SelectSurvivalFunctionAsync();
         }
@@ -674,14 +673,16 @@ namespace Van.ViewModel.Methods
             await SelectDensity();
         }
 
-        public void CalculateSTStandart() {
+        public void CalculateSTStandart()
+        {
             var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
 
             if (maxNumberOfSurvivors == null) return;
 
             maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
 
-            for (int i = 0; i < currentMortalityTables.Count; i++) {
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
                 currentSurvivalFunctions[i].Standart = Math.Round(
                     (double)currentMortalityTables[i]?.NumberOfSurvivors /
                     (double)maxNumberOfSurvivors
@@ -699,12 +700,11 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTWeibull()
         {
-            Weibull weibull = new Weibull(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
+            Weibull weibull = new Weibull(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 2, delta);
 
-            Acaici.Weibull = weibull.Quality;
-            DistanceFirstMethod.Weibull = weibull.DistanceFirstMethod;
-            DistanceSecondMethod.Weibull = weibull.DistanceSecondMethod;
-
+            Acaici.Weibull = weibull.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            DistanceFirstMethod.Weibull = weibull.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
+            DistanceSecondMethod.Weibull = weibull.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -715,11 +715,11 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTRelay()
         {
-            Relay relay = new Relay(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
+            Relay relay = new Relay(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 1, delta);
 
-            Acaici.Relay = relay.Quality;
-            DistanceFirstMethod.Relay = relay.DistanceFirstMethod;
-            DistanceSecondMethod.Relay = relay.DistanceSecondMethod;
+            Acaici.Relay = relay.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            DistanceFirstMethod.Relay = relay.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
+            DistanceSecondMethod.Relay = relay.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -730,11 +730,11 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTGompertz()
         {
-            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, delta, SettingsDictionary.round, r, (double)int.MaxValue, epsilon, FirstAgeX, SecondAgeX);
+            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 2, delta);
 
-            Acaici.Gompertz = gompertz.Quality;
-            DistanceFirstMethod.Gompertz = gompertz.DistanceFirstMethod;
-            DistanceSecondMethod.Gompertz = gompertz.DistanceSecondMethod;
+            Acaici.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            DistanceFirstMethod.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
+            DistanceSecondMethod.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -745,11 +745,11 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTExponential()
         {
-            Exponential exponential = new Exponential(standartValues, ageValues, t, delta, SettingsDictionary.round, r, FirstAgeX, SecondAgeX);
+            Exponential exponential = new Exponential(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 1);
 
-            Acaici.Exponential = exponential.Quality;
-            DistanceFirstMethod.Exponential = exponential.DistanceFirstMethod;
-            DistanceSecondMethod.Exponential = exponential.DistanceSecondMethod;
+            Acaici.Exponential = exponential.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            DistanceFirstMethod.Exponential = exponential.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
+            DistanceSecondMethod.Exponential = exponential.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {

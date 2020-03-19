@@ -33,7 +33,7 @@ namespace Van.ViewModel
         public void LoadDataBase() {
             TableData = new DataTable();
 
-            var models = StaticReflectionHelper.GetAllInstancesOf<ModelClass>().ToList();
+            var models = HelperMethods.GetAllInstancesOf<ModelClass>().ToList();
             models.ForEach(x => x.Title = GetModelTitleAttribute(x));
             models.ForEach(x => x.CanInsert = GetModelCanInsertAttribute(x));
             models.ForEach(x => x.CanDelete = GetModelCanDeleteAttribute(x));

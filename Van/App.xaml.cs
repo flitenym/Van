@@ -29,12 +29,12 @@ namespace Van
                     //Все вьюшки
                     SharedProvider.SetToSingletonAsync(
                         InfoKeys.ModulesKey,
-                        StaticReflectionHelper.GetAllInstancesOf<ModuleBase>().Where(x => x.IsActive).ToList());
+                        HelperMethods.GetAllInstancesOf<ModuleBase>().Where(x => x.IsActive).ToList());
 
                     //Все темы
                     SharedProvider.SetToSingletonAsync(
                         InfoKeys.ThemesKey,
-                        StaticReflectionHelper.GetAllInstancesOf<ThemeBase>().ToList());
+                        HelperMethods.GetAllInstancesOf<ThemeBase>().ToList());
 
                     //Основная ViewModel
                     var vm = new MainWindowViewModel();

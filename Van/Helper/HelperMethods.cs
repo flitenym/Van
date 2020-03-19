@@ -168,5 +168,33 @@ namespace Van.Helper
         }
 
         #endregion
+
+        public static T TryGet<T>(this IDictionary<string, object> storage, string key, T defaultValue = default)
+        {
+            if (storage == null)
+                throw new ArgumentNullException(nameof(storage));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+            object obj;
+            if (!storage.TryGetValue(key, out obj))
+                return defaultValue;
+            try
+            {
+                return (T)obj;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidCastException("Ошибка " + ex.Message);
+            }
+        }
+
+        public static IEnumerable<T> GetAllInstancesOf<T>()
+        {
+            return typeof(HelperMethods).Assembly.GetTypes()
+                .Where(t => typeof(T).IsAssignableFrom(t))
+                .Where(t => !t.IsAbstract && t.IsClass)
+                .Select(t => (T)Activator.CreateInstance(t));
+        }
+
     }
 }

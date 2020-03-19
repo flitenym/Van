@@ -2,7 +2,7 @@
 using System;
 using Van.AbstractClasses;
 
-namespace Van.Helper.HelperClasses
+namespace Van.Helper.Classes
 {
     class TabControlData : INotifyPropertyChanged
     {

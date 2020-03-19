@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Van.Methods.Helper
 {
@@ -22,6 +18,5 @@ namespace Van.Methods.Helper
         {
             return Math.Pow(first - second, 2);
         }
-
     }
 }

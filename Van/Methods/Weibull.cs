@@ -1,202 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Van.Helper.HelperClasses;
+using Van.Helper.Classes;
+using Van.Helper.StaticInfo;
+using Van.Methods.Helper;
 
 namespace Van.Methods
 {
-    public class Weibull
+    public class Weibull : MethodAbstractClass
     {
-        public Weibull(List<double> StandartValues, List<double> tValue, List<int> t, List<int> delta, int round, double r, double b, double epsilon, RangeData FirstAgeX, RangeData SecondAgeX, double? a = null)
+        public Weibull(List<double> StandartValues, List<double> tValue, List<int> t, double r, RangeData FirstAgeX, RangeData SecondAgeX, int parametrCount, List<int> delta = null)
+            : base(StandartValues, tValue, t, r, FirstAgeX, SecondAgeX, parametrCount, delta) { }
+
+        public override void ParamterCalculation(List<int> t, List<int> delta, double r)
         {
-            this.StandartValues = StandartValues;
-            this.b = b;
-            this.epsilon = epsilon;
-            this.a = a != null ? (double)a : epsilon;
-            this.round = round;
-            ParamterCalculation(t, delta, r);
-            this.Quality = Helper.Shared.GetQuality(this.LValue, 2, t.Count);
-            GetSurvivalFunctions(tValue);
-            this.FirstAgeX = FirstAgeX;
-            this.SecondAgeX = SecondAgeX;
-            GetDistances();
-        }
+            double a = SettingsDictionary.a;
+            double b = SettingsDictionary.b;
 
-        public RangeData FirstAgeX;
-
-        public RangeData SecondAgeX;
-
-        public List<double> StandartValues { get; set; }
-
-        public List<double> SurvivalFunctions { get; set; }
-
-        public List<double> Densitys { get; set; }
-
-        /// <summary>
-        /// Параметр округления
-        /// </summary>
-        public int round;
-
-        /// <summary>
-        /// Максимальное возможное (используется для выч. корней)
-        /// </summary>
-        public double b { get; set; }
-
-        /// <summary>
-        /// Параметр точности (используется для выч. корней)
-        /// </summary>
-        public double epsilon { get; set; }
-
-        /// <summary>
-        /// Минимальное возможное (используется для выч. корней)
-        /// </summary>
-        public double a { get; set; }
-
-        /// <summary>
-        /// Первый параметр
-        /// </summary>
-        public double lambda { get; set; }
-
-        /// <summary>
-        /// Второй параметр
-        /// </summary>
-        public double gamma { get; set; }
-
-        /// <summary>
-        /// Значение, которое используется для Acaici
-        /// </summary>
-        public double LValue { get; set; }
-
-        public double DistanceFirstMethod { get; set; }
-
-        public double DistanceSecondMethod { get; set; }
-
-        public double Quality { get; set; }
-
-        public double FirstSum(List<int> t, List<int> delta, double r, double x)
-        {
-            double firstSum = 0;
-            double secondSum = 0;
-            double thirdSum = 0;
-
-            for (int i = 0; i < t.Count(); i++)
+            double FirstSum(double x)
             {
-                double tValue = t[i] == 0 ? 0.1 : t[i];
+                double firstSum = 0;
+                double secondSum = 0;
+                double thirdSum = 0;
 
-                firstSum += Math.Log(tValue) * delta[i];
+                for (int i = 0; i < t.Count(); i++)
+                {
+                    double tValue = t[i] == 0 ? 0.1 : t[i];
 
-                secondSum += Math.Pow(t[i], x);
+                    firstSum += Math.Log(tValue) * delta[i];
 
-                thirdSum += Math.Pow(t[i], x) * Math.Log(tValue);
+                    secondSum += Math.Pow(t[i], x);
+
+                    thirdSum += Math.Pow(t[i], x) * Math.Log(tValue);
+                }
+
+                secondSum = r * Math.Pow(secondSum, -1);
+
+                return firstSum - secondSum * thirdSum;
             }
 
-            secondSum = r * Math.Pow(secondSum, -1);
-
-            return firstSum - secondSum * thirdSum;
-        }
-
-        public double function(List<int> t, List<int> delta, double r, double x)
-        {
-            return r / x + FirstSum(t, delta, r, x);
-        }
-
-        public double dichotomy(List<int> t, List<int> delta, double r)
-        {
-            double x;
-            while (this.b - this.a > this.epsilon)
+            double function(double x)
             {
-                x = (this.a + this.b) / 2;
-                if (this.function(t, delta, r, this.b) * this.function(t, delta, r, x) < 0)
-                    this.a = x;
-                else
-                    this.b = x;
+                return r / x + FirstSum(x);
             }
-            return (this.a + this.b) / 2;
-        }
 
-        public void LambdaGammaCalculate(List<int> t, List<int> delta, double r)
-        {
-            this.gamma = dichotomy(t, delta, r);
+            double dichotomy()
+            {
+                double x;
+                while (b - a > SettingsDictionary.epsilon)
+                {
+                    x = (a + b) / 2;
+                    if (function(b) * function(x) < 0)
+                        a = x;
+                    else
+                        b = x;
+                }
+                return (a + b) / 2;
+            }
+
+            alpha = dichotomy();
 
             double sum = 0;
 
             for (int i = 0; i < t.Count(); i++)
             {
-                sum += Math.Pow(t[i], this.gamma);
+                sum += Math.Pow(t[i], alpha);
             }
 
-            this.lambda = r * Math.Pow(sum, -1);
-        }
+            lambda = r * Math.Pow(sum, -1);
 
-        public void LCalculation(List<int> t, List<int> delta, double r)
-        {
-            double firstSum = 0;
-            double secondSum = 0;
+
+            double fiveSum = 0;
+            double sixSum = 0;
 
             for (int i = 0; i < t.Count(); i++)
             {
-                firstSum += Math.Log(t[i] == 0 ? 0.1 : t[i]) * delta[i];
+                fiveSum += Math.Log(t[i] == 0 ? 0.1 : t[i]) * delta[i];
 
-                secondSum += Math.Pow(t[i], gamma);
+                sixSum += Math.Pow(t[i], alpha);
             }
 
-            double paramsPow = lambda * gamma == 0 ? 0.1 : lambda * gamma;
+            double paramsPow = lambda * alpha == 0 ? 0.1 : lambda * alpha;
 
-            LValue = r * Math.Log(paramsPow) + (gamma - 1) * firstSum - lambda * secondSum;
+            LValue = r * Math.Log(paramsPow) + (alpha - 1) * fiveSum - lambda * sixSum;
         }
 
-        public void ParamterCalculation(List<int> t, List<int> delta, double r)
-        {
-            LambdaGammaCalculate(t, delta, r);
-
-            LCalculation(t, delta, r);
-        }
-
-        public void GetSurvivalFunctions(List<double> tValue)
-        {
-            SurvivalFunctions = new List<double>();
-            Densitys = new List<double>();
-
-            for (int i = 0; i < tValue.Count; i++)
-            {
-                SurvivalFunctions.Add(SurvivalFunction(tValue[i]));
-                Densitys.Add(GetDensity(tValue[i]));
-            }
-        }
-
-        public double SurvivalFunction(double tValue)
+        public override double SurvivalFunction(double tValue)
         {
             return Math.Round(
-                    Math.Exp(-this.lambda * Math.Pow(tValue, this.gamma))
-                    , round);
+                    Math.Exp(-lambda * Math.Pow(tValue, alpha))
+                    , SettingsDictionary.round);
         }
 
-        public double GetDensity(double tValue)
+        public override double GetDensity(double tValue)
         {
             return Math.Round(
-                this.lambda * this.gamma * Math.Pow(tValue, this.gamma - 1) * Math.Exp(-this.lambda * Math.Pow(tValue, this.gamma))
-                    , round);
+                lambda * alpha * Math.Pow(tValue, alpha - 1) * Math.Exp(-lambda * Math.Pow(tValue, alpha))
+                    , SettingsDictionary.round);
         }
-
-        public void GetDistances()
-        {
-            if (!StandartValues.Any()) return;
-
-            double sumFirst = 0;
-            double sumSecond = 0;
-
-
-            for (int i = FirstAgeX.AgeX; i < SecondAgeX.AgeX; i++)
-            {
-                sumFirst += Helper.Shared.GetDistanceFirst(StandartValues[i], SurvivalFunctions[i]);
-                sumSecond += Helper.Shared.GetDistanceSecond(StandartValues[i], SurvivalFunctions[i]);
-            }
-
-            DistanceFirstMethod = sumFirst;
-            DistanceSecondMethod = Math.Sqrt(sumSecond);
-        }
-
     }
 }

@@ -146,9 +146,9 @@
     <Compile Include="DataBase\DatabaseOperation.cs" />
     <Compile Include="Helper\Attributes\ColumnDataAttribute.cs" />
     <Compile Include="Helper\Attributes\ModelClassAttribute.cs" />
-    <Compile Include="Helper\HelperClasses\Node.cs" />
-    <Compile Include="Helper\HelperClasses\RangeData.cs" />
-    <Compile Include="Helper\HelperClasses\TabControlData.cs" />
+    <Compile Include="Helper\Classes\Node.cs" />
+    <Compile Include="Helper\Classes\RangeData.cs" />
+    <Compile Include="Helper\Classes\TabControlData.cs" />
     <Compile Include="Helper\HelperMethods.cs" />
     <Compile Include="Helper\StaticInfo\SettingsDictionary.cs" />
     <Compile Include="Helper\StaticInfo\Enums.cs" />
@@ -166,6 +166,7 @@
     <Compile Include="LocalDataBase\Models\SurvivalFunction.cs" />
     <Compile Include="LocalDataBase\SQLExecutor.cs" />
     <Compile Include="Methods\Helper\CreateGraphics.cs" />
+    <Compile Include="Methods\Helper\MethodAbstractClass.cs" />
     <Compile Include="Methods\Helper\Shared.cs" />
     <Compile Include="Methods\Relay.cs" />
     <Compile Include="Methods\Exponential.cs" />
@@ -358,7 +359,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helper\StaticReflectionHelper.cs" />
     <Compile Include="ThemesGlobal\Dark\Dark.cs" />
     <Compile Include="Themes\Blue\Blue.cs" />
     <Page Include="View\SettingsView.xaml">

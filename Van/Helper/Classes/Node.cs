@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Van.AbstractClasses;
 
-namespace Van.Helper.HelperClasses
+namespace Van.Helper.Classes
 {
     public class Node : INotifyPropertyChanged
     {

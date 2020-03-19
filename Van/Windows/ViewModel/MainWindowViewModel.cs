@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
-using Van.Helper.HelperClasses;
+using Van.Helper.Classes;
 using static Van.Helper.StaticInfo.Enums;
 using System.Collections.ObjectModel;
 using System;
