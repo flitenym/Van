@@ -10,18 +10,11 @@ using Van.DataBase.Models;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Windows.Media;
-using LiveCharts.Wpf;
-using System.Windows;
-using Dapper;
-using System.Threading;
 using Van.LocalDataBase;
 using Van.Helper.HelperClasses;
 using System.Collections.ObjectModel;
 using Van.Helper.StaticInfo;
 using Van.Commands;
-using Van.AbstractClasses;
-using Van.LocalDataBase.ModelsHelper;
 using Van.Methods.Helper;
 
 namespace Van.ViewModel.Methods

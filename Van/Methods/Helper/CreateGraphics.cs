@@ -3,7 +3,6 @@ using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -26,16 +25,13 @@ namespace Van.Methods.Helper
         /// <returns></returns>
         public static List<T> GetDivideList<T, Y>(List<T> firstListData, List<Y> secondListData, List<T> resultListData) where T : IMethod where Y : IMethod
         {
-            if (secondListData != null)
+            for (int i = 0; i < resultListData.Count(); i++)
             {
-                for (int i = 0; i < resultListData.Count(); i++)
-                {
-                    resultListData[i].Standart = firstListData[i].Standart / (secondListData[i].Standart == 0 || secondListData[i].Standart == null ? 1 : secondListData[i].Standart);
-                    resultListData[i].Weibull = firstListData[i].Weibull / (secondListData[i].Weibull == 0 || secondListData[i].Weibull == null ? 1 : secondListData[i].Weibull);
-                    resultListData[i].Exponential = firstListData[i].Exponential / (secondListData[i].Exponential == 0 || secondListData[i].Exponential == null ? 1 : secondListData[i].Exponential);
-                    resultListData[i].Gompertz = firstListData[i].Gompertz / (secondListData[i].Gompertz == 0 || secondListData[i].Gompertz == null ? 1 : secondListData[i].Gompertz);
-                    resultListData[i].Relay = firstListData[i].Relay / (secondListData[i].Relay == 0 || secondListData[i].Relay == null ? 1 : secondListData[i].Relay);
-                }
+                resultListData[i].Standart = firstListData[i].Standart ?? 1 / (secondListData[i].Standart == 0 || secondListData[i].Standart == null ? 1 : secondListData[i].Standart);
+                resultListData[i].Weibull = firstListData[i].Weibull ?? 1 / (secondListData[i].Weibull == 0 || secondListData[i].Weibull == null ? 1 : secondListData[i].Weibull);
+                resultListData[i].Exponential = firstListData[i].Exponential ?? 1 / (secondListData[i].Exponential == 0 || secondListData[i].Exponential == null ? 1 : secondListData[i].Exponential);
+                resultListData[i].Gompertz = firstListData[i].Gompertz ?? 1 / (secondListData[i].Gompertz == 0 || secondListData[i].Gompertz == null ? 1 : secondListData[i].Gompertz);
+                resultListData[i].Relay = firstListData[i].Relay ?? 1 / (secondListData[i].Relay == 0 || secondListData[i].Relay == null ? 1 : secondListData[i].Relay);
             }
 
             return resultListData;
