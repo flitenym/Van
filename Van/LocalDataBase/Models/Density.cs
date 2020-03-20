@@ -7,7 +7,7 @@ using Van.LocalDataBase.ModelsHelper;
 namespace Van.DataBase.Models
 {
     [ModelClass(TableTitle = "Плотность гамма распределения", CanInsert = false)]
-    public class Density : ModelClass, IMortalityTable, IMethod , ICloneable
+    public class Density : ModelClass, IMortalityTable, IMethod, ICloneable
     {
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }

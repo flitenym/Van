@@ -9,8 +9,8 @@ namespace Van.Methods
 {
     public class Relay : MethodAbstractClass
     {
-        public Relay(List<double> StandartValues, List<double> tValue, List<int> t, double r, RangeData FirstAgeX, RangeData SecondAgeX, int parametrCount, List<int> delta = null)
-            : base(StandartValues, tValue, t, r, FirstAgeX, SecondAgeX, parametrCount, delta) { }
+        public Relay(List<double> tValue, List<int> t, double r, List<int> delta = null)
+            : base(tValue, t, r, delta) { }
 
         public override void ParamterCalculation(List<int> t, List<int> delta, double r)
         {

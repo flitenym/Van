@@ -146,7 +146,6 @@ namespace Van.LocalDataBase
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        var result = slc.ExecuteAsync(item.UpdateQuery(ID), obj).Result;
                         await slc.ExecuteAsync(item.UpdateQuery(ID), obj);
                     }
                 }

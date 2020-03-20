@@ -26,9 +26,9 @@ namespace Van.Helper
         /// </summary>
         /// <param name="content">Сообщение</param>
         /// <param name="isNoDuplicateConsider">Если true и будет дубликаты сообщений, то они каждый все равно вызовет новое уведомление, если false то выйдет повторное сообщение 1 раз</param>
-        public static async Task Message(string content, bool isNoDuplicateConsider = false)
+        public static Task Message(string content, bool isNoDuplicateConsider = false)
         {
-            await Task.Run(
+            return Task.Run(
                 () =>
                 {
                     if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)

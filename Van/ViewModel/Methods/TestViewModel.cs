@@ -700,7 +700,8 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTWeibull()
         {
-            Weibull weibull = new Weibull(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 2, delta);
+            Weibull weibull = new Weibull(ageValues, t, r, delta);
+            weibull.GetQuality(standartValues, weibull.SurvivalFunctions, FirstAgeX, SecondAgeX, weibull.LValue, t.Count(), 2);
 
             Acaici.Weibull = weibull.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             DistanceFirstMethod.Weibull = weibull.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
@@ -715,7 +716,8 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTRelay()
         {
-            Relay relay = new Relay(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 1, delta);
+            Relay relay = new Relay(ageValues, t, r, delta);
+            relay.GetQuality(standartValues, relay.SurvivalFunctions, FirstAgeX, SecondAgeX, relay.LValue, t.Count(), 1);
 
             Acaici.Relay = relay.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             DistanceFirstMethod.Relay = relay.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
@@ -730,7 +732,8 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTGompertz()
         {
-            Gompertz gompertz = new Gompertz(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 2, delta);
+            Gompertz gompertz = new Gompertz(ageValues, t, r, delta);
+            gompertz.GetQuality(standartValues, gompertz.SurvivalFunctions, FirstAgeX, SecondAgeX, gompertz.LValue, t.Count(), 1);
 
             Acaici.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             DistanceFirstMethod.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
@@ -745,7 +748,8 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTExponential()
         {
-            Exponential exponential = new Exponential(standartValues, ageValues, t, r, FirstAgeX, SecondAgeX, 1);
+            Exponential exponential = new Exponential(ageValues, t, r);
+            exponential.GetQuality(standartValues, exponential.SurvivalFunctions, FirstAgeX, SecondAgeX, exponential.LValue, t.Count(), 1);
 
             Acaici.Exponential = exponential.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             DistanceFirstMethod.Exponential = exponential.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
