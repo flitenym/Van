@@ -23,14 +23,15 @@ namespace Van.DataBase.Models
         [Description("Вероятность")]
         public double? Probability { get; set; }
 
+        [ColumnData(ShowInTable = false)]
         [Description("Продолжительность жизни")]
         public double? ExpectedDuration { get; set; }
 
-        public override string InsertQuery => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, Probability, ExpectedDuration) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @Probability, @ExpectedDuration);  select last_insert_rowid()";
+        public override string InsertQuery => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, Probability) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @Probability);  select last_insert_rowid()";
 
         public override string UpdateQuery(int ID)
         {
-            return $@"UPDATE {nameof(MortalityTable)} SET AgeX = @AgeX, NumberOfSurvivors = @NumberOfSurvivors, NumberOfDead = @NumberOfDead, Probability = @Probability, ExpectedDuration = @ExpectedDuration WHERE ID = {ID}";
+            return $@"UPDATE {nameof(MortalityTable)} SET AgeX = @AgeX, NumberOfSurvivors = @NumberOfSurvivors, NumberOfDead = @NumberOfDead, Probability = @Probability WHERE ID = {ID}";
         }
 
         public object Clone()

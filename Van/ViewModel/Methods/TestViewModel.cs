@@ -177,13 +177,23 @@ namespace Van.ViewModel.Methods
             }
         }
 
-        private async Task SelectQualityAsync()
+        private async Task SelectQualityAsync(bool needTableRefresh = true)
         {
-            DistanceFirstMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
-            DistanceFirstMethodTableData.AcceptChanges();
+            if (needTableRefresh)
+            {
+                DistanceFirstMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
+                DistanceFirstMethodTableData.AcceptChanges();
+            }
 
-            DistanceSecondMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceSecondMethod}");
-            DistanceSecondMethodTableData.AcceptChanges();
+            DistanceFirstMethod = await SQLExecutor.SelectExecutorAsync<Quality>(nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
+
+            if (needTableRefresh)
+            {
+                DistanceSecondMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceSecondMethod}");
+                DistanceSecondMethodTableData.AcceptChanges();
+            }
+
+            DistanceSecondMethod = await SQLExecutor.SelectExecutorAsync<Quality>(nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
         }
 
         #endregion
