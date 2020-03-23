@@ -27,6 +27,11 @@ namespace Van.Helper.StaticInfo
             public static string DataBaseBrowsingName = "Локальные данные";
             public static readonly Guid DataBaseBrowsingView = new Guid("12011025-144B-4BE8-96C4-DAD33B8778FC");
             public static int DataBaseBrowsingNum = 2;
+
+            public static string InfoName = "Просмотр доп. информации";
+            public static readonly Guid InfoView = new Guid("94E80C76-219B-4633-B35D-D8A39A5E80E0");
+            public static int InfoNum = 3;
+
             #endregion
 
             #region Левое меню

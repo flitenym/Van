@@ -18,7 +18,6 @@ using Van.Windows.ViewModel;
 using IronXL;
 using Microsoft.Win32;
 using static Van.Helper.HelperMethods;
-using IronXL.Options;
 
 namespace Van.ViewModel
 {
@@ -34,7 +33,7 @@ namespace Van.ViewModel
         public void LoadDataBase() {
             TableData = new DataTable();
 
-            var models = HelperMethods.GetAllInstancesOf<ModelClass>().ToList();
+            var models = GetAllInstancesOf<ModelClass>().ToList();
             models.ForEach(x => x.Title = GetModelTitleAttribute(x));
             models.ForEach(x => x.SetCanInsert(GetModelCanInsertAttribute(x)));
             models.ForEach(x => x.SetCanDelete(GetModelCanDeleteAttribute(x)));
@@ -330,10 +329,6 @@ namespace Van.ViewModel
                 catch (Exception ex)
                 {
                     await Message($"{ex.Message}");
-                }
-                finally
-                {
-                    workbook = null;
                 }
             }
         }

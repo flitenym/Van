@@ -117,7 +117,6 @@ $@"При загрузке из Excel следует придерживатьс�
                     {
                         await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
                     }
-                    await HelperMethods.Message($"Данные загружены");
                 }
                 else
                 {
