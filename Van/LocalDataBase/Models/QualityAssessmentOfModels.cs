@@ -5,7 +5,7 @@ using Van.Helper.Attributes;
 
 namespace Van.DataBase.Models
 {
-    [ModelClass(TableTitle = "Оценка качесва моделей", CanInsert = false)]
+    [ModelClass(TableTitle = "Оценка качества моделей", CanInsert = false)]
     public class QualityAssessmentOfModels : ModelClass, ICloneable
     {
         [ColumnData(ShowInTable = false)]

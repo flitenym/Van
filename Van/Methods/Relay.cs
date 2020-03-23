@@ -35,16 +35,12 @@ namespace Van.Methods
 
         public override double SurvivalFunction(double tValue)
         {
-            return Math.Round(
-                    Math.Exp(-Math.Pow(tValue, 2) / (2 * Math.Pow(lambda, 2)))
-                    , SettingsDictionary.round);
+            return Math.Exp(-Math.Pow(tValue, 2) / (2 * Math.Pow(lambda, 2)));
         }
 
         public override double GetDensity(double tValue)
         {
-            return Math.Round(
-                    tValue * Math.Exp(-Math.Pow(tValue, 2) / (2 * Math.Pow(lambda, 2))) / Math.Pow(lambda, 2)
-                    , SettingsDictionary.round);
+            return tValue * Math.Exp(-Math.Pow(tValue, 2) / (2 * Math.Pow(lambda, 2))) / Math.Pow(lambda, 2);
         }
     }
 }

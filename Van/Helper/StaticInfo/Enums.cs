@@ -62,5 +62,19 @@ namespace Van.Helper.StaticInfo
             GeneralTheme = 1
         }
 
+        public enum QualityMethods
+        {
+            /// <summary>
+            /// DistanceFirstMethodKey
+            /// </summary>
+            [Description("DistanceFirstMethodKey")]
+            DistanceFirstMethod = 0,
+            /// <summary>
+            /// DistanceSecondMethodKey
+            /// </summary>
+            [Description("DistanceSecondMethodKey")]
+            DistanceSecondMethod = 1
+        }
+
     }
 }

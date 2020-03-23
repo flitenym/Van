@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using Van.Helper.StaticInfo;
 using Van.Commands;
 using Van.Methods.Helper;
+using static Van.Helper.HelperMethods;
 
 
 namespace Van.ViewModel.Methods
@@ -63,12 +64,12 @@ namespace Van.ViewModel.Methods
         /// <summary>
         /// Расстояние от табличного первый метод
         /// </summary>
-        public QualityAssessmentOfModels DistanceFirstMethod = new QualityAssessmentOfModels();
+        public List<Quality> DistanceFirstMethod = new List<Quality>();
 
         /// <summary>
         /// Расстояние от табличного второй метод
         /// </summary>
-        public QualityAssessmentOfModels DistanceSecondMethod = new QualityAssessmentOfModels();
+        public List<Quality> DistanceSecondMethod = new List<Quality>();
 
         public async Task LoadTables()
         {
@@ -83,6 +84,9 @@ namespace Van.ViewModel.Methods
 
             await RefreshChartsDivides();
             await RefreshChartsResidualDivides();
+
+            await SelectQualityAsync();
+            await RefreshChartsQuality();
         }
 
         #region Диапазон
@@ -147,6 +151,43 @@ namespace Van.ViewModel.Methods
 
         #endregion
 
+        #region Таблица оценка качесва
+
+        private DataTable distanceFirstMethodTableData;
+
+        public DataTable DistanceFirstMethodTableData
+        {
+            get { return distanceFirstMethodTableData; }
+            set
+            {
+                if (HelperMethods.ClearDataTable(distanceFirstMethodTableData, value)) distanceFirstMethodTableData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceFirstMethodTableData)));
+            }
+        }
+
+        private DataTable distanceSecondMethodTableData;
+
+        public DataTable DistanceSecondMethodTableData
+        {
+            get { return distanceSecondMethodTableData; }
+            set
+            {
+                if (HelperMethods.ClearDataTable(distanceSecondMethodTableData, value)) distanceSecondMethodTableData = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceSecondMethodTableData)));
+            }
+        }
+
+        private async Task SelectQualityAsync()
+        {
+            DistanceFirstMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
+            DistanceFirstMethodTableData.AcceptChanges();
+
+            DistanceSecondMethodTableData = await SQLExecutor.SelectExecutorAsync(typeof(Quality), nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceSecondMethod}");
+            DistanceSecondMethodTableData.AcceptChanges();
+        }
+
+        #endregion
+
         #region Таблица смертности
 
         private DataTable mortalityTableData;
@@ -183,9 +224,9 @@ namespace Van.ViewModel.Methods
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                ageValues.Add(getTValue(currentMortalityTables[i]?.AgeX));
+                ageValues.Add(GetTValue(currentMortalityTables[i]?.AgeX));
 
-                temp.Add(new RangeData() { ID = (currentMortalityTables[i]?.ID).Value, AgeX = (int)getTValue(currentMortalityTables[i]?.AgeX) });
+                temp.Add(new RangeData() { ID = (currentMortalityTables[i]?.ID).Value, AgeX = (int)GetTValue(currentMortalityTables[i]?.AgeX) });
             }
 
             RangeDataList = temp;
@@ -421,12 +462,12 @@ namespace Van.ViewModel.Methods
                         {
                             if (z < currentMortalityTables[j].Probability)
                             {
-                                t.Add((int)getTValue(currentMortalityTables[j].AgeX));
+                                t.Add((int)GetTValue(currentMortalityTables[j].AgeX));
                                 break;
                             }
                             else if (j != 0 && z >= sumProbubility && z < sumProbubility + currentMortalityTables[j].Probability.Value)
                             {
-                                t.Add((int)getTValue(currentMortalityTables[j].AgeX));
+                                t.Add((int)GetTValue(currentMortalityTables[j].AgeX));
                                 break;
                             }
                             sumProbubility += currentMortalityTables[j].Probability.Value;
@@ -454,24 +495,6 @@ namespace Van.ViewModel.Methods
             });
         }
 
-        public async Task DeleteLifeTimes()
-        {
-            using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                await cn.OpenAsync();
-                using (var transaction = cn.BeginTransaction())
-                {
-                    using (var cmd = cn.CreateCommand())
-                    {
-                        cmd.CommandText = $"DELETE FROM LifeTimes";
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                    transaction.Commit();
-                }
-                cn.Close();
-            }
-        }
-
         public async Task InsertLifeTimes()
         {
             using (var cn = new SQLiteConnection(SQLExecutor.LoadConnectionString))
@@ -493,19 +516,6 @@ namespace Van.ViewModel.Methods
                 }
                 cn.Close();
             }
-        }
-
-        /// <summary>
-        /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
-        /// </summary>
-        public double getTValue(string ageX)
-        {
-            // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
-            if (double.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out double value))
-            {
-                return value;
-            }
-            return 0;
         }
 
         #endregion 
@@ -626,9 +636,14 @@ namespace Van.ViewModel.Methods
             stopwatch.Start();
 
             Acaici = new QualityAssessmentOfModels() { Quality = "Акаики" };
+            DistanceFirstMethod = new List<Quality>();
+            DistanceSecondMethod = new List<Quality>();
 
-            DistanceFirstMethod = new QualityAssessmentOfModels() { Quality = "Первая метрика" };
-            DistanceSecondMethod = new QualityAssessmentOfModels() { Quality = "Вторая метрика" };
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                DistanceFirstMethod.Add(new Quality { MortalityTableID = RangeDataList[i].ID, MortalityTableAgeX = RangeDataList[i].AgeX.ToString(), Method = (int)Enums.QualityMethods.DistanceFirstMethod });
+                DistanceSecondMethod.Add(new Quality { MortalityTableID = RangeDataList[i].ID, MortalityTableAgeX = RangeDataList[i].AgeX.ToString(), Method = (int)Enums.QualityMethods.DistanceSecondMethod });
+            }
 
             CalculateSTStandart();
 
@@ -654,7 +669,11 @@ namespace Van.ViewModel.Methods
             await RefreshChartsDivides();
 
             //--------Обновление оценки качества
+            await QualityAssessmentOfModelsUpdateAsync();
+
             await QualityUpdateAsync();
+
+            await RefreshChartsQuality();
 
 
             await HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
@@ -675,23 +694,12 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTStandart()
         {
-            var maxNumberOfSurvivors = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max();
-
-            if (maxNumberOfSurvivors == null) return;
-
-            maxNumberOfSurvivors = maxNumberOfSurvivors.Value;
+            Standart standart = new Standart(ageValues, t, r, currentMortalityTables);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
-                currentSurvivalFunctions[i].Standart = Math.Round(
-                    (double)currentMortalityTables[i]?.NumberOfSurvivors /
-                    (double)maxNumberOfSurvivors
-                    , SettingsDictionary.round);
-
-                currentDensitys[i].Standart = Math.Round(
-                    (double)currentMortalityTables[i]?.NumberOfDead /
-                    (double)maxNumberOfSurvivors
-                    , SettingsDictionary.round);
+                currentSurvivalFunctions[i].Standart = standart.SurvivalFunctions[i];
+                currentDensitys[i].Standart = standart.Densitys[i];
             }
 
             standartValues.Clear();
@@ -701,76 +709,123 @@ namespace Van.ViewModel.Methods
         public void CalculateSTWeibull()
         {
             Weibull weibull = new Weibull(ageValues, t, r, delta);
-            weibull.GetQuality(standartValues, weibull.SurvivalFunctions, FirstAgeX, SecondAgeX, weibull.LValue, t.Count(), 2);
-
-            Acaici.Weibull = weibull.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
-            DistanceFirstMethod.Weibull = weibull.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
-            DistanceSecondMethod.Weibull = weibull.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Weibull = weibull.SurvivalFunctions[i];
                 currentDensitys[i].Weibull = weibull.Densitys[i];
             }
+
+            weibull.GetQuality(standartValues, weibull.SurvivalFunctions, FirstAgeX, SecondAgeX, weibull.LValue, t.Count(), 2);
+
+            Acaici.Weibull = weibull.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            var DistanceFirstMethodValue = weibull.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
+            var DistanceSecondMethodValue = weibull.Quality.TryGet<List<double>>(InfoKeys.DistanceSecondMethodKey);
+
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                int index = i - FirstAgeX.AgeX;
+                DistanceFirstMethod[index].Weibull = DistanceFirstMethodValue[index];
+                DistanceSecondMethod[index].Weibull = DistanceSecondMethodValue[index];
+            }
         }
 
         public void CalculateSTRelay()
         {
             Relay relay = new Relay(ageValues, t, r, delta);
-            relay.GetQuality(standartValues, relay.SurvivalFunctions, FirstAgeX, SecondAgeX, relay.LValue, t.Count(), 1);
-
-            Acaici.Relay = relay.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
-            DistanceFirstMethod.Relay = relay.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
-            DistanceSecondMethod.Relay = relay.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Relay = relay.SurvivalFunctions[i];
                 currentDensitys[i].Relay = relay.Densitys[i];
             }
+
+            relay.GetQuality(standartValues, relay.SurvivalFunctions, FirstAgeX, SecondAgeX, relay.LValue, t.Count(), 1);
+
+            Acaici.Relay = relay.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            var DistanceFirstMethodValue = relay.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
+            var DistanceSecondMethodValue = relay.Quality.TryGet<List<double>>(InfoKeys.DistanceSecondMethodKey);
+
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                int index = i - FirstAgeX.AgeX;
+                DistanceFirstMethod[index].Relay = DistanceFirstMethodValue[index];
+                DistanceSecondMethod[index].Relay = DistanceSecondMethodValue[index];
+            }
         }
 
         public void CalculateSTGompertz()
         {
             Gompertz gompertz = new Gompertz(ageValues, t, r, delta);
-            gompertz.GetQuality(standartValues, gompertz.SurvivalFunctions, FirstAgeX, SecondAgeX, gompertz.LValue, t.Count(), 1);
-
-            Acaici.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
-            DistanceFirstMethod.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
-            DistanceSecondMethod.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Gompertz = gompertz.SurvivalFunctions[i];
                 currentDensitys[i].Gompertz = gompertz.Densitys[i];
             }
+
+            gompertz.GetQuality(standartValues, gompertz.SurvivalFunctions, FirstAgeX, SecondAgeX, gompertz.LValue, t.Count(), 1);
+
+            Acaici.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            var DistanceFirstMethodValue = gompertz.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
+            var DistanceSecondMethodValue = gompertz.Quality.TryGet<List<double>>(InfoKeys.DistanceSecondMethodKey);
+
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                int index = i - FirstAgeX.AgeX;
+                DistanceFirstMethod[index].Gompertz = DistanceFirstMethodValue[index];
+                DistanceSecondMethod[index].Gompertz = DistanceSecondMethodValue[index];
+            }
         }
 
         public void CalculateSTExponential()
         {
             Exponential exponential = new Exponential(ageValues, t, r);
-            exponential.GetQuality(standartValues, exponential.SurvivalFunctions, FirstAgeX, SecondAgeX, exponential.LValue, t.Count(), 1);
-
-            Acaici.Exponential = exponential.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
-            DistanceFirstMethod.Exponential = exponential.Quality.TryGet<double>(InfoKeys.DistanceFirstMethodKey, 0);
-            DistanceSecondMethod.Exponential = exponential.Quality.TryGet<double>(InfoKeys.DistanceSecondMethodKey, 0);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
                 currentSurvivalFunctions[i].Exponential = exponential.SurvivalFunctions[i];
                 currentDensitys[i].Exponential = exponential.Densitys[i];
             }
+
+            exponential.GetQuality(standartValues, exponential.SurvivalFunctions, FirstAgeX, SecondAgeX, exponential.LValue, t.Count(), 1);
+
+            Acaici.Exponential = exponential.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            var DistanceFirstMethodValue = exponential.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
+            var DistanceSecondMethodValue = exponential.Quality.TryGet<List<double>>(InfoKeys.DistanceSecondMethodKey);
+
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                int index = i - FirstAgeX.AgeX;
+                DistanceFirstMethod[index].Exponential = DistanceFirstMethodValue[index];
+                DistanceSecondMethod[index].Exponential = DistanceSecondMethodValue[index];
+            }
         }
 
-        public async Task QualityUpdateAsync()
+        public async Task QualityAssessmentOfModelsUpdateAsync()
         {
             await SQLExecutor.DeleteExecutor(nameof(QualityAssessmentOfModels));
 
             await SQLExecutor.InsertExecutorAsync(Acaici, Acaici);
-            await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod, DistanceFirstMethod);
-            await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod, DistanceSecondMethod);
-
+            
             await SelectQualityAssessmentOfModelsAsync();
+        }
+
+        public async Task QualityUpdateAsync()
+        {
+            await SQLExecutor.DeleteExecutor(nameof(Quality));
+
+            for (int i = 0; i < DistanceFirstMethod.Count(); i++)
+            {
+                await SQLExecutor.InsertExecutorAsync(DistanceFirstMethod[i], DistanceFirstMethod[i]);
+            }
+
+            for (int i = 0; i < DistanceSecondMethod.Count(); i++)
+            {
+                await SQLExecutor.InsertExecutorAsync(DistanceSecondMethod[i], DistanceSecondMethod[i]);
+            }
+
+            await SelectQualityAsync();
         }
 
         #endregion
@@ -783,8 +838,8 @@ namespace Van.ViewModel.Methods
 
         public async Task CalculateResidual()
         {
-            var firstSF = currentSurvivalFunctions.Where(x => (int)getTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)getTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
-            var survival = currentSurvivalFunctions.First(x => (int)getTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
+            var firstSF = currentSurvivalFunctions.Where(x => (int)GetTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)GetTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
+            var survival = currentSurvivalFunctions.First(x => (int)GetTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
 
             currentResidualSurvivalFunctions.Clear();
 
@@ -832,8 +887,8 @@ namespace Van.ViewModel.Methods
             await SelectResidualSurvivalFunctionAsync();
 
 
-            var firstD = currentDensitys.Where(x => (int)getTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)getTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
-            var density = currentDensitys.First(x => (int)getTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
+            var firstD = currentDensitys.Where(x => (int)GetTValue(x.MortalityTableAgeX) >= FirstAgeX.AgeX && (int)GetTValue(x.MortalityTableAgeX) <= SecondAgeX.AgeX).ToList();
+            var density = currentDensitys.First(x => (int)GetTValue(x.MortalityTableAgeX) == FirstAgeX.AgeX);
 
             currentResidualDensitys.Clear();
 
@@ -1094,6 +1149,68 @@ namespace Van.ViewModel.Methods
         }
 
         #endregion
+
+        #region Quality
+
+        public async Task RefreshChartsQuality()
+        {
+            DistanceFirstMethodCollection = await CreateGraphics.GetSeriesCollection(DistanceFirstMethodCollection, DistanceFirstMethod);
+            DistanceFirstMethodYFormatter = CreateGraphics.GetYFormatter();
+
+            DistanceSecondMethodCollection = await CreateGraphics.GetSeriesCollection(DistanceSecondMethodCollection, DistanceSecondMethod);
+            DistanceSecondMethodYFormatter = CreateGraphics.GetYFormatter();
+        }
+
+        private SeriesCollection distanceFirstMethodCollection;
+
+        public SeriesCollection DistanceFirstMethodCollection
+        {
+            get { return distanceFirstMethodCollection; }
+            set
+            {
+                distanceFirstMethodCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceFirstMethodCollection)));
+            }
+        }
+
+        private Func<double, string> distanceFirstMethodYFormatter;
+
+        public Func<double, string> DistanceFirstMethodYFormatter
+        {
+            get { return distanceFirstMethodYFormatter; }
+            set
+            {
+                distanceFirstMethodYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceFirstMethodYFormatter)));
+            }
+        }
+
+        private SeriesCollection distanceSecondMethodCollection;
+
+        public SeriesCollection DistanceSecondMethodCollection
+        {
+            get { return distanceSecondMethodCollection; }
+            set
+            {
+                distanceSecondMethodCollection = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceSecondMethodCollection)));
+            }
+        }
+
+        private Func<double, string> distanceSecondMethodYFormatter;
+
+        public Func<double, string> DistanceSecondMethodYFormatter
+        {
+            get { return distanceSecondMethodYFormatter; }
+            set
+            {
+                distanceSecondMethodYFormatter = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(DistanceSecondMethodYFormatter)));
+            }
+        }
+
+        #endregion
+
 
         #endregion
     }

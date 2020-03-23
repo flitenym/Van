@@ -17,6 +17,8 @@ namespace Van.View.Methods
             DensityTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             ResidualSurvivalFunctionTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             ResidualDensityTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+            DistanceFirstMethodTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+            DistanceSecondMethodTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
         }
 
         public void Dispose()
@@ -28,6 +30,8 @@ namespace Van.View.Methods
             DensityTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             ResidualSurvivalFunctionTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
             ResidualDensityTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
+            DistanceFirstMethodTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
+            DistanceSecondMethodTableDataGrid.AutoGeneratingColumn -= DataGrid_AutoGeneratingColumn;
         }
     }
 }

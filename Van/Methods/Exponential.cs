@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Van.Helper.Classes;
-using Van.Helper.StaticInfo;
 using Van.Methods.Helper;
 
 namespace Van.Methods
@@ -25,16 +23,12 @@ namespace Van.Methods
 
         public override double SurvivalFunction(double tValue)
         {
-            return Math.Round(
-                    Math.Exp(-lambda * tValue)
-                    , SettingsDictionary.round);
+            return Math.Exp(-lambda * tValue);
         }
 
         public override double GetDensity(double tValue)
         {
-            return Math.Round(
-                    lambda * Math.Exp(-lambda * tValue)
-                    , SettingsDictionary.round);
+            return lambda * Math.Exp(-lambda * tValue);
         }
     }
 }

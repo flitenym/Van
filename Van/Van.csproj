@@ -161,6 +161,7 @@
     <Compile Include="LocalDataBase\Models\LifeTimes.cs" />
     <Compile Include="LocalDataBase\Models\MortalityTable.cs" />
     <Compile Include="LocalDataBase\Models\QualityAssessmentOfModels.cs" />
+    <Compile Include="LocalDataBase\Models\Quality.cs" />
     <Compile Include="LocalDataBase\Models\Settings.cs" />
     <Compile Include="LocalDataBase\Models\ResidualSurvivalFunction.cs" />
     <Compile Include="LocalDataBase\Models\SurvivalFunction.cs" />

@@ -15,7 +15,7 @@ namespace Van.LocalDataBase
     {
         public static string LoadConnectionString => ConfigurationManager.ConnectionStrings["LocalDataBase"].ConnectionString;
 
-        public static async Task<DataTable> SelectExecutorAsync(Type type, string tableName)
+        public static async Task<DataTable> SelectExecutorAsync(Type type, string tableName, string param = default)
         {
             return await Task.Run(async () =>
             {
@@ -24,7 +24,7 @@ namespace Van.LocalDataBase
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        return (await slc.QueryAsync(type, $"SELECT * FROM {tableName}")).ToList().ToDataTable(type) ?? new DataTable(); 
+                        return (await slc.QueryAsync(type, $"SELECT * FROM {tableName} {param}")).ToList().ToDataTable(type) ?? new DataTable(); 
                     }
                 }
                 catch (Exception ex)
@@ -35,7 +35,7 @@ namespace Van.LocalDataBase
             });
         }
 
-        public static async Task<List<T>> SelectExecutorAsync<T>(string tableName)
+        public static async Task<List<T>> SelectExecutorAsync<T>(string tableName, string param = default)
         {
             return await Task.Run(async () =>
             {
@@ -44,7 +44,7 @@ namespace Van.LocalDataBase
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        return (await slc.QueryAsync<T>($"SELECT * FROM {tableName}")).ToList();
+                        return (await slc.QueryAsync<T>($"SELECT * FROM {tableName} {param}")).ToList();
                     }
                 }
                 catch (Exception ex)

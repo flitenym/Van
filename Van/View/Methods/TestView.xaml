@@ -234,6 +234,66 @@
 
             <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
 
+            <TextBlock Height="20" Text="Оценка качества моделей (1 метод)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="DistanceFirstMethodTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DistanceFirstMethodTableData, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DistanceFirstMethodCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DistanceFirstMethodYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <TextBlock Height="20" Text="Оценка качества моделей (2 метод)" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+            <DataGrid Height="500"
+                          x:Name="DistanceSecondMethodTableDataGrid"
+                          Background="{x:Null}"
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Stretch"
+                          EnableRowVirtualization="True" 
+                          EnableColumnVirtualization="False" 
+                          ScrollViewer.CanContentScroll="True" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                          GridLinesVisibility="None" 
+                          HeadersVisibility="Column" 
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding DistanceSecondMethodTableData, Mode=TwoWay, IsAsync=True}" 
+                          SelectionUnit="FullRow" 
+                          ColumnWidth="*"
+                          CanUserSortColumns="True">
+            </DataGrid>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="500">
+                <lvc:CartesianChart Series="{Binding DistanceSecondMethodCollection}" LegendLocation="Right" Zoom="Xy" DisableAnimations="True" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Значение" LabelFormatter="{Binding DistanceSecondMethodYFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource SeparatorBackGround}" Margin="0,5,0,5"/>
+
             <StackPanel Height="45" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Width="400" 
                         Margin="5"
@@ -314,7 +374,7 @@
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
             </Grid>
-            
+
         </StackPanel>
     </ScrollViewer>
 

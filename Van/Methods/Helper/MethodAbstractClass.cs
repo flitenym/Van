@@ -8,6 +8,9 @@ namespace Van.Methods.Helper
 {
     public abstract class MethodAbstractClass
     {
+        public MethodAbstractClass()
+        { }
+
         public MethodAbstractClass(List<double> tValue, List<int> t, double r, List<int> delta = null)
         {
             ParamterCalculation(t, delta, r);
@@ -37,19 +40,25 @@ namespace Van.Methods.Helper
 
         public void GetQuality(List<double> standartValues,List<double> survivalFunctions, RangeData FirstAgeX, RangeData SecondAgeX, double LValue, int tCount, int parametrCount)
         {
+            List<double> distanceFirst = new List<double>();
+            List<double> distanceSecond = new List<double>();
+
             double sumFirst = 0;
             double sumSecond = 0;
 
-            for (int i = FirstAgeX.AgeX; i < SecondAgeX.AgeX; i++)
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
             {
                 sumFirst += Shared.GetDistanceFirst(standartValues[i], survivalFunctions[i]);
                 sumSecond += Shared.GetDistanceSecond(standartValues[i], survivalFunctions[i]);
+
+                distanceFirst.Add(sumFirst);
+                distanceSecond.Add(Math.Sqrt(sumSecond));
             }
 
             Quality.Clear();
             Quality.Add(InfoKeys.AcaiciKey, Shared.GetQuality(LValue, parametrCount, tCount));
-            Quality.Add(InfoKeys.DistanceFirstMethodKey, sumFirst);
-            Quality.Add(InfoKeys.DistanceSecondMethodKey, Math.Sqrt(sumSecond));
+            Quality.Add(InfoKeys.DistanceFirstMethodKey, distanceFirst);
+            Quality.Add(InfoKeys.DistanceSecondMethodKey, distanceSecond);
         }
 
         public void GetSurvivalFunctions(List<double> tValue)

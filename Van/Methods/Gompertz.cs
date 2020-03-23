@@ -88,18 +88,14 @@ namespace Van.Methods
 
         public override double SurvivalFunction(double tValue)
         {
-            return Math.Round(
-                    Math.Exp(lambda / alpha * (1 - Math.Exp(alpha * tValue)))
-                    , SettingsDictionary.round);
+            return Math.Exp(lambda / alpha * (1 - Math.Exp(alpha * tValue)));
         }
 
         public override double GetDensity(double tValue)
         {
-            return Math.Round(
-                    lambda *
+            return lambda *
                     Math.Exp(alpha * tValue) *
-                    Math.Exp(lambda / alpha * (1 - Math.Exp(alpha * tValue)))
-                    , SettingsDictionary.round);
+                    Math.Exp(lambda / alpha * (1 - Math.Exp(alpha * tValue)));
         }
     }
 }

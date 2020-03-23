@@ -102,7 +102,17 @@ namespace Van.Helper
             {
                 DataRow row = table.NewRow();
                 foreach (PropertyDescriptor prop in properties)
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                {
+                    if (prop.GetValue(item) is double doubleValue)
+                    {
+                        row[prop.Name] = Math.Round(doubleValue, SettingsDictionary.round);
+                    }
+                    else
+                    {
+                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                    }
+                }
+                    
                 table.Rows.Add(row);
             }
             return table;
@@ -194,6 +204,19 @@ namespace Van.Helper
                 .Where(t => typeof(T).IsAssignableFrom(t))
                 .Where(t => !t.IsAbstract && t.IsClass)
                 .Select(t => (T)Activator.CreateInstance(t));
+        }
+
+        /// <summary>
+        /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+        /// </summary>
+        public static double GetTValue(string ageX)
+        {
+            // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
+            if (double.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out double value))
+            {
+                return value;
+            }
+            return 0;
         }
 
     }
