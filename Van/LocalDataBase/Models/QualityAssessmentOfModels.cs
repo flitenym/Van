@@ -26,7 +26,7 @@ namespace Van.DataBase.Models
         [Description("Экспоненциальное")]
         public double? Exponential { get; set; }
 
-        public override string InsertQuery => $@"INSERT INTO {nameof(QualityAssessmentOfModels)}(Quality, Weibull, Relay, Gompertz, Exponential) VALUES (@Quality, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+        public override string InsertQuery() => $@"INSERT INTO {nameof(QualityAssessmentOfModels)}(Quality, Weibull, Relay, Gompertz, Exponential) VALUES (@Quality, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
 
         public override string UpdateQuery(int ID)
         {

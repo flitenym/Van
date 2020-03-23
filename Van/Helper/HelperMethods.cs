@@ -137,16 +137,55 @@ namespace Van.Helper
             var expandoDict = new ExpandoObject() as IDictionary<string, object>;
             var properties = type.GetProperties();
 
-            int j = 0;
+            int j = 0; //индекс столбца в excel
             for (int i = 0; i < properties.Length; i++)
             {
                 var columnDataAttributes = (ColumnDataAttribute[])properties[i].GetCustomAttributes(typeof(ColumnDataAttribute), true);
-                if (columnDataAttributes.Length == 0 && 
+                if (columnDataAttributes.Length == 0 &&
                     properties[i].DeclaringType != typeof(ModelClass) &&
                     properties[i].CanWrite)
                 {
-                    var columnName = row.Table.Columns[j].ColumnName;
-                    expandoDict.Add(properties[i].Name.ToString(), row[columnName] == DBNull.Value ? null : row[columnName]);
+                    object value;
+                    var databaseType = properties[i].Name.GetType();
+
+                    //в случае если столбцов в Excel меньше чем в БД, тогда искусственно заполним default значениями
+                    if (j >= row.Table.Columns.Count)
+                    {
+                        if (type.IsValueType)
+                        {
+                            value = Activator.CreateInstance(type);
+                        }
+                        else
+                        {
+                            value = null;
+                        }
+                    }
+                    else
+                    {
+                        var columnName = row.Table.Columns[j].ColumnName;
+
+                        if (row[columnName] == DBNull.Value)
+                        {
+                            value = null;
+                        }
+                        else
+                        {
+                            var excelType = row[columnName].GetType();
+
+                            //в excel сложно задать string/double даже в одном столбце, поэтому создаются value.0 в БД, 
+                            //поэтому применим такой hack
+                            if (!databaseType.Equals(excelType) && databaseType.Equals(typeof(System.String)))
+                            {
+                                value = row[columnName].ToString();
+                            }
+                            else
+                            {
+                                value = row[columnName];
+                            }
+                        }
+                    }
+
+                    expandoDict.Add(properties[i].Name.ToString(), value);
                     j++;
                 }
             }

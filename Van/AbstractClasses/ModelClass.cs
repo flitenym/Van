@@ -8,19 +8,32 @@ namespace Van.AbstractClasses
         public string Title { get; set; }
 
         [ColumnData(ShowInTable = false)]
-        public bool CanInsert { get; set; }
+        private bool CanInsert { get; set; }
+
+        public bool GetCanInsert() => CanInsert;
+        public void SetCanInsert(bool value) { CanInsert = value; }
+
 
         [ColumnData(ShowInTable = false)]
-        public bool CanDelete { get; set; }
+        private bool CanDelete { get; set; }
+
+        public bool GetCanDelete() => CanDelete;
+        public void SetCanDelete(bool value) { CanDelete = value; }
 
         [ColumnData(ShowInTable = false)]
-        public bool CanUpdate { get; set; }
+        private bool CanUpdate { get; set; }
+
+        public bool GetCanUpdate() => CanUpdate;
+        public void SetCanUpdate(bool value) { CanUpdate = value; }
 
         [ColumnData(ShowInTable = false)]
-        public bool CanLoad { get; set; }
+        private bool CanLoad { get; set; }
+
+        public bool GetCanLoad() => CanLoad;
+        public void SetCanLoad(bool value) { CanLoad = value; }
 
         [ColumnData(ShowInTable = false)]
-        public abstract string InsertQuery { get; }
+        public abstract string InsertQuery();
 
         [ColumnData(ShowInTable = false)]
         public abstract string UpdateQuery(int ID);

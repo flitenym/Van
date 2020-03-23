@@ -97,14 +97,14 @@ namespace Van.LocalDataBase
         {
             return await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.InsertQuery)) return -1;
+                if (string.IsNullOrEmpty(item.InsertQuery())) return -1;
 
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery, objData);
+                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery(), objData);
                     }
                 }
                 catch (Exception ex)

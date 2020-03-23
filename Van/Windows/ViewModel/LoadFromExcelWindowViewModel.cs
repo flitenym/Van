@@ -104,7 +104,7 @@ $@"При загрузке из Excel следует придерживатьс�
         {
             try
             {
-                var dataTable = WorkSheet.ToDataTable(!ignoreFirstRow);
+                var dataTable = WorkSheet.ToDataTable(ignoreFirstRow);
                 List<object> listObj = new List<object>();
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {

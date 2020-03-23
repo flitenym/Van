@@ -27,7 +27,7 @@ namespace Van.DataBase.Models
         [Description("Продолжительность жизни")]
         public double? ExpectedDuration { get; set; }
 
-        public override string InsertQuery => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, Probability) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @Probability);  select last_insert_rowid()";
+        public override string InsertQuery() => $@"INSERT INTO {nameof(MortalityTable)}(AgeX, NumberOfSurvivors, NumberOfDead, Probability) VALUES (@AgeX, @NumberOfSurvivors, @NumberOfDead, @Probability);  select last_insert_rowid()";
 
         public override string UpdateQuery(int ID)
         {

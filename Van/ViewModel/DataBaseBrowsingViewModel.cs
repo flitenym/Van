@@ -18,6 +18,7 @@ using Van.Windows.ViewModel;
 using IronXL;
 using Microsoft.Win32;
 using static Van.Helper.HelperMethods;
+using IronXL.Options;
 
 namespace Van.ViewModel
 {
@@ -35,10 +36,10 @@ namespace Van.ViewModel
 
             var models = HelperMethods.GetAllInstancesOf<ModelClass>().ToList();
             models.ForEach(x => x.Title = GetModelTitleAttribute(x));
-            models.ForEach(x => x.CanInsert = GetModelCanInsertAttribute(x));
-            models.ForEach(x => x.CanDelete = GetModelCanDeleteAttribute(x));
-            models.ForEach(x => x.CanUpdate = GetModelCanUpdateAttribute(x));
-            models.ForEach(x => x.CanLoad = GetModelCanLoadAttribute(x));
+            models.ForEach(x => x.SetCanInsert(GetModelCanInsertAttribute(x)));
+            models.ForEach(x => x.SetCanDelete(GetModelCanDeleteAttribute(x)));
+            models.ForEach(x => x.SetCanUpdate(GetModelCanUpdateAttribute(x)));
+            models.ForEach(x => x.SetCanLoad(GetModelCanLoadAttribute(x)));
 
             DatabaseModelsData = new ObservableCollection<ModelClass>(models);
 
@@ -313,14 +314,26 @@ namespace Van.ViewModel
             };
             if (openFileDialog.ShowDialog() == true)
             {
+                WorkBook workbook = new WorkBook();
                 string fileName = openFileDialog.FileName;
-                WorkBook workbook = WorkBook.Load(fileName);
-                var loadFromExcelWindow = new LoadFromExcelWindowView();
-                var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
-                loadFromExcelWindow.DataContext = vm;
-                if (loadFromExcelWindow.ShowDialog() == true)
+                try
                 {
-                    await Select();
+                    workbook = WorkBook.Load(fileName);
+                    var loadFromExcelWindow = new LoadFromExcelWindowView();
+                    var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
+                    loadFromExcelWindow.DataContext = vm;
+                    if (loadFromExcelWindow.ShowDialog() == true)
+                    {
+                        await Select();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await Message($"{ex.Message}");
+                }
+                finally
+                {
+                    workbook = null;
                 }
             }
         }
@@ -328,7 +341,7 @@ namespace Van.ViewModel
         private bool CanLoad()
         {
             if (SelectedModel == null) return false;
-            return SelectedModel.CanLoad;
+            return SelectedModel.GetCanLoad();
         }
 
         #endregion
@@ -363,7 +376,7 @@ namespace Van.ViewModel
         private bool CanDelete()
         {
             if (SelectedModel == null) return false;
-            return SelectedModel.CanDelete;
+            return SelectedModel.GetCanDelete();
         }
 
         public async Task DeleteRows(object obj)
@@ -421,7 +434,7 @@ namespace Van.ViewModel
         private bool CanInsert()
         {
             if (SelectedModel == null) return false;
-            return SelectedModel.CanInsert;
+            return SelectedModel.GetCanInsert();
         }
 
         public async Task InsertRows()
@@ -467,7 +480,7 @@ namespace Van.ViewModel
         private bool CanUpdate()
         {
             if (SelectedModel == null) return false;
-            return SelectedModel.CanUpdate;
+            return SelectedModel.GetCanUpdate();
         }
 
         public async Task UpdateRowsAsync()

@@ -33,7 +33,7 @@ namespace Van.DataBase.Models
         [Description("Экспоненциальное")]
         public double? Exponential { get; set; }
 
-        public override string InsertQuery => string.Empty;
+        public override string InsertQuery() => string.Empty;
 
         public override string UpdateQuery(int ID)
         {
