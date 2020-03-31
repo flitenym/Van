@@ -193,7 +193,7 @@ namespace Van.ViewModel.Methods
                 DistanceSecondMethodTableData.AcceptChanges();
             }
 
-            DistanceSecondMethod = await SQLExecutor.SelectExecutorAsync<Quality>(nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceFirstMethod}");
+            DistanceSecondMethod = await SQLExecutor.SelectExecutorAsync<Quality>(nameof(Quality), $" where Method = {(int)Enums.QualityMethods.DistanceSecondMethod}");
         }
 
         #endregion

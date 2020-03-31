@@ -38,18 +38,27 @@ namespace Van.Methods.Helper
 
         public abstract void ParamterCalculation(List<int> t, List<int> delta, double r); 
 
-        public void GetQuality(List<double> standartValues,List<double> survivalFunctions, RangeData FirstAgeX, RangeData SecondAgeX, double LValue, int tCount, int parametrCount)
+        public void GetQuality(List<double> standartValues, List<double> survivalFunctions, RangeData FirstAgeX, RangeData SecondAgeX, double LValue, int tCount, int parametrCount)
         {
             List<double> distanceFirst = new List<double>();
             List<double> distanceSecond = new List<double>();
 
-            double sumFirst = 0;
-            double sumSecond = 0;
-
+            //по каждому значению вычисляем оценку качества
             for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
             {
-                sumFirst += Shared.GetDistanceFirst(standartValues[i], survivalFunctions[i]);
-                sumSecond += Shared.GetDistanceSecond(standartValues[i], survivalFunctions[i]);
+                int valuesCount = SecondAgeX.AgeX - i;
+
+                //вычислим оценку качества для них
+                double sumFirst = 0;
+                double sumSecond = 0;
+
+                for (int j = 0; j < valuesCount; j++)
+                {
+                    double survivalFunctionsValue = survivalFunctions[i + j] / survivalFunctions[i];
+                    double standartValue = standartValues[i + j] / standartValues[i];
+                    sumFirst += Shared.GetDistanceFirst(standartValue, survivalFunctionsValue);
+                    sumSecond += Shared.GetDistanceSecond(standartValue, survivalFunctionsValue);
+                }
 
                 distanceFirst.Add(sumFirst);
                 distanceSecond.Add(Math.Sqrt(sumSecond));

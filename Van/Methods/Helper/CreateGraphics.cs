@@ -27,11 +27,11 @@ namespace Van.Methods.Helper
         {
             for (int i = 0; i < resultListData.Count(); i++)
             {
-                resultListData[i].Standart = 0; //(firstListData[i].Standart ?? 1) / (secondListData[i].Standart == 0 || secondListData[i].Standart == null ? 1 : secondListData[i].Standart);
-                resultListData[i].Weibull = (firstListData[i].Weibull ?? 1) / (secondListData[i].Weibull == 0 || secondListData[i].Weibull == null ? 1 : secondListData[i].Weibull);
-                resultListData[i].Exponential = (firstListData[i].Exponential ?? 1) / (secondListData[i].Exponential == 0 || secondListData[i].Exponential == null ? 1 : secondListData[i].Exponential);
-                resultListData[i].Gompertz = (firstListData[i].Gompertz ?? 1) / (secondListData[i].Gompertz == 0 || secondListData[i].Gompertz == null ? 1 : secondListData[i].Gompertz);
-                resultListData[i].Relay = (firstListData[i].Relay ?? 1) / (secondListData[i].Relay == 0 || secondListData[i].Relay == null ? 1 : secondListData[i].Relay);
+                resultListData[i].Standart = 0; //(firstListData[i].Standart ?? 0) / (secondListData[i].Standart == 0 || secondListData[i].Standart == null ? 1 : secondListData[i].Standart);
+                resultListData[i].Weibull = (firstListData[i].Weibull ?? 0) / (secondListData[i].Weibull == 0 || secondListData[i].Weibull == null ? 1 : secondListData[i].Weibull);
+                resultListData[i].Exponential = (firstListData[i].Exponential ?? 0) / (secondListData[i].Exponential == 0 || secondListData[i].Exponential == null ? 1 : secondListData[i].Exponential);
+                resultListData[i].Gompertz = (firstListData[i].Gompertz ?? 0) / (secondListData[i].Gompertz == 0 || secondListData[i].Gompertz == null ? 1 : secondListData[i].Gompertz);
+                resultListData[i].Relay = (firstListData[i].Relay ?? 0) / (secondListData[i].Relay == 0 || secondListData[i].Relay == null ? 1 : secondListData[i].Relay);
             }
 
             return resultListData;
