@@ -49,11 +49,62 @@
                              Duration="0:0:0.3">
             </DoubleAnimation>
         </Storyboard>
+        <!--анимация иконки-->
+        <Storyboard x:Key="IconAnimationFirst" RepeatBehavior="Forever">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:0" Value="Transparent"/>
+                <EasingColorKeyFrame KeyTime="0:0:1" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:1" Value="Transparent"/>
+                <EasingColorKeyFrame KeyTime="0:0:2" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:4" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:5" Value="#FF00A2FF"/>
+                <EasingColorKeyFrame KeyTime="0:0:6" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:6" Value="#FF00A2FF"/>
+                <EasingColorKeyFrame KeyTime="0:0:7" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames BeginTime="0:0:7" Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line">
+                <EasingColorKeyFrame KeyTime="0:0:2" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="IconAnimationSecond" BeginTime="0:0:2" RepeatBehavior="Forever">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:0" Value="Transparent"/>
+                <EasingColorKeyFrame KeyTime="0:0:1" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:1" Value="Transparent"/>
+                <EasingColorKeyFrame KeyTime="0:0:2" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:4" Value="#FF00A2FF"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:5" Value="#FF00A2FF"/>
+                <EasingColorKeyFrame KeyTime="0:0:6" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:6" Value="#FF00A2FF"/>
+                <EasingColorKeyFrame KeyTime="0:0:7" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames BeginTime="0:0:7" Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="line1">
+                <EasingColorKeyFrame KeyTime="0:0:2" Value="Transparent"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
     
     <Window.Triggers>
         <EventTrigger RoutedEvent="Grid.MouseDown" SourceName="GridButtonLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource OpenLeftMenu}"/>
+            <BeginStoryboard Storyboard="{StaticResource IconAnimationFirst}"/>
+            <BeginStoryboard Storyboard="{StaticResource IconAnimationSecond}"/>
         </EventTrigger>
         <EventTrigger RoutedEvent="Grid.MouseLeave" SourceName="GridLeftMenu">
             <BeginStoryboard Storyboard="{StaticResource CloseLeftMenu}"/>
@@ -137,11 +188,32 @@
                 <TranslateTransform X="-355"/>
             </Grid.RenderTransform>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="60" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="32" />
                 <RowDefinition Height="5" />
             </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0,0,0,10" Orientation="Horizontal">
+                <Canvas Margin="135,0,-6,2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <Line x:Name="line" X1="0" Y1="0" X2="20" Y2="40" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Line.Stroke>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Offset="1"/>
+                            </LinearGradientBrush>
+                        </Line.Stroke>
+                    </Line>
+                    <Line x:Name="line1" X1="20" Y1="40" X2="40" Y2="0" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Line.Stroke>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Offset="1"/>
+                            </LinearGradientBrush>
+                        </Line.Stroke>
+                    </Line>
+                </Canvas>
+                <Label Content="an" Width="40" Height="40" FontSize="40" Padding="0" VerticalAlignment="Bottom" FontFamily="Corbel Light"/>
+            </StackPanel>
             <TreeView Grid.Row="1"
                           ScrollViewer.CanContentScroll="True"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -170,7 +242,6 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TreeView>
-
             <StackPanel Grid.Row="2" 
                             Orientation="Horizontal" 
                             HorizontalAlignment="Stretch" 
