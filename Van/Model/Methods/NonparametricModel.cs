@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class NonparametricModel : ModuleBase
     {
-        public override string Name => Types.ViewData.NonparametricName;
+        public override string Name => Types.ViewData.Nonparametric.Name;
 
-        public override int Num => Types.ViewData.NonparametricNum;
+        public override int Num => Types.ViewData.Nonparametric.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Nonparametric.IsActive;
 
-        public override Guid ID => Types.ViewData.NonparametricView;
+        public override Guid ID => Types.ViewData.Nonparametric.View;
 
-        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethodsView;
+        public override ModelBaseClasses modelClass => Types.ViewData.Nonparametric.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethods.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

@@ -40,7 +40,7 @@ namespace Van.ViewModel.Methods
 
         public List<int> delta = new List<int>();
 
-        double r => delta.Where(x => x == 1).Count(); 
+        double r => delta.Count(x => x == 1);
 
         public bool HaveNullProbability = true;
 
@@ -222,8 +222,8 @@ namespace Van.ViewModel.Methods
 
             currentMortalityTables = await SQLExecutor.SelectExecutorAsync<MortalityTable>(nameof(MortalityTable));
 
-            NValue = currentMortalityTables.Select(x => x.NumberOfSurvivors).Max().Value;
-            if (currentMortalityTables.Where(x => x.Probability == null).Any())
+            NValue = currentMortalityTables.Max(x => x.NumberOfSurvivors).Value;
+            if (currentMortalityTables.Any(x => x.Probability == null))
                 HaveNullProbability = true;
             else HaveNullProbability = false;
 
@@ -271,7 +271,7 @@ namespace Van.ViewModel.Methods
 
             currentSurvivalFunctions = await SQLExecutor.SelectExecutorAsync<SurvivalFunction>(nameof(SurvivalFunction));
 
-            if (!currentSurvivalFunctions.Where(x => x.Standart == null).Any())
+            if (!currentSurvivalFunctions.Any(x => x.Standart == null))
             {
                 await RefreshChartsSurvivalFunctions();
             }
@@ -335,7 +335,7 @@ namespace Van.ViewModel.Methods
 
             currentResidualSurvivalFunctions = await SQLExecutor.SelectExecutorAsync<ResidualSurvivalFunction>(nameof(ResidualSurvivalFunction));
 
-            if (!currentResidualSurvivalFunctions.Where(x => x.Standart == null).Any())
+            if (!currentResidualSurvivalFunctions.Any(x => x.Standart == null))
             {
                 await RefreshChartsResidualSurvivalFunctions();
             }

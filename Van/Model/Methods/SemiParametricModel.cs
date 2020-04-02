@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class SemiParametricModel : ModuleBase
     {
-        public override string Name => Types.ViewData.SemiParametricName;
+        public override string Name => Types.ViewData.SemiParametric.Name;
 
-        public override int Num => Types.ViewData.SemiParametricNum;
+        public override int Num => Types.ViewData.SemiParametric.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.SemiParametric.IsActive;
 
-        public override Guid ID => Types.ViewData.SemiParametricView;
+        public override Guid ID => Types.ViewData.SemiParametric.View;
 
-        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethodsView;
+        public override ModelBaseClasses modelClass => Types.ViewData.SemiParametric.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethods.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

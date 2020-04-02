@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class ParametricModel : ModuleBase
     {
-        public override string Name => Types.ViewData.ParametricName;
+        public override string Name => Types.ViewData.Parametric.Name;
 
-        public override int Num => Types.ViewData.ParametricNum;
+        public override int Num => Types.ViewData.Parametric.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Parametric.IsActive;
 
-        public override Guid ID => Types.ViewData.ParametricView;
+        public override Guid ID => Types.ViewData.Parametric.View;
 
-        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethodsView;
+        public override ModelBaseClasses modelClass => Types.ViewData.Parametric.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.SurvivalAnalysisMethods.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

@@ -60,7 +60,7 @@ namespace Van.ViewModel
             {
                 var themes = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ThemesKey) as List<ThemeBase>;
 
-                var selectedTheme = themes.Where(x => x.Name == ThemeName).FirstOrDefault();
+                var selectedTheme = themes.FirstOrDefault(x => x.Name == ThemeName);
 
                 var parameters = new { themeName = ThemeName };
 

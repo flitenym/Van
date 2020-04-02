@@ -10,17 +10,17 @@ namespace Van.Model
 {
     class ConnectionDataBaseModel : ModuleBase
     {
-        public override string Name => Types.ViewData.ConnectionDataBaseName;
+        public override string Name => Types.ViewData.ConnectionDataBase.Name;
 
-        public override int Num => Types.ViewData.ConnectionDataBaseNum;
+        public override int Num => Types.ViewData.ConnectionDataBase.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.ConnectionDataBase.IsActive;
 
-        public override Guid ID => Types.ViewData.ConnectionDataBaseView;
+        public override Guid ID => Types.ViewData.ConnectionDataBase.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.ConnectionDataBase.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {

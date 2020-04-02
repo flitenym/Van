@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class TestModel : ModuleBase
     {
-        public override string Name => Types.ViewData.TestName;
+        public override string Name => Types.ViewData.Test.Name;
 
-        public override int Num => Types.ViewData.TestNum;
+        public override int Num => Types.ViewData.Test.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Test.IsActive;
 
-        public override Guid ID => Types.ViewData.TestView;
+        public override Guid ID => Types.ViewData.Test.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.Test.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {

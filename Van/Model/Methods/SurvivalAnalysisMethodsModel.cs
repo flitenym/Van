@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class SurvivalAnalysisMethodsModel : ModuleBase
     {
-        public override string Name => Types.ViewData.SurvivalAnalysisMethodsName;
+        public override string Name => Types.ViewData.SurvivalAnalysisMethods.Name;
 
-        public override int Num => Types.ViewData.SurvivalAnalysisMethodsNum;
+        public override int Num => Types.ViewData.SurvivalAnalysisMethods.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.SurvivalAnalysisMethods.IsActive;
 
-        public override Guid ID => Types.ViewData.SurvivalAnalysisMethodsView;
+        public override Guid ID => Types.ViewData.SurvivalAnalysisMethods.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.SurvivalAnalysisMethods.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {

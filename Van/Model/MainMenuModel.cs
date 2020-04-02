@@ -10,17 +10,17 @@ namespace Van.Model
 {
     class MainMenuModel : ModuleBase
     {
-        public override string Name => Types.ViewData.MainMenuName;
+        public override string Name => Types.ViewData.MainMenu.Name;
 
-        public override int Num => Types.ViewData.MainMenuNum;
+        public override int Num => Types.ViewData.MainMenu.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.MainMenu.IsActive;
 
-        public override Guid ID => Types.ViewData.MainMenuView;
+        public override Guid ID => Types.ViewData.MainMenu.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.MainMenu.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu;
 
         protected override UserControl CreateViewAndViewModel()
         {

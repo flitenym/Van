@@ -10,17 +10,17 @@ namespace Van.Model
 {
     class DataBaseBrowsingModel : ModuleBase
     {
-        public override string Name => Types.ViewData.DataBaseBrowsingName;
+        public override string Name => Types.ViewData.DataBaseBrowsing.Name;
 
-        public override int Num => Types.ViewData.DataBaseBrowsingNum;
+        public override int Num => Types.ViewData.DataBaseBrowsing.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.DataBaseBrowsing.IsActive;
 
-        public override Guid ID => Types.ViewData.DataBaseBrowsingView;
+        public override Guid ID => Types.ViewData.DataBaseBrowsing.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.DataBaseBrowsing.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu;
 
         protected override UserControl CreateViewAndViewModel()
         {

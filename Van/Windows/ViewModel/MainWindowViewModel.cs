@@ -206,11 +206,11 @@ namespace Van.Windows.ViewModel
 
             if (selectedThemeData != null && !string.IsNullOrEmpty(selectedThemeData.Value))
             {
-                SelectedTheme = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme && x.Name == selectedThemeData.Value).FirstOrDefault();
+                SelectedTheme = themes.FirstOrDefault(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme && x.Name == selectedThemeData.Value);
             }
             else
             {
-                SelectedTheme = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme).FirstOrDefault();
+                SelectedTheme = themes.FirstOrDefault(x => x.ThemeClass == ThemeBaseClasses.GeneralTheme);
                 selectedThemeData = new Settings() { Name = InfoKeys.SelectedThemeKey, Value = SelectedTheme.Name };
                 await SQLExecutor.InsertExecutorAsync(selectedThemeData, selectedThemeData);
             }
@@ -224,27 +224,37 @@ namespace Van.Windows.ViewModel
 
             if (selectedThemeDarkOrLightData != null && !string.IsNullOrEmpty(selectedThemeDarkOrLightData.Value))
             {
-                SelectedThemeDarkOrLight = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme && x.Name == selectedThemeDarkOrLightData.Value).FirstOrDefault();
+                SelectedThemeDarkOrLight = themes.FirstOrDefault(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme && x.Name == selectedThemeDarkOrLightData.Value);
             }
             else
             {
-                SelectedThemeDarkOrLight = themes.Where(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme).FirstOrDefault();
+                SelectedThemeDarkOrLight = themes.FirstOrDefault(x => x.ThemeClass == ThemeBaseClasses.GlobalTheme);
                 selectedThemeDarkOrLightData = new Settings() { Name = InfoKeys.SelectedThemeDarkOrLightKey, Value = SelectedThemeDarkOrLight.Name };
                 await SQLExecutor.InsertExecutorAsync(selectedThemeDarkOrLightData, selectedThemeDarkOrLightData);
             }
         }
 
-        public void SetViewModels()
+        public void SetViewModels(TabControlData viewModel = null)
         {
-            var mainmenu = Modules.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault();
+            var mainmenu = Modules.FirstOrDefault(x => x.modelClass == ModelBaseClasses.Main);
 
-            mainmenu = mainmenu ?? Modules.FirstOrDefault();
+            if (ViewModels.FirstOrDefault(x => x.ModuleBaseItem == mainmenu) == null)
+            {
+                mainmenu = mainmenu ?? Modules.FirstOrDefault();
 
-            var tabControlViewModel = new TabControlData { Name = mainmenu.Name, ViewContent = mainmenu.UserInterface, ID = mainmenu.ID, ModuleBaseItem = mainmenu };
+                var tabControlViewModel = new TabControlData { Name = mainmenu.Name, ViewContent = mainmenu.UserInterface, ID = mainmenu.ID, ModuleBaseItem = mainmenu };
 
-            ViewModels.Add(tabControlViewModel);
+                ViewModels.Add(tabControlViewModel);
 
-            SelectedViewModel = tabControlViewModel;
+                SelectedViewModel = tabControlViewModel;
+
+                if (viewModel != null)
+                {
+                    viewModel.ModuleBaseItem.Deactivate();
+
+                    ViewModels.Remove(viewModel);
+                }
+            }
         }
 
         /// <summary>
@@ -290,7 +300,7 @@ namespace Van.Windows.ViewModel
                     {
                         ID = module.ID,
                         Name = module.Name,
-                        ParentName = Modules.Where(x => x.ID == moduleID).FirstOrDefault().Name,
+                        ParentName = Modules.FirstOrDefault(x => x.ID == moduleID).Name,
                         View = module,
                         Nodes = GetNodes(module.ID)
                     };
@@ -334,7 +344,7 @@ namespace Van.Windows.ViewModel
 
         private void AddItemInTabControl(string name, UserControl userInterface, Guid id, ModuleBase moduleBase)
         {
-            var existingViewModel = ViewModels.Where(x => x.ID == id).FirstOrDefault();
+            var existingViewModel = ViewModels.FirstOrDefault(x => x.ID == id);
             int? index = null;
             if (existingViewModel != null)
             {
@@ -343,7 +353,7 @@ namespace Van.Windows.ViewModel
 
             if (index == null)
             {
-                var mainmenu = ViewModels.Count() == 1 ? ViewModels.Where(x => x.ID == Types.ViewData.MainMenuView).FirstOrDefault() : null;
+                var mainmenu = ViewModels.Count() == 1 ? ViewModels.FirstOrDefault(x => x.ModuleBaseItem == Modules.FirstOrDefault(y => y.modelClass == ModelBaseClasses.Main)) : null;
 
                 var TabControlViewModel = new TabControlData() { Name = name, ViewContent = userInterface, ID = id, ModuleBaseItem = moduleBase };
                 ViewModels.Add(TabControlViewModel);
@@ -374,10 +384,14 @@ namespace Van.Windows.ViewModel
             var viewModel = args.DragablzItem.DataContext as TabControlData;
             if (ViewModels.Count() == 1)
             {
-                SetViewModels();
+                SetViewModels(viewModel);
+                args.Cancel();
             }
-            viewModel.ModuleBaseItem.Deactivate();
-            ViewModels.Remove(viewModel);
+            else
+            {
+                viewModel.ModuleBaseItem.Deactivate();
+                ViewModels.Remove(viewModel);
+            }
         }
 
         #endregion

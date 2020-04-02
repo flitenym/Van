@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class KaplanMeierModel : ModuleBase
     {
-        public override string Name => Types.ViewData.KaplanMeierName;
+        public override string Name => Types.ViewData.KaplanMeier.Name;
 
-        public override int Num => Types.ViewData.KaplanMeierNum;
+        public override int Num => Types.ViewData.KaplanMeier.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.KaplanMeier.IsActive;
 
-        public override Guid ID => Types.ViewData.KaplanMeierView;
+        public override Guid ID => Types.ViewData.KaplanMeier.View;
 
-        public override Guid? ParentID => Types.ViewData.NonparametricView;
+        public override ModelBaseClasses modelClass => Types.ViewData.KaplanMeier.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.Nonparametric.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

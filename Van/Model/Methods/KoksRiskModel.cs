@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class KoksRiskModel : ModuleBase
     {
-        public override string Name => Types.ViewData.KoksRiskName;
+        public override string Name => Types.ViewData.KoksRisk.Name;
 
-        public override int Num => Types.ViewData.KoksRiskNum;
+        public override int Num => Types.ViewData.KoksRisk.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.KoksRisk.IsActive;
 
-        public override Guid ID => Types.ViewData.KoksRiskView;
+        public override Guid ID => Types.ViewData.KoksRisk.View;
 
-        public override Guid? ParentID => Types.ViewData.SemiParametricView;
+        public override ModelBaseClasses modelClass => Types.ViewData.KoksRisk.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.SemiParametric.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

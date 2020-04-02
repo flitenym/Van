@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class IncludingMortalityModel : ModuleBase
     {
-        public override string Name => Types.ViewData.IncludingMortalityName;
+        public override string Name => Types.ViewData.IncludingMortality.Name;
 
-        public override int Num => Types.ViewData.IncludingMortalityNum;
+        public override int Num => Types.ViewData.IncludingMortality.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.IncludingMortality.IsActive;
 
-        public override Guid ID => Types.ViewData.IncludingMortalityView;
+        public override Guid ID => Types.ViewData.IncludingMortality.View;
 
-        public override Guid? ParentID => Types.ViewData.MortalityTableView;
+        public override ModelBaseClasses modelClass => Types.ViewData.IncludingMortality.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.MortalityTable.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

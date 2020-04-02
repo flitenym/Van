@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class DistributionModel : ModuleBase
     {
-        public override string Name => Types.ViewData.DistributionName;
+        public override string Name => Types.ViewData.Distribution.Name;
 
-        public override int Num => Types.ViewData.DistributionNum;
+        public override int Num => Types.ViewData.Distribution.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Distribution.IsActive;
 
-        public override Guid ID => Types.ViewData.DistributionView;
+        public override Guid ID => Types.ViewData.Distribution.View;
 
-        public override Guid? ParentID => Types.ViewData.ParametricView;
+        public override ModelBaseClasses modelClass => Types.ViewData.Distribution.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.Parametric.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

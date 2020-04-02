@@ -10,17 +10,17 @@ namespace Van.Model
 {
     class SettingsModel : ModuleBase
     {
-        public override string Name => Types.ViewData.SettingsName;
+        public override string Name => Types.ViewData.Settings.Name;
 
-        public override int Num => Types.ViewData.SettingsNum;
+        public override int Num => Types.ViewData.Settings.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Settings.IsActive;
 
-        public override Guid ID => Types.ViewData.SettingsView;
+        public override Guid ID => Types.ViewData.Settings.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.Settings.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.Settings; 
 
         protected override UserControl CreateViewAndViewModel()
         {

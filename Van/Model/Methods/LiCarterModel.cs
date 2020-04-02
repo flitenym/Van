@@ -10,17 +10,17 @@ namespace Van.Model.Methods
 {
     class LiCarterModel : ModuleBase
     {
-        public override string Name => Types.ViewData.LiCarterName;
+        public override string Name => Types.ViewData.LiCarter.Name;
 
-        public override int Num => Types.ViewData.LiCarterNum;
+        public override int Num => Types.ViewData.LiCarter.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.LiCarter.IsActive;
 
-        public override Guid ID => Types.ViewData.LiCarterView;
+        public override Guid ID => Types.ViewData.LiCarter.View;
 
-        public override Guid? ParentID => Types.ViewData.ParametricView;
+        public override ModelBaseClasses modelClass => Types.ViewData.LiCarter.ModelClass;
 
-        public override ModelBaseClasses modelClass => ModelBaseClasses.LeftMenu; 
+        public override Guid? ParentID => Types.ViewData.Parametric.View;
 
         protected override UserControl CreateViewAndViewModel()
         {

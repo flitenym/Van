@@ -10,17 +10,17 @@ namespace Van.Model
 {
     class InfoModel : ModuleBase
     {
-        public override string Name => Types.ViewData.InfoName;
+        public override string Name => Types.ViewData.Info.Name;
 
-        public override int Num => Types.ViewData.InfoNum;
+        public override int Num => Types.ViewData.Info.Num;
 
-        public override bool IsActive => true;
+        public override bool IsActive => Types.ViewData.Info.IsActive;
 
-        public override Guid ID => Types.ViewData.InfoView;
+        public override Guid ID => Types.ViewData.Info.View;
+
+        public override ModelBaseClasses modelClass => Types.ViewData.Info.ModelClass;
 
         public override Guid? ParentID => null;
-
-        public override ModelBaseClasses modelClass => ModelBaseClasses.RightMenu; 
 
         protected override UserControl CreateViewAndViewModel()
         {
