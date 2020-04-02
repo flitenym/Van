@@ -33,13 +33,6 @@ namespace Van.DataBase.Models
         [Description("Экспоненциальное")]
         public double? Exponential { get; set; }
 
-        public override string InsertQuery() => $@"INSERT INTO {nameof(ResidualDensity)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
-
-        public override string UpdateQuery(int ID)
-        {
-            return $@"UPDATE {nameof(ResidualDensity)} SET Standart = @Standart, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
-        }
-
         public object Clone()
         {
             return new ResidualDensity

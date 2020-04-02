@@ -135,62 +135,75 @@ namespace Van.Helper
         public static object ToObjectLoad(this DataRow row, Type type)
         {
             var expandoDict = new ExpandoObject() as IDictionary<string, object>;
-            var properties = type.GetProperties();
+            var typeProperties = type.GetProperties();
+            var properties = GetProperties(typeProperties);
 
             int j = 0; //индекс столбца в excel
             for (int i = 0; i < properties.Length; i++)
             {
-                var columnDataAttributes = (ColumnDataAttribute[])properties[i].GetCustomAttributes(typeof(ColumnDataAttribute), true);
-                if (columnDataAttributes.Length == 0 &&
-                    properties[i].DeclaringType != typeof(ModelClass) &&
-                    properties[i].CanWrite)
-                {
-                    object value;
-                    var databaseType = properties[i].Name.GetType();
+                object value;
+                var databaseType = properties[i].Name.GetType();
 
-                    //в случае если столбцов в Excel меньше чем в БД, тогда искусственно заполним default значениями
-                    if (j >= row.Table.Columns.Count)
+                //в случае если столбцов в Excel меньше чем в БД, тогда искусственно заполним default значениями
+                if (j >= row.Table.Columns.Count)
+                {
+                    if (type.IsValueType)
                     {
-                        if (type.IsValueType)
-                        {
-                            value = Activator.CreateInstance(type);
-                        }
-                        else
-                        {
-                            value = null;
-                        }
+                        value = Activator.CreateInstance(type);
                     }
                     else
                     {
-                        var columnName = row.Table.Columns[j].ColumnName;
+                        value = null;
+                    }
+                }
+                else
+                {
+                    var columnName = row.Table.Columns[j].ColumnName;
 
-                        if (row[columnName] == DBNull.Value)
+                    if (row[columnName] == DBNull.Value)
+                    {
+                        value = null;
+                    }
+                    else
+                    {
+                        var excelType = row[columnName].GetType();
+
+                        //в excel сложно задать string/double даже в одном столбце, поэтому создаются value.0 в БД, 
+                        //поэтому применим такой hack
+                        if (!databaseType.Equals(excelType) && databaseType.Equals(typeof(System.String)))
                         {
-                            value = null;
+                            value = row[columnName].ToString();
                         }
                         else
                         {
-                            var excelType = row[columnName].GetType();
-
-                            //в excel сложно задать string/double даже в одном столбце, поэтому создаются value.0 в БД, 
-                            //поэтому применим такой hack
-                            if (!databaseType.Equals(excelType) && databaseType.Equals(typeof(System.String)))
-                            {
-                                value = row[columnName].ToString();
-                            }
-                            else
-                            {
-                                value = row[columnName];
-                            }
+                            value = row[columnName];
                         }
                     }
-
-                    expandoDict.Add(properties[i].Name.ToString(), value);
-                    j++;
                 }
+
+                expandoDict.Add(properties[i].Name.ToString(), value);
+                j++;
             }
 
             return expandoDict;
+        }
+
+        public static PropertyInfo[] GetProperties(PropertyInfo[] typeProperties)
+        {
+            List<PropertyInfo> properties = new List<PropertyInfo>();
+
+            for (int i = 0; i < typeProperties.Length; i++)
+            {
+                var columnDataAttributes = (ColumnDataAttribute[])typeProperties[i].GetCustomAttributes(typeof(ColumnDataAttribute), true);
+                if (columnDataAttributes.Length == 0 &&
+                    typeProperties[i].DeclaringType != typeof(ModelClass) &&
+                    typeProperties[i].CanWrite)
+                {
+                    properties.Add(typeProperties[i]);
+                }
+            }
+
+            return properties.ToArray();
         }
 
         public static bool ClearDataTable(DataTable dataTable, object value)

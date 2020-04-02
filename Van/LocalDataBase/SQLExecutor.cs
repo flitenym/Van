@@ -97,14 +97,14 @@ namespace Van.LocalDataBase
         {
             return await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.InsertQuery())) return -1;
+                if (string.IsNullOrEmpty(item.InsertQuery(item))) return -1;
 
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery(), objData);
+                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery(item), objData);
                     }
                 }
                 catch (Exception ex)
@@ -119,14 +119,14 @@ namespace Van.LocalDataBase
         {
             await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.UpdateQuery(ID))) return;
+                if (string.IsNullOrEmpty(item.UpdateQuery(item, ID))) return;
 
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        await slc.ExecuteAsync(item.UpdateQuery(ID), row.ToObject(type));
+                        await slc.ExecuteAsync(item.UpdateQuery(item, ID), row.ToObject(type));
                     }
                 }
                 catch (Exception ex)
@@ -140,13 +140,13 @@ namespace Van.LocalDataBase
         {
             await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.UpdateQuery(ID))) return;
+                if (string.IsNullOrEmpty(item.UpdateQuery(item, ID))) return;
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        await slc.ExecuteAsync(item.UpdateQuery(ID), obj);
+                        await slc.ExecuteAsync(item.UpdateQuery(item, ID), obj);
                     }
                 }
                 catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Van.Helper.Attributes;
+﻿using Van.Helper;
+using Van.Helper.Attributes;
 
 namespace Van.AbstractClasses
 {
@@ -48,9 +49,42 @@ namespace Van.AbstractClasses
         #endregion
 
         [ColumnData(ShowInTable = false)]
-        public abstract string InsertQuery();
+        public string InsertQuery(object obj)
+        {
+            var typeProperties = obj.GetType().GetProperties();
+            var properties = HelperMethods.GetProperties(typeProperties);
+
+            string fields = string.Empty;
+            string values = string.Empty;
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                fields += $", {properties[i].Name}";
+                values += $", @{properties[i].Name}";
+            }
+
+            fields = fields.Substring(2, fields.Length - 2);
+            values = values.Substring(2, values.Length - 2);
+
+            return $"INSERT INTO {obj.GetType().Name} ({fields}) VALUES ({values});  select last_insert_rowid()";
+        }
 
         [ColumnData(ShowInTable = false)]
-        public abstract string UpdateQuery(int ID);
+        public string UpdateQuery(object obj, object ID)
+        {
+            var typeProperties = obj.GetType().GetProperties();
+            var properties = HelperMethods.GetProperties(typeProperties);
+
+            string fieldsQuery = string.Empty;
+
+            for (int i = 0; i < properties.Length; i++)
+            {
+                fieldsQuery += $", {properties[i].Name} = @{properties[i].Name}";
+            }
+
+            fieldsQuery = fieldsQuery.Substring(2, fieldsQuery.Length - 2);
+
+            return $"UPDATE {obj.GetType().Name} SET {fieldsQuery} WHERE ID = {ID}";
+        }
     }
 }

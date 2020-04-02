@@ -33,13 +33,6 @@ namespace Van.DataBase.Models
         [Description("Экспоненциальное")]
         public double? Exponential { get; set; }
 
-        public override string InsertQuery() => string.Empty;
-
-        public override string UpdateQuery(int ID)
-        {
-            return $@"UPDATE {nameof(SurvivalFunction)} SET Standart = @Standart, Weibull = @Weibull, Relay = @Relay, Gompertz = @Gompertz, Exponential = @Exponential WHERE ID = {ID}";
-        }
-
         public object Clone()
         {
             return new SurvivalFunction

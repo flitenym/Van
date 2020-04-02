@@ -17,13 +17,6 @@ namespace Van.DataBase.Models
         [Description("Цензурированность")]
         public int? Censor { get; set; }
 
-        public override string InsertQuery() => $@"INSERT INTO {nameof(LifeTimes)}(LifeTime, Censor) VALUES (@LifeTime, @Censor);  select last_insert_rowid()";
-
-        public override string UpdateQuery(int ID)
-        {
-            return $@"UPDATE {nameof(LifeTimes)} SET LifeTime = @LifeTime, Censor = @Censor WHERE ID = {ID}";
-        }
-
         public object Clone()
         {
             return new LifeTimes
