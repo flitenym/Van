@@ -12,7 +12,7 @@ namespace Van.DataBase.Models
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }
 
-        [ColumnData(ShowInTable = false)]
+        [ColumnData(ShowInTable = false, IsNullable = false)]
         public int MortalityTableID { get; set; }
 
         [Description("Возраст X")]

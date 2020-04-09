@@ -301,11 +301,11 @@ namespace Van.ViewModel
 
         #region Команда для загрузки из Excel
 
-        private AsyncCommand loadCommand;
+        private RelayCommand loadCommand;
 
-        public AsyncCommand LoadCommand => loadCommand ?? (loadCommand = new AsyncCommand(x => Load(), (o) => CanLoad()));
+        public RelayCommand LoadCommand => loadCommand ?? (loadCommand = new RelayCommand(x => Load(), (o) => CanLoad()));
 
-        private async Task Load()
+        private void Load()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -313,22 +313,25 @@ namespace Van.ViewModel
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                WorkBook workbook = new WorkBook();
                 string fileName = openFileDialog.FileName;
                 try
                 {
-                    workbook = WorkBook.Load(fileName);
+                    WorkBook workbook = WorkBook.Load(fileName);
                     var loadFromExcelWindow = new LoadFromExcelWindowView();
                     var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
                     loadFromExcelWindow.DataContext = vm;
                     if (loadFromExcelWindow.ShowDialog() == true)
                     {
-                        await Select();
+                        Task.Factory.StartNew(() =>
+                            Select()
+                        );
                     }
                 }
                 catch (Exception ex)
                 {
-                    await Message($"{ex.Message}");
+                    Task.Factory.StartNew(() =>
+                        Message($"{ex.Message}")
+                    );
                 }
             }
         }

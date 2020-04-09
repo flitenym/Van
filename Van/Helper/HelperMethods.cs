@@ -194,8 +194,8 @@ namespace Van.Helper
 
             for (int i = 0; i < typeProperties.Length; i++)
             {
-                var columnDataAttributes = (ColumnDataAttribute[])typeProperties[i].GetCustomAttributes(typeof(ColumnDataAttribute), true);
-                if (columnDataAttributes.Length == 0 &&
+                var columnDataAttributes = (ColumnDataAttribute)typeProperties[i].GetCustomAttributes(typeof(ColumnDataAttribute), true).FirstOrDefault();
+                if ((columnDataAttributes == null || columnDataAttributes.IsNullable == false) &&
                     typeProperties[i].DeclaringType != typeof(ModelClass) &&
                     typeProperties[i].CanWrite)
                 {
