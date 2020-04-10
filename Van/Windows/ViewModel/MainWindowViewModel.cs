@@ -29,7 +29,7 @@ namespace Van.Windows.ViewModel
         {
             isMessagePanelContent = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(1200));
 
-            Modules = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ModulesKey) as List<ModuleBase>;
+            Modules = SharedProvider.GetFromDictionaryByKey(InfoKeys.ModulesKey) as List<ModuleBase>;
 
             var leftMenu = Modules.Where(x => x.modelClass == ModelBaseClasses.LeftMenu).OrderBy(x => x.Num);
             LeftMenuNodes = GetTreeViewItems(leftMenu);
@@ -192,7 +192,7 @@ namespace Van.Windows.ViewModel
 
         public async Task GetThemesAsync()
         {
-            var themes = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ThemesKey) as List<ThemeBase>;
+            var themes = SharedProvider.GetFromDictionaryByKey(InfoKeys.ThemesKey) as List<ThemeBase>;
 
             Settings selectedThemeData;
             Settings selectedThemeDarkOrLightData;

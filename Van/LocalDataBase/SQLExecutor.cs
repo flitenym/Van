@@ -74,6 +74,25 @@ namespace Van.LocalDataBase
             });
         }
 
+        public static async Task DeleteExecutor(string tableName, string param)
+        {
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    using (var slc = new SQLiteConnection(LoadConnectionString))
+                    {
+                        await slc.OpenAsync();
+                        await slc.ExecuteAsync($"DELETE FROM {tableName} {param}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await HelperMethods.Message(ex.ToString());
+                }
+            });
+        }
+
         public static async Task DeleteExecutor(string tableName)
         {
             await Task.Run(async () =>
@@ -97,14 +116,16 @@ namespace Van.LocalDataBase
         {
             return await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.InsertQuery(item))) return -1;
+                string insertQuery = item.InsertQuery(item);
+
+                if (string.IsNullOrEmpty(insertQuery)) return -1;
 
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        return await slc.ExecuteScalarAsync<int>(item.InsertQuery(item), objData);
+                        return await slc.ExecuteScalarAsync<int>(insertQuery, objData);
                     }
                 }
                 catch (Exception ex)
@@ -119,14 +140,16 @@ namespace Van.LocalDataBase
         {
             await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.UpdateQuery(item, ID))) return;
+                string updateQuery = item.UpdateQuery(item, ID);
+
+                if (string.IsNullOrEmpty(updateQuery)) return;
 
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        await slc.ExecuteAsync(item.UpdateQuery(item, ID), row.ToObject(type));
+                        await slc.ExecuteAsync(updateQuery, row.ToObject(type));
                     }
                 }
                 catch (Exception ex)
@@ -140,13 +163,15 @@ namespace Van.LocalDataBase
         {
             await Task.Run(async () =>
             {
-                if (string.IsNullOrEmpty(item.UpdateQuery(item, ID))) return;
+                string updateQuery = item.UpdateQuery(item, ID);
+
+                if (string.IsNullOrEmpty(updateQuery)) return;
                 try
                 {
                     using (var slc = new SQLiteConnection(LoadConnectionString))
                     {
                         await slc.OpenAsync();
-                        await slc.ExecuteAsync(item.UpdateQuery(item, ID), obj);
+                        await slc.ExecuteAsync(updateQuery, obj);
                     }
                 }
                 catch (Exception ex)

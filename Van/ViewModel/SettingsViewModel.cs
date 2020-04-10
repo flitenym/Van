@@ -56,9 +56,9 @@ namespace Van.ViewModel
 
         public async Task AcceptThemeAsync(string ThemeName, bool isGlobal)
         {
-            if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
+            if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
             {
-                var themes = SharedProvider.GetFromDictionaryByKeyAsync(InfoKeys.ThemesKey) as List<ThemeBase>;
+                var themes = SharedProvider.GetFromDictionaryByKey(InfoKeys.ThemesKey) as List<ThemeBase>;
 
                 var selectedTheme = themes.FirstOrDefault(x => x.Name == ThemeName);
 

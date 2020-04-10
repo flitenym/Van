@@ -9,6 +9,7 @@ namespace Van.Helper.StaticInfo
         public Guid View { get; set; }
         public int Num { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsNeedToDeactivate { get; set; } = true;
         public ModelBaseClasses ModelClass { get; set; }
     }
 
@@ -35,7 +36,7 @@ namespace Van.Helper.StaticInfo
 
             public static ViewInfo DataBaseBrowsing = new ViewInfo { Name = "Локальные данные", View = new Guid("12011025-144B-4BE8-96C4-DAD33B8778FC"), Num = 2, ModelClass = ModelBaseClasses.RightMenu };
 
-            public static ViewInfo Info = new ViewInfo { Name = "Просмотр доп. информации", View = new Guid("94E80C76-219B-4633-B35D-D8A39A5E80E0"), Num = 3, IsActive = false, ModelClass = ModelBaseClasses.RightMenu };
+            public static ViewInfo Info = new ViewInfo { Name = "Просмотр доп. информации", View = new Guid("94E80C76-219B-4633-B35D-D8A39A5E80E0"), Num = 3, IsNeedToDeactivate = false, ModelClass = ModelBaseClasses.RightMenu };
 
             #endregion
 

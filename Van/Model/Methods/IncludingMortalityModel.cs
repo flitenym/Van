@@ -16,6 +16,8 @@ namespace Van.Model.Methods
 
         public override bool IsActive => Types.ViewData.IncludingMortality.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.IncludingMortality.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.IncludingMortality.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.IncludingMortality.ModelClass;

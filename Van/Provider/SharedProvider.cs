@@ -5,17 +5,19 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using Van.View;
+using System.ComponentModel;
 
 namespace Van.ViewModel.Provider
 {
     public static class SharedProvider
     {
-        public static void SetToSingletonAsync(string key, object obj)
+        public static void SetToSingleton(string key, object obj)
         {
             Singleton.GetInstance().SetToDictionary(key, obj);
         }
 
-        public static object GetFromDictionaryByKeyAsync(string key)
+        public static object GetFromDictionaryByKey(string key)
         {
             return Singleton.GetInstance().GetFromDictionary(key);
         }
@@ -23,16 +25,25 @@ namespace Van.ViewModel.Provider
         public static void SetActiveTask(Func<object, Task> activeTask)
         {
             Singleton.GetInstance().SetToActiveTask(activeTask);
+
+            (GetFromDictionaryByKey(nameof(InfoViewModel)) as InfoViewModel)?.UpdateActiveTasks(activeTask, true);
         }
 
         public static void RemoveActiveTask(Func<object, Task> activeTask)
         {
             Singleton.GetInstance().RemoveFromActiveTask(activeTask);
+
+            (GetFromDictionaryByKey(nameof(InfoViewModel)) as InfoViewModel)?.UpdateActiveTasks(activeTask, false);
         }
 
         public static bool AnyActiveTask()
         {
             return Singleton.GetInstance().GetActiveTasks().Any();
+        }
+
+        public static List<Func<object, Task>> GetActiveTask()
+        {
+            return Singleton.GetInstance().GetActiveTasks().ToList();
         }
     }
 
@@ -78,7 +89,7 @@ namespace Van.ViewModel.Provider
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
+            if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
             {
                 //просто затригерим выполнение "set" у "IsLoadingPanelVisible", могли и false написать, без разницы.
                 mainWindowViewModel.IsLoadingPanelVisible = true;

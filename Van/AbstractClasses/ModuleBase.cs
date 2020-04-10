@@ -16,6 +16,8 @@ namespace Van.AbstractClasses
 
         public abstract bool IsActive { get; }
 
+        public abstract bool IsNeedToDeactivate { get; }
+
         public abstract Guid ID { get; }
 
         public abstract Guid? ParentID { get; }
@@ -34,9 +36,13 @@ namespace Van.AbstractClasses
             }
         }
 
+        /// <summary>
+        /// Удаление производить только если это нужно, если есть например карточка где отображается глобальная информация,
+        /// то не нужно ее пересоздавать, а нужно хранить в singleton
+        /// </summary>
         public void Deactivate()
         {
-            if (view != null)
+            if (view != null && IsNeedToDeactivate == true)
             {
                 if (view is IDisposable d) d.Dispose();
                 view.DataContext = null;

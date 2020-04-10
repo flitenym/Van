@@ -31,7 +31,7 @@ namespace Van.Helper
             return Task.Run(
                 () =>
                 {
-                    if (SharedProvider.GetFromDictionaryByKeyAsync(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
+                    if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
                     {
                         mainWindowViewModel.IsMessagePanelContent.Enqueue(
                         content,

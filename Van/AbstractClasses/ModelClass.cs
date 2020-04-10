@@ -8,9 +8,17 @@ namespace Van.AbstractClasses
         [ColumnData(ShowInTable = false)]
         public string Title { get; set; }
 
+        #region IsVisible
+
+        private bool IsVisible { get; set; }
+
+        public bool GetIsVisible() => IsVisible;
+        public void SetIsVisible(bool value) { IsVisible = value; }
+
+        #endregion
+
         #region CanInsert
 
-        [ColumnData(ShowInTable = false)]
         private bool CanInsert { get; set; }
 
         public bool GetCanInsert() => CanInsert;
@@ -20,7 +28,6 @@ namespace Van.AbstractClasses
 
         #region CanDelete
 
-        [ColumnData(ShowInTable = false)]
         private bool CanDelete { get; set; }
 
         public bool GetCanDelete() => CanDelete;
@@ -30,7 +37,6 @@ namespace Van.AbstractClasses
 
         #region CanUpdate
 
-        [ColumnData(ShowInTable = false)]
         private bool CanUpdate { get; set; }
 
         public bool GetCanUpdate() => CanUpdate;
@@ -40,7 +46,6 @@ namespace Van.AbstractClasses
 
         #region CanLoad
 
-        [ColumnData(ShowInTable = false)]
         private bool CanLoad { get; set; }
 
         public bool GetCanLoad() => CanLoad;
@@ -48,7 +53,6 @@ namespace Van.AbstractClasses
 
         #endregion
 
-        [ColumnData(ShowInTable = false)]
         public string InsertQuery(object obj)
         {
             var typeProperties = obj.GetType().GetProperties();
@@ -69,7 +73,6 @@ namespace Van.AbstractClasses
             return $"INSERT INTO {obj.GetType().Name} ({fields}) VALUES ({values});  select last_insert_rowid()";
         }
 
-        [ColumnData(ShowInTable = false)]
         public string UpdateQuery(object obj, object ID)
         {
             var typeProperties = obj.GetType().GetProperties();

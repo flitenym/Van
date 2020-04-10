@@ -16,6 +16,8 @@ namespace Van.Model
 
         public override bool IsActive => Types.ViewData.ConnectionDataBase.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.ConnectionDataBase.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.ConnectionDataBase.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.ConnectionDataBase.ModelClass;

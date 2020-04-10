@@ -30,7 +30,8 @@ namespace Van.ViewModel
             LoadDataBase();
         }
 
-        public void LoadDataBase() {
+        public void LoadDataBase()
+        {
             TableData = new DataTable();
 
             var models = GetAllInstancesOf<ModelClass>().ToList();
@@ -39,8 +40,9 @@ namespace Van.ViewModel
             models.ForEach(x => x.SetCanDelete(GetModelCanDeleteAttribute(x)));
             models.ForEach(x => x.SetCanUpdate(GetModelCanUpdateAttribute(x)));
             models.ForEach(x => x.SetCanLoad(GetModelCanLoadAttribute(x)));
+            models.ForEach(x => x.SetIsVisible(GetModelIsVisibleAttribute(x)));
 
-            DatabaseModelsData = new ObservableCollection<ModelClass>(models);
+            DatabaseModelsData = new ObservableCollection<ModelClass>(models.Where(x => x.GetIsVisible() == true));
 
             FilterCollection = new CollectionViewSource
             {
@@ -48,7 +50,7 @@ namespace Van.ViewModel
             };
             FilterCollection.Filter += FilterCollection_Filter;
 
-            SelectedModel = DatabaseModelsData.FirstOrDefault(); 
+            SelectedModel = DatabaseModelsData.FirstOrDefault();
         }
 
         #region Fields
@@ -177,18 +179,9 @@ namespace Van.ViewModel
         {
             get { return selectedModel; }
             set
-            {
+            { 
                 selectedModel = value;
-                if (value == null)
-                {
-                    TableData = new DataTable();
-                }
-                else
-                {
-                    Task.Factory.StartNew(() =>
-                        Select()
-                    );
-                }
+                RefreshCommand.Execute(null);
             }
         }
 
@@ -295,6 +288,17 @@ namespace Van.ViewModel
             return true;
         }
 
+        private bool GetModelIsVisibleAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                return myAttribute.IsVisible;
+            }
+            return true;
+        }
+
         #endregion
 
         #endregion
@@ -360,7 +364,7 @@ namespace Van.ViewModel
         {
             TableData = await SQLExecutor.SelectExecutorAsync(SelectedModelType, SelectedModelName);
             TableData.AcceptChanges();
-            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel)));
+            PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
         }
 
         #endregion

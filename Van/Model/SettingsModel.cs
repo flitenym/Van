@@ -16,6 +16,8 @@ namespace Van.Model
 
         public override bool IsActive => Types.ViewData.Settings.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.Settings.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.Settings.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.Settings.ModelClass;

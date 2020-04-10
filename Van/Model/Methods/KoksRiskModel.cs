@@ -16,6 +16,8 @@ namespace Van.Model.Methods
 
         public override bool IsActive => Types.ViewData.KoksRisk.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.KoksRisk.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.KoksRisk.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.KoksRisk.ModelClass;

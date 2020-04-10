@@ -18,6 +18,8 @@
 
         public static string ThemesKey = "Themes";
 
+        public static string StackTraceKey = "Themes";
+
         #endregion
 
         #region Ключи для оценки качества

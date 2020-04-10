@@ -5,6 +5,7 @@ using Van.View;
 using Van.ViewModel;
 using Van.Helper.StaticInfo;
 using static Van.Helper.StaticInfo.Enums;
+using Van.ViewModel.Provider;
 
 namespace Van.Model
 {
@@ -16,6 +17,8 @@ namespace Van.Model
 
         public override bool IsActive => Types.ViewData.Info.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.Info.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.Info.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.Info.ModelClass;
@@ -24,8 +27,18 @@ namespace Van.Model
 
         protected override UserControl CreateViewAndViewModel()
         {
-            return new InfoView() { DataContext = new InfoViewModel() };
-        }
+            if (IsNeedToDeactivate == false)
+            {
+                return new InfoView()
+                {
+                    DataContext = SharedProvider.GetFromDictionaryByKey(nameof(InfoViewModel)) ?? new InfoViewModel()
+                };
+            }
 
+            return new InfoView()
+            {
+                DataContext = new InfoViewModel()
+            };
+        }
     }
 }

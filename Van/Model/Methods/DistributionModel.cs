@@ -16,6 +16,8 @@ namespace Van.Model.Methods
 
         public override bool IsActive => Types.ViewData.Distribution.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.Distribution.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.Distribution.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.Distribution.ModelClass;

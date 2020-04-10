@@ -16,6 +16,8 @@ namespace Van.Model.Methods
 
         public override bool IsActive => Types.ViewData.SurvivalAnalysisMethods.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.SurvivalAnalysisMethods.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.SurvivalAnalysisMethods.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.SurvivalAnalysisMethods.ModelClass;

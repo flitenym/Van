@@ -16,6 +16,8 @@ namespace Van.Model
 
         public override bool IsActive => Types.ViewData.DataBaseBrowsing.IsActive;
 
+        public override bool IsNeedToDeactivate => Types.ViewData.DataBaseBrowsing.IsNeedToDeactivate;
+
         public override Guid ID => Types.ViewData.DataBaseBrowsing.View;
 
         public override ModelBaseClasses modelClass => Types.ViewData.DataBaseBrowsing.ModelClass;
