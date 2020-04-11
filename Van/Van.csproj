@@ -139,17 +139,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AbstractClasses\ModelClass.cs" />
-    <Compile Include="Commands\AsyncCommand.cs" />
-    <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Controls\WindowControl.cs" />
-    <Compile Include="DataBase\DatabaseOperation.cs" />
-    <Compile Include="Helper\Attributes\ColumnDataAttribute.cs" />
-    <Compile Include="Helper\Attributes\ModelClassAttribute.cs" />
-    <Compile Include="Helper\Classes\Node.cs" />
     <Compile Include="Helper\Classes\RangeData.cs" />
-    <Compile Include="Helper\Classes\TabControlData.cs" />
-    <Compile Include="Helper\HelperMethods.cs" />
+    <Compile Include="Helper\Methods.cs" />
     <Compile Include="Helper\StaticInfo\SettingsDictionary.cs" />
     <Compile Include="Helper\StaticInfo\Enums.cs" />
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
@@ -162,11 +153,8 @@
     <Compile Include="LocalDataBase\Models\MortalityTable.cs" />
     <Compile Include="LocalDataBase\Models\QualityAssessmentOfModels.cs" />
     <Compile Include="LocalDataBase\Models\Quality.cs" />
-    <Compile Include="LocalDataBase\Models\Errors.cs" />
-    <Compile Include="LocalDataBase\Models\Settings.cs" />
     <Compile Include="LocalDataBase\Models\ResidualSurvivalFunction.cs" />
     <Compile Include="LocalDataBase\Models\SurvivalFunction.cs" />
-    <Compile Include="LocalDataBase\SQLExecutor.cs" />
     <Compile Include="Methods\Helper\CreateGraphics.cs" />
     <Compile Include="Methods\Helper\MethodAbstractClass.cs" />
     <Compile Include="Methods\Helper\Shared.cs" />
@@ -175,219 +163,122 @@
     <Compile Include="Methods\Gompertz.cs" />
     <Compile Include="Methods\Standart.cs" />
     <Compile Include="Methods\Weibull.cs" />
-    <Compile Include="Model\InfoModel.cs" />
-    <Compile Include="Model\ConnectionDataBaseModel.cs" />
-    <Compile Include="Model\DataBaseBrowsingModel.cs" />
-    <Compile Include="Model\Methods\DistributionModel.cs" />
-    <Compile Include="Model\Methods\ExcludingMortalityModel.cs" />
-    <Compile Include="Model\Methods\IncludingMortalityModel.cs" />
-    <Compile Include="Model\Methods\KaplanMeierModel.cs" />
-    <Compile Include="Model\Methods\KoksRiskModel.cs" />
-    <Compile Include="Model\Methods\LiCarterModel.cs" />
-    <Compile Include="Model\Methods\MortalityTableModel.cs" />
-    <Compile Include="Model\Methods\NonparametricModel.cs" />
-    <Compile Include="Model\Methods\ParametricModel.cs" />
-    <Compile Include="Model\Methods\SemiParametricModel.cs" />
-    <Compile Include="Model\Methods\SurvivalAnalysisMethodsModel.cs" />
-    <Compile Include="Model\Methods\TestModel.cs" />
-    <Compile Include="Model\MainMenuModel.cs" />
-    <Compile Include="Model\SettingsModel.cs" />
-    <Compile Include="Provider\SharedProvider.cs" />
-    <Compile Include="ThemesGlobal\Light\Light.cs" />
-    <Compile Include="Themes\Red\Red.cs" />
-    <Compile Include="Themes\Green\Green.cs" />
-    <Compile Include="ViewModel\InfoViewModel.cs" />
-    <Compile Include="ViewModel\ConnectionDataBaseViewModel.cs" />
-    <Compile Include="ViewModel\DataBaseBrowsingViewModel.cs" />
-    <Compile Include="ViewModel\Methods\DistributionViewModel.cs" />
-    <Compile Include="ViewModel\Methods\ExcludingMortalityViewModel.cs" />
-    <Compile Include="ViewModel\Methods\IncludingMortalityViewModel.cs" />
-    <Compile Include="ViewModel\Methods\KaplanMeierViewModel.cs" />
-    <Compile Include="ViewModel\Methods\KoksRiskViewModel.cs" />
-    <Compile Include="ViewModel\Methods\LiCarterViewModel.cs" />
-    <Compile Include="ViewModel\Methods\MortalityTableViewModel.cs" />
-    <Compile Include="ViewModel\Methods\NonparametricViewModel.cs" />
-    <Compile Include="ViewModel\Methods\ParametricViewModel.cs" />
-    <Compile Include="ViewModel\Methods\SemiParametricViewModel.cs" />
-    <Compile Include="ViewModel\Methods\SurvivalAnalysisMethodsViewModel.cs" />
-    <Compile Include="ViewModel\Methods\TestViewModel.cs" />
-    <Compile Include="ViewModel\MainMenuViewModel.cs" />
-    <Compile Include="ViewModel\SettingsViewModel.cs" />
-    <Compile Include="View\InfoView.xaml.cs">
-      <DependentUpon>InfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ConnectionDataBaseView.xaml.cs">
-      <DependentUpon>ConnectionDataBaseView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Methods\DistributionView.xaml.cs">
+    <Compile Include="Model\DistributionModel.cs" />
+    <Compile Include="Model\ExcludingMortalityModel.cs" />
+    <Compile Include="Model\IncludingMortalityModel.cs" />
+    <Compile Include="Model\KaplanMeierModel.cs" />
+    <Compile Include="Model\KoksRiskModel.cs" />
+    <Compile Include="Model\LiCarterModel.cs" />
+    <Compile Include="Model\MortalityTableModel.cs" />
+    <Compile Include="Model\NonparametricModel.cs" />
+    <Compile Include="Model\ParametricModel.cs" />
+    <Compile Include="Model\SemiParametricModel.cs" />
+    <Compile Include="Model\SurvivalAnalysisMethodsModel.cs" />
+    <Compile Include="Model\TestModel.cs" />
+    <Compile Include="ViewModel\DistributionViewModel.cs" />
+    <Compile Include="ViewModel\ExcludingMortalityViewModel.cs" />
+    <Compile Include="ViewModel\IncludingMortalityViewModel.cs" />
+    <Compile Include="ViewModel\KaplanMeierViewModel.cs" />
+    <Compile Include="ViewModel\KoksRiskViewModel.cs" />
+    <Compile Include="ViewModel\LiCarterViewModel.cs" />
+    <Compile Include="ViewModel\MortalityTableViewModel.cs" />
+    <Compile Include="ViewModel\NonparametricViewModel.cs" />
+    <Compile Include="ViewModel\ParametricViewModel.cs" />
+    <Compile Include="ViewModel\SemiParametricViewModel.cs" />
+    <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
+    <Compile Include="ViewModel\TestViewModel.cs" />
+    <Compile Include="View\DistributionView.xaml.cs">
       <DependentUpon>DistributionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\ExcludingMortalityView.xaml.cs">
+    <Compile Include="View\ExcludingMortalityView.xaml.cs">
       <DependentUpon>ExcludingMortalityView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\IncludingMortalityView.xaml.cs">
+    <Compile Include="View\IncludingMortalityView.xaml.cs">
       <DependentUpon>IncludingMortalityView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\KaplanMeierView.xaml.cs">
+    <Compile Include="View\KaplanMeierView.xaml.cs">
       <DependentUpon>KaplanMeierView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\KoksRiskView.xaml.cs">
+    <Compile Include="View\KoksRiskView.xaml.cs">
       <DependentUpon>KoksRiskView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\LiCarterView.xaml.cs">
+    <Compile Include="View\LiCarterView.xaml.cs">
       <DependentUpon>LiCarterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\MortalityTableView.xaml.cs">
+    <Compile Include="View\MortalityTableView.xaml.cs">
       <DependentUpon>MortalityTableView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\NonparametricView.xaml.cs">
+    <Compile Include="View\NonparametricView.xaml.cs">
       <DependentUpon>NonparametricView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\ParametricView.xaml.cs">
+    <Compile Include="View\ParametricView.xaml.cs">
       <DependentUpon>ParametricView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\SemiParametricView.xaml.cs">
+    <Compile Include="View\SemiParametricView.xaml.cs">
       <DependentUpon>SemiParametricView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\SurvivalAnalysisMethodsView.xaml.cs">
+    <Compile Include="View\SurvivalAnalysisMethodsView.xaml.cs">
       <DependentUpon>SurvivalAnalysisMethodsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Methods\TestView.xaml.cs">
+    <Compile Include="View\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainMenuView.xaml.cs">
-      <DependentUpon>MainMenuView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\DataBaseBrowsingView.xaml.cs">
-      <DependentUpon>DataBaseBrowsingView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ViewModel\LoadFromExcelWindowViewModel.cs" />
-    <Compile Include="Windows\ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="Windows\ViewModel\SplashScreenWindowViewModel.cs" />
-    <Compile Include="Windows\View\LoadFromExcelWindowView.xaml.cs">
-      <DependentUpon>LoadFromExcelWindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\View\MainWindowView.xaml.cs">
-      <DependentUpon>MainWindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\View\SplashScreenWindowView.xaml.cs">
-      <DependentUpon>SplashScreenWindowView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="ThemesGlobal\Dark\Dark.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ThemesGlobal\Light\Light.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Red\Red.xaml">
+    <Page Include="View\DistributionView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Green\Green.xaml">
+    <Page Include="View\ExcludingMortalityView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Blue\Blue.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\InfoView.xaml">
+    <Page Include="View\IncludingMortalityView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ConnectionDataBaseView.xaml">
+    <Page Include="View\KaplanMeierView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\DistributionView.xaml">
+    <Page Include="View\KoksRiskView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\ExcludingMortalityView.xaml">
+    <Page Include="View\LiCarterView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\IncludingMortalityView.xaml">
+    <Page Include="View\MortalityTableView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\KaplanMeierView.xaml">
+    <Page Include="View\NonparametricView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\KoksRiskView.xaml">
+    <Page Include="View\ParametricView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\LiCarterView.xaml">
+    <Page Include="View\SemiParametricView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\MortalityTableView.xaml">
+    <Page Include="View\SurvivalAnalysisMethodsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\NonparametricView.xaml">
+    <Page Include="View\TestView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Methods\ParametricView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Methods\SemiParametricView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Methods\SurvivalAnalysisMethodsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Methods\TestView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\MainMenuView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\DataBaseBrowsingView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="AbstractClasses\ModuleBase.cs" />
-    <Compile Include="AbstractClasses\ThemeBase.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ThemesGlobal\Dark\Dark.cs" />
-    <Compile Include="Themes\Blue\Blue.cs" />
-    <Page Include="View\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\View\LoadFromExcelWindowView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\View\MainWindowView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\View\SplashScreenWindowView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -435,12 +326,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="x64\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="x86\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\SharedLibrary\SharedLibrary.csproj">
+      <Project>{ed428113-dbfc-433d-8932-b0fc1b3cf230}</Project>
+      <Name>SharedLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

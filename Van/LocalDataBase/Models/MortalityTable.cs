@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SharedLibrary.AbstractClasses;
+using SharedLibrary.Helper.Attributes;
+using System;
 using System.ComponentModel;
-using Van.AbstractClasses;
-using Van.Helper.Attributes;
 
 namespace Van.DataBase.Models
 {

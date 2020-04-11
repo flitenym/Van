@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Van.DataBase.Models;
 using Van.Methods.Helper;
-using static Van.Helper.HelperMethods;
+using static Van.Helper.Methods;
 
 namespace Van.Methods
 {

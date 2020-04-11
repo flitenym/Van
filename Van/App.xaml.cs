@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using Van.AbstractClasses;
-using Van.Helper;
-using Van.Helper.StaticInfo;
-using Van.ViewModel;
-using Van.ViewModel.Provider;
-using Van.Windows.View;
-using Van.Windows.ViewModel;
+using SharedLibrary.AbstractClasses;
+using SharedLibrary.Helper;
+using SharedLibrary.Helper.StaticInfo;
+using SharedLibrary.ViewModel;
+using SharedLibrary.Provider;
+using SharedLibrary.View;
+using static SharedLibrary.Helper.HelperMethods;
+using System.Collections.Generic;
 
 namespace Van
 {
@@ -46,12 +45,12 @@ namespace Van
                     //Все вьюшки
                     SharedProvider.SetToSingleton(
                         InfoKeys.ModulesKey,
-                        HelperMethods.GetAllInstancesOf<ModuleBase>().Where(x => x.IsActive).ToList());
+                        HelperMethods.GetAllInstancesOf<ModuleBase>(new List<ModuleBase>()).Where(x => x.IsActive).ToList());
 
                     //Все темы
                     SharedProvider.SetToSingleton(
                         InfoKeys.ThemesKey,
-                        HelperMethods.GetAllInstancesOf<ThemeBase>().ToList());
+                        HelperMethods.GetAllInstancesOf<ThemeBase>(new List<ThemeBase>()).ToList());
 
                     //Основная ViewModel
                     var vm = new MainWindowViewModel();
@@ -83,7 +82,7 @@ namespace Van
                         }
                         catch (Exception ex)
                         {
-                            await Helper.HelperMethods.Message($"{ex.Message}");
+                            await Message($"{ex.Message}");
                         }
                     };
                 });
