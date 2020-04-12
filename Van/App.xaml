@@ -19,8 +19,8 @@
 
                 <!--  Dragablz Material Design  -->
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
-
-                <ResourceDictionary Source="/Van;component/Themes/Generic.xaml" />
+                
+                <ResourceDictionary Source="pack://application:,,,/SharedLibrary;component/Themes/Generic.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
