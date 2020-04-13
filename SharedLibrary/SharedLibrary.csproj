@@ -99,6 +99,7 @@
     <Compile Include="Helper\StaticInfo\InfoKeys.cs" />
     <Compile Include="Helper\StaticInfo\SettingsDictionary.cs" />
     <Compile Include="Helper\StaticInfo\Types.cs" />
+    <Compile Include="Initialize.cs" />
     <Compile Include="LocalDataBase\Errors.cs" />
     <Compile Include="LocalDataBase\Settings.cs" />
     <Compile Include="LocalDataBase\SQLExecutor.cs" />
@@ -146,11 +147,6 @@
     <Compile Include="View\SplashScreenWindowView.xaml.cs">
       <DependentUpon>SplashScreenWindowView.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="x64\SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="ThemesGlobal\Dark\Dark.xaml">
