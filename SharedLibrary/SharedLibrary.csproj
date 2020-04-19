@@ -87,6 +87,8 @@
     <Compile Include="AbstractClasses\ThemeBase.cs" />
     <Compile Include="Attributes\ColumnDataAttribute.cs" />
     <Compile Include="Attributes\ModelClassAttribute.cs" />
+    <Compile Include="Behavior\DataGridBehavior.cs" />
+    <Compile Include="Behavior\DropBehavior.cs" />
     <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Controls\WindowControl.cs" />

@@ -45,5 +45,10 @@ namespace SharedLibrary.Commands
                 isExecuting = false;
             }
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

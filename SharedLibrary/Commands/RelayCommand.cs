@@ -29,6 +29,11 @@ namespace SharedLibrary.Commands
         {
             this.execute(parameter);
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     } 
 
 }

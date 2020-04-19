@@ -134,7 +134,7 @@ namespace SharedLibrary.ViewModel
         /// Правила для формирования обновления
         /// </summary>
         public string LinkRules =>
-$@"1. Файл должен скачиваться по ссылке.
+$@"1. Файл должен скачиваться по ссылке из интернета или локального компьютера.
 2. Файл должен содержать сразу все файлы программы, а не быть с папкой и вложенными файлами.
 3. Файл должен быть Zip архивом без пароля";
 
@@ -153,10 +153,33 @@ $@"1. Файл должен скачиваться по ссылке.
         /// </summary>
         public string ProgramFolderWithFilePath { get; set; }
 
+        public string CurrentProgramm { get; set; } = Path.GetFileNameWithoutExtension(Process.GetCurrentProcess().MainModule.FileName);
+
         /// <summary>
         /// Сколько байтов весит файл
         /// </summary>
         public long TotalBytes { get; set; }
+
+        #region Ссылка для файла
+
+        private bool isHavePath => !string.IsNullOrEmpty(LinkData);
+
+        /// <summary>
+        /// Ссылка для файла
+        /// </summary>
+        public bool IsHavePath
+        {
+            get
+            {
+                return isHavePath;
+            }
+            set
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsHavePath)));
+            }
+        }
+
+        #endregion
 
         #region Ссылка для файла
 
@@ -175,6 +198,7 @@ $@"1. Файл должен скачиваться по ссылке.
             {
                 linkData = value;
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(LinkData)));
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsHavePath)));
             }
         }
 
@@ -295,11 +319,11 @@ $@"1. Файл должен скачиваться по ссылке.
         #region Команда для начала обновления программы
 
         private AsyncCommand updateCommand;
-        public AsyncCommand UpdateCommand => updateCommand ?? (updateCommand = new AsyncCommand(x => UpdateProgramAsync(), y => UpdateCanUse()));
+        public AsyncCommand UpdateCommand => updateCommand ?? (updateCommand = new AsyncCommand(x => UpdateProgramAsync(), o => CanUpdate()));
 
-        public bool UpdateCanUse()
+        public bool CanUpdate()
         {
-            return !IsDownload;
+            return !string.IsNullOrEmpty(LinkData);
         }
 
         /// <summary>
@@ -320,7 +344,7 @@ $@"1. Файл должен скачиваться по ссылке.
         /// Получение длинны файла из потока
         /// </summary>
         /// <param name="stream">Поток</param>
-        public void GetLength(Stream stream)
+        public long GetLength(Stream stream)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -332,7 +356,30 @@ $@"1. Файл должен скачиваться по ссылке.
                     ms.Write(buf, 0, count);
                 } while (stream.CanRead && count > 0);
 
-                TotalBytes = ms.Length;
+                return ms.Length;
+            }
+        }
+
+        /// <summary>
+        /// Обновление по локальному пути
+        /// </summary>
+        private async Task UpdateProgramCommand()
+        {
+            try
+            {
+                Process pc = new Process();
+                pc.StartInfo.FileName = "cmd.exe";
+                pc.StartInfo.Arguments = $@"/C cd C:\\ && timeout /t 3 /nobreak && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && timeout /t 3 /nobreak && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{CurrentProgramm}.exe && powershell Remove-Item {TempFolderPath} -Recurse -Force";
+                pc.Start();
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    Application.Current.MainWindow.Close();
+                }));
+            }
+            catch (Exception ex)
+            {
+                await Message(ex.Message);
             }
         }
 
@@ -341,47 +388,55 @@ $@"1. Файл должен скачиваться по ссылке.
         /// </summary>
         public async Task UpdateProgramAsync()
         {
-            IsDownload = true;
-            try
-            {
-                ProgramFolderWithFilePath = AssemblyDirectory;
-                TempFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + Assembly.GetExecutingAssembly().GetName().Name + @"\Temp";
+            ProgramFolderWithFilePath = AssemblyDirectory;
+            
+            Stream contentStream = null;
+            string fileName = string.Empty;
+            TempFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\" + CurrentProgramm + @"\Temp";
 
+            if (File.Exists(LinkData))
+            {
+                var fileStream = File.OpenRead(LinkData);
+                contentStream = fileStream as Stream;
+                fileName = Path.GetFileNameWithoutExtension(fileStream.Name);
+
+                TempFolderWithFilePath = fileStream.Name;
                 CheckFolder(TempFolderPath);
-
-                client = new WebClient();
-                var contentStream = client.OpenRead(LinkData);
-                string header_contentDisposition = client.ResponseHeaders["content-disposition"];
-                string fileName = new ContentDisposition(header_contentDisposition).FileName.Replace(' ', '_');
-
-                if (fileName.Contains(Assembly.GetExecutingAssembly().GetName().Version.ToString()))
+                await UpdateProgramCommand();
+            }
+            else
+            {
+                try
                 {
-                    await Message("Программа уже последней версии");
-                    client.Dispose();
-                    return;
+                    IsDownload = true; 
+                    client = new WebClient();
+                    contentStream = client.OpenRead(LinkData);
+                    string header_contentDisposition = client.ResponseHeaders["content-disposition"];
+                    fileName = new ContentDisposition(header_contentDisposition).FileName.Replace(' ', '_');
+
+                    TotalBytes = GetLength(contentStream);
+
+                    Download = $"{(0).ToString("0.00")} MB's / {(TotalBytes / 1024d / 1024d).ToString("0.00")} MB's";
+
+                    TempFolderWithFilePath = $@"{TempFolderPath}\{fileName}";
+                    CheckFolder(TempFolderPath);
+
+                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
+                    client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+                    sw = new Stopwatch();
+                    sw.Start();
+                    await client.DownloadFileTaskAsync(new Uri(LinkData), TempFolderWithFilePath);
                 }
-                else await Message("Начинается скачивание новой версии");
-
-                GetLength(contentStream);
-                TempFolderWithFilePath = $@"{TempFolderPath}\{fileName}";
-                Download = $"{(0).ToString("0.00")} MB's / {(TotalBytes / 1024d / 1024d).ToString("0.00")} MB's";
-
-                client.DownloadFileCompleted += new AsyncCompletedEventHandler(CompletedAsync);
-                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                sw = new Stopwatch();
-                sw.Start();
-                await client.DownloadFileTaskAsync(new Uri(LinkData), TempFolderWithFilePath);
-            }
-            catch (Exception ex)
-            {
-                await Message(ex.Message);
-                IsDownload = false;
-            }
-            finally
-            {
-                client.Dispose();
-            }
-
+                catch (Exception ex)
+                {
+                    await Message(ex.Message);
+                    IsDownload = false;
+                }
+                finally
+                {
+                    client.Dispose();
+                }
+            } 
         }
 
         /// <summary>
@@ -436,23 +491,7 @@ $@"1. Файл должен скачиваться по ссылке.
             else
             {
                 await Message("Скачивание завершено");
-
-                try
-                {
-                    Process pc = new Process();
-                    pc.StartInfo.FileName = "cmd.exe";
-                    pc.StartInfo.Arguments = $@"/C cd C:\\ && timeout /t 3 /nobreak>nul && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && timeout /t 2 /nobreak>nul && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{Assembly.GetExecutingAssembly().GetName().Name}.exe && powershell Remove-Item {TempFolderPath} -Recurse -Force";
-                    pc.Start();
-
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        Application.Current.MainWindow.Close();
-                    }));
-                }
-                catch (Exception ex)
-                {
-                    await Message(ex.Message);
-                }
+                await UpdateProgramCommand();
             }
         }
 
@@ -516,6 +555,25 @@ $@"1. Файл должен скачиваться по ссылке.
             {
                 this.client.CancelAsync();
             }
+        }
+
+        #endregion
+
+        #region Команда для Drag and Drop
+
+        private AsyncCommand previewDropCommand;
+        public AsyncCommand PreviewDropCommand => previewDropCommand ?? (previewDropCommand = new AsyncCommand(obj => DragAndDrop(obj)));
+        public async Task DragAndDrop(object obj)
+        {
+            var list = (obj as DataObject).GetFileDropList();
+            if (list.Count == 0)
+            {
+                await Message("Ни один файл не был загружен");
+                return;
+            }
+
+            LinkData = list[0];
+            UpdateCommand.RaiseCanExecuteChanged();
         }
 
         #endregion

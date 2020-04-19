@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:bhv="clr-namespace:SharedLibrary.Behavior"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -144,10 +145,11 @@
                     Foreground="{DynamicResource WindowForeground}"
                     GridLinesVisibility="None"
                     HeadersVisibility="Column"
-                    ItemsSource="{Binding TableData, Mode=TwoWay, IsAsync=True}"
+                    ItemsSource="{Binding TableData, Mode=TwoWay}"
                     ScrollViewer.CanContentScroll="True"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    bhv:DataGridBehavior.ScrollCommand="{Binding ScrollItemCommand}"
                     SelectionUnit="FullRow" />
                 <StackPanel
                     Grid.Row="1"

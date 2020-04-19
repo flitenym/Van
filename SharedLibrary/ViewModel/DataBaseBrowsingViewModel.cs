@@ -18,6 +18,7 @@ using SharedLibrary.ViewModel;
 using IronXL;
 using Microsoft.Win32;
 using static SharedLibrary.Helper.HelperMethods;
+using System.Windows.Controls;
 
 namespace SharedLibrary.ViewModel
 {
@@ -362,8 +363,15 @@ namespace SharedLibrary.ViewModel
 
         private async Task Select()
         {
-            if (SelectedModelType == null || SelectedModelName == null) return;
-            TableData = await SQLExecutor.SelectExecutorAsync(SelectedModelType, SelectedModelName);
+            if (SelectedModelType == null || SelectedModelName == null)
+            {
+                TableData = new DataTable();
+            }
+            else
+            {
+                TableData = await SQLExecutor.SelectExecutorAsync(SelectedModelType, SelectedModelName);
+            } 
+
             TableData.AcceptChanges();
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(SelectedModel))); 
         }
@@ -458,8 +466,7 @@ namespace SharedLibrary.ViewModel
             }
 
             var newRow = TableData.NewRow();
-            var ID = await SQLExecutor.InsertExecutorAsync(SelectedModel, SelectedModel);
-
+            var ID = await SQLExecutor.InsertExecutorAsync(SelectedModel, SelectedModel); 
             if (ID != -1)
             {
                 newRow["ID"] = ID;
@@ -546,7 +553,22 @@ namespace SharedLibrary.ViewModel
 
         #endregion
 
+        #region Команда для перемещения панели
 
+        private RelayCommand scrollItemCommand;
+        public RelayCommand ScrollItemCommand => scrollItemCommand ?? (scrollItemCommand = new RelayCommand(obj => Scroll(obj)));
 
+        public void Scroll(object obj)
+        {
+            if (obj is DataGrid dataGrid)
+            {
+                var item = dataGrid.Items[dataGrid.Items.Count - 1];
+                dataGrid.ScrollIntoView(item);
+                dataGrid.SelectedItem = item;
+                dataGrid.UpdateLayout();
+            }
+        }
+
+        #endregion
     }
 }
