@@ -76,7 +76,7 @@ namespace SharedLibrary.ViewModel
 
         public async Task SelectStackTrace()
         {
-            var DBstackRaces = (await SQLExecutor.SelectExecutorAsync<Errors>(nameof(Errors)));
+            var DBstackRaces = (await SQLExecutor.SelectExecutorAsync<Errors>(nameof(Errors), "order by Date desc LIMIT 10"));
             StackTraces = new ObservableCollection<Errors>(DBstackRaces);
 
             PropertyChanged(this, new PropertyChangedEventArgs(nameof(StackTraces)));

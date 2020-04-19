@@ -119,7 +119,7 @@
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-                <Rectangle AllowDrop="True" Fill="#19000000" RadiusX="5" RadiusY="5" Stroke="Black" StrokeThickness="1" StrokeDashArray="3">
+                <Rectangle AllowDrop="True" Fill="{DynamicResource DragAndDropRectangleFill}" RadiusX="5" RadiusY="5" Stroke="{DynamicResource DragAndDropForeground}" StrokeThickness="1" StrokeDashArray="3">
                     <Rectangle.Triggers>
                         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                             <BeginStoryboard>
@@ -134,7 +134,7 @@
                         </EventTrigger>
                     </Rectangle.Triggers>
                 </Rectangle>
-                <TextBlock AllowDrop="True" Text="Перенесите файл" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Foreground="#E5000000"/>
+                <TextBlock AllowDrop="True" Text="Перенесите файл" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Foreground="{DynamicResource DragAndDropForeground}"/>
             </Grid>
             
         </Grid>

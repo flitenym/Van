@@ -47,6 +47,7 @@
                 Foreground="{DynamicResource WindowForeground}"
                 ItemsSource="{Binding StackTraces, Mode=TwoWay}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                VirtualizingStackPanel.IsVirtualizing="True"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -95,6 +96,7 @@
             Style="{DynamicResource ScrollViewerStyle}"
             VerticalScrollBarVisibility="Auto">
             <ListView
+                VirtualizingStackPanel.IsVirtualizing="True"
                 Width="Auto"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"

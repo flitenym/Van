@@ -14,6 +14,9 @@
     <Color x:Key="Gray">#FF424242</Color>
     <Color x:Key="LightWhite">#f5fffa</Color>
     <Color x:Key="LightDark">#fcfcfc</Color>
+    <Color x:Key="LightColor">#E5000000</Color>
+    <Color x:Key="LightGray">#19000000</Color>
+    
 
     <Color x:Key="DepthColor">#161a1f</Color>
 
@@ -47,6 +50,9 @@
     <!--  Цвет разделителя  -->
     <SolidColorBrush x:Key="SeparatorBackGround" Color="{StaticResource Gray}" />
 
+    <SolidColorBrush x:Key="DragAndDropForeground" Color="{StaticResource LightColor}" />
+
+    <SolidColorBrush x:Key="DragAndDropRectangleFill" Color="{StaticResource LightGray}" />
 
     <!--  Кнопка в табКонтроле  -->
     <Style x:Key="CustomButtonStyle" TargetType="{x:Type Button}">
