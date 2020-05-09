@@ -16,7 +16,7 @@
     <Color x:Key="LightDark">#596669</Color>
     <Color x:Key="LightColor">#fffafa</Color>
     <Color x:Key="LightGray">#19E4E4E4</Color>
-    
+
     <Color x:Key="DepthColor">#4f4f4f</Color>
 
     <!--  Цвет у бордера, который отделяет от Rectangle  -->

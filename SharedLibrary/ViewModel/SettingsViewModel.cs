@@ -128,7 +128,7 @@ namespace SharedLibrary.ViewModel
         /// <summary>
         /// Показывает версию текущую
         /// </summary>
-        public string AppVersion => "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public string AppVersion => "Version: " + GetVersion();
 
         /// <summary>
         /// Правила для формирования обновления

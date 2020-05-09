@@ -18,6 +18,7 @@ using SharedLibrary.Helper;
 using static SharedLibrary.Helper.HelperMethods;
 using SharedLibrary.LocalDataBase;
 using Van.Methods.Helper;
+using static Van.Helper.Methods;
 
 namespace Van.ViewModel.Methods
 {
