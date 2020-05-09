@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using SharedLibrary.AbstractClasses;
-using SharedLibrary.ViewModel;
 using static SharedLibrary.Helper.HelperMethods;
 using System;
 using System.Reflection;
@@ -424,7 +423,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
 
                     TotalBytes = GetLength(contentStream);
 
-                    Download = $"{(0).ToString("0.00")} MB's / {(TotalBytes / 1024d / 1024d).ToString("0.00")} MB's";
+                    Download = $"{0:0.00} MB's / {TotalBytes / 1024d / 1024d:0.00} MB's";
 
                     TempFolderWithFilePath = $@"{TempFolderPath}\{fileName}";
                     CheckFolder(TempFolderPath);
@@ -463,7 +462,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
 
             DownloadPercent = ProgressBarValue.ToString() + "%";
 
-            Download = $"{(received).ToString("0.00")} MB's / {(total).ToString("0.00")} MB's";
+            Download = $"{received:0.00} MB's / {total:0.00} MB's";
         }
 
         /// <summary>
