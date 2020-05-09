@@ -268,18 +268,11 @@ namespace SharedLibrary.Helper
             return result;
         }
 
-        /// <summary>
-        /// В AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
-        /// </summary>
-        public static double GetTValue(string ageX)
+        public static string GetVersion()
         {
-            // в AgeX может быть лишние значение такие как + и т.д., поэтому спарсим только числа
-            if (double.TryParse(string.Join("", ageX.Where(c => char.IsDigit(c))), out double value))
-            {
-                return value;
-            }
-            return 0;
-        }
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == AppDomain.CurrentDomain.FriendlyName.Replace(".exe", "")) ?? Assembly.GetExecutingAssembly();
 
+            return assembly.GetName().Version.ToString();
+        }
     }
 }

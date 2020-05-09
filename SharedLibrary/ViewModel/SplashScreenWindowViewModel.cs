@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using SharedLibrary.Helper;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace SharedLibrary.ViewModel
@@ -7,6 +8,6 @@ namespace SharedLibrary.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public string AppVersion => "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();  
+        public string AppVersion => "Version: " + HelperMethods.GetVersion();  
     }
 }

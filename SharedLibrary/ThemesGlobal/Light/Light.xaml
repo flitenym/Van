@@ -16,7 +16,7 @@
     <Color x:Key="LightDark">#fcfcfc</Color>
     <Color x:Key="LightColor">#E5000000</Color>
     <Color x:Key="LightGray">#19000000</Color>
-    
+
 
     <Color x:Key="DepthColor">#161a1f</Color>
 

@@ -128,7 +128,7 @@ namespace SharedLibrary.ViewModel
         /// <summary>
         /// Показывает версию текущую
         /// </summary>
-        public string AppVersion => "Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public string AppVersion => "Version: " + GetVersion();
 
         /// <summary>
         /// Правила для формирования обновления
@@ -369,7 +369,15 @@ $@"1. Файл должен скачиваться по ссылке из инт
             {
                 Process pc = new Process();
                 pc.StartInfo.FileName = "cmd.exe";
-                pc.StartInfo.Arguments = $@"/C cd C:\\ && timeout /t 3 /nobreak && powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force && timeout /t 3 /nobreak && powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath} && start {ProgramFolderWithFilePath}\\{CurrentProgramm}.exe && powershell Remove-Item {TempFolderPath} -Recurse -Force";
+
+                string cdC = $@"/C cd C:\\";//подключимся к диску С
+                string timeout = $@"timeout /t 1"; //ожидание
+                string removeProgramFolderWithFilePath = $@"powershell Remove-Item {ProgramFolderWithFilePath}\\* -Recurse -Force"; //удалим текущую папку где существует exe, по сути откуда сейчас работаем
+                string expandArchive = $@"powershell Expand-Archive {TempFolderWithFilePath} -DestinationPath {ProgramFolderWithFilePath}"; //разархивация архива zip
+                string startProgramm = $@"start /D ""{ProgramFolderWithFilePath}\"" {CurrentProgramm}.exe"; //запуск программы
+                string removeTempFolder = $@"powershell Remove-Item {TempFolderPath} -Recurse -Force"; //удалим временную папку куда шла разархивация
+
+                pc.StartInfo.Arguments = $"{cdC} && {removeProgramFolderWithFilePath} && {expandArchive} && {timeout}  && {startProgramm} && {removeTempFolder}";
                 pc.Start();
 
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
