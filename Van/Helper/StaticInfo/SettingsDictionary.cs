@@ -10,7 +10,9 @@ namespace Van.Helper.StaticInfo
     {
         public static int round = 5;
 
-        public static double epsilon = 0.01;
+        public static double epsilon = 0.001;
+
+        public static double lnzero = 0.001;
 
         public static double b = int.MaxValue;
 

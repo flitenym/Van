@@ -422,6 +422,40 @@ namespace Van.ViewModel.Methods
 
         #endregion
 
+        #region Значение ln при 0
+
+        private double lnZeroValue = SettingsDictionary.lnzero;
+
+        public double LnZeroValue
+        {
+            get { return lnZeroValue; }
+            set
+            {
+                lnZeroValue = value;
+                SettingsDictionary.lnzero = lnZeroValue;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(LnZeroValue)));
+            }
+        }
+
+        #endregion
+
+        #region epsilon значение
+
+        private double epsilonValue = SettingsDictionary.epsilon;
+
+        public double EpsilonValue
+        {
+            get { return epsilonValue; }
+            set
+            {
+                epsilonValue = value;
+                SettingsDictionary.epsilon = epsilonValue;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(EpsilonValue)));
+            }
+        }
+
+        #endregion
+
         #region Комманда для вычисления T
 
         private AsyncCommand calculateTCommand;
@@ -652,6 +686,10 @@ namespace Van.ViewModel.Methods
 
             for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
             {
+                var rangeData = RangeDataList.FirstOrDefault(x => x.AgeX == i);
+
+                if (rangeData == null) continue;
+
                 DistanceFirstMethod.Add(new Quality { MortalityTableID = RangeDataList[i].ID, MortalityTableAgeX = RangeDataList[i].AgeX.ToString(), Method = (int)Enums.QualityMethods.DistanceFirstMethod });
                 DistanceSecondMethod.Add(new Quality { MortalityTableID = RangeDataList[i].ID, MortalityTableAgeX = RangeDataList[i].AgeX.ToString(), Method = (int)Enums.QualityMethods.DistanceSecondMethod });
             }
@@ -662,17 +700,20 @@ namespace Van.ViewModel.Methods
             var taskRelay = new Task(CalculateSTRelay);
             var taskGompertz = new Task(CalculateSTGompertz);
             var taskExponential = new Task(CalculateSTExponential);
+            var taskLogLogistic = new Task(CalculateLogLogistic);
 
             taskWeibull.Start();
             taskRelay.Start();
             taskGompertz.Start();
             taskExponential.Start();
+            taskLogLogistic.Start();
 
             await Task.WhenAll(
                 taskWeibull,
                 taskRelay,
                 taskGompertz,
-                taskExponential);
+                taskExponential,
+                taskLogLogistic);
 
             await UpdateAndSelectST();
             await UpdateAndSelectD();
@@ -727,7 +768,7 @@ namespace Van.ViewModel.Methods
                 currentDensitys[i].Weibull = weibull.Densitys[i];
             }
 
-            weibull.GetQuality(standartValues, weibull.SurvivalFunctions, FirstAgeX, SecondAgeX, weibull.LValue, t.Count(), 2);
+            weibull.GetQuality(standartValues, weibull.SurvivalFunctions, FirstAgeX, SecondAgeX, weibull.LValue, t.Count());
 
             Acaici.Weibull = weibull.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             var DistanceFirstMethodValue = weibull.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
@@ -751,7 +792,7 @@ namespace Van.ViewModel.Methods
                 currentDensitys[i].Relay = relay.Densitys[i];
             }
 
-            relay.GetQuality(standartValues, relay.SurvivalFunctions, FirstAgeX, SecondAgeX, relay.LValue, t.Count(), 1);
+            relay.GetQuality(standartValues, relay.SurvivalFunctions, FirstAgeX, SecondAgeX, relay.LValue, t.Count());
 
             Acaici.Relay = relay.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             var DistanceFirstMethodValue = relay.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
@@ -775,7 +816,7 @@ namespace Van.ViewModel.Methods
                 currentDensitys[i].Gompertz = gompertz.Densitys[i];
             }
 
-            gompertz.GetQuality(standartValues, gompertz.SurvivalFunctions, FirstAgeX, SecondAgeX, gompertz.LValue, t.Count(), 1);
+            gompertz.GetQuality(standartValues, gompertz.SurvivalFunctions, FirstAgeX, SecondAgeX, gompertz.LValue, t.Count());
 
             Acaici.Gompertz = gompertz.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             var DistanceFirstMethodValue = gompertz.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
@@ -799,7 +840,7 @@ namespace Van.ViewModel.Methods
                 currentDensitys[i].Exponential = exponential.Densitys[i];
             }
 
-            exponential.GetQuality(standartValues, exponential.SurvivalFunctions, FirstAgeX, SecondAgeX, exponential.LValue, t.Count(), 1);
+            exponential.GetQuality(standartValues, exponential.SurvivalFunctions, FirstAgeX, SecondAgeX, exponential.LValue, t.Count());
 
             Acaici.Exponential = exponential.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
             var DistanceFirstMethodValue = exponential.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
@@ -810,6 +851,30 @@ namespace Van.ViewModel.Methods
                 int index = i - FirstAgeX.AgeX;
                 DistanceFirstMethod[index].Exponential = DistanceFirstMethodValue[index];
                 DistanceSecondMethod[index].Exponential = DistanceSecondMethodValue[index];
+            }
+        }
+
+        public void CalculateLogLogistic()
+        {
+            LogLogistic logLogistic = new LogLogistic(ageValues, t, r, delta);
+
+            for (int i = 0; i < currentMortalityTables.Count; i++)
+            {
+                currentSurvivalFunctions[i].LogLogistic = logLogistic.SurvivalFunctions[i];
+                currentDensitys[i].LogLogistic = logLogistic.Densitys[i];
+            }
+
+            logLogistic.GetQuality(standartValues, logLogistic.SurvivalFunctions, FirstAgeX, SecondAgeX, logLogistic.LValue, t.Count());
+
+            Acaici.LogLogistic = logLogistic.Quality.TryGet<double>(InfoKeys.AcaiciKey, 0);
+            var DistanceFirstMethodValue = logLogistic.Quality.TryGet<List<double>>(InfoKeys.DistanceFirstMethodKey);
+            var DistanceSecondMethodValue = logLogistic.Quality.TryGet<List<double>>(InfoKeys.DistanceSecondMethodKey);
+
+            for (int i = FirstAgeX.AgeX; i <= SecondAgeX.AgeX; i++)
+            {
+                int index = i - FirstAgeX.AgeX;
+                DistanceFirstMethod[index].LogLogistic = DistanceFirstMethodValue[index];
+                DistanceSecondMethod[index].LogLogistic = DistanceSecondMethodValue[index];
             }
         }
 
@@ -877,7 +942,7 @@ namespace Van.ViewModel.Methods
                 {
                     using (var cmd = cn.CreateCommand())
                     {
-                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualSurvivalFunction)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualSurvivalFunction)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential, LogLogistic) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential, @LogLogistic);  select last_insert_rowid()";
                         for (int i = 0; i < currentResidualSurvivalFunctions.Count(); i++)
                         {
                             cmd.Parameters.AddWithValue("@MortalityTableID", currentResidualSurvivalFunctions[i].MortalityTableID);
@@ -887,6 +952,7 @@ namespace Van.ViewModel.Methods
                             cmd.Parameters.AddWithValue("@Relay", currentResidualSurvivalFunctions[i].Relay);
                             cmd.Parameters.AddWithValue("@Gompertz", currentResidualSurvivalFunctions[i].Gompertz);
                             cmd.Parameters.AddWithValue("@Exponential", currentResidualSurvivalFunctions[i].Exponential);
+                            cmd.Parameters.AddWithValue("@LogLogistic", currentResidualSurvivalFunctions[i].LogLogistic);
                             await cmd.ExecuteNonQueryAsync();
                         }
                     }
@@ -913,7 +979,8 @@ namespace Van.ViewModel.Methods
                     Weibull = firstD[i].Weibull / density.Weibull,
                     Relay = firstD[i].Relay / density.Relay,
                     Gompertz = firstD[i].Gompertz / density.Gompertz,
-                    Exponential = firstD[i].Exponential / density.Exponential
+                    Exponential = firstD[i].Exponential / density.Exponential,
+                    LogLogistic = firstD[i].LogLogistic / density.LogLogistic
                 });
             }
 
@@ -926,7 +993,7 @@ namespace Van.ViewModel.Methods
                 {
                     using (var cmd = cn.CreateCommand())
                     {
-                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualDensity)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential);  select last_insert_rowid()";
+                        cmd.CommandText = $@"INSERT INTO {nameof(ResidualDensity)}(MortalityTableID, MortalityTableAgeX, Standart, Weibull, Relay, Gompertz, Exponential, LogLogistic) VALUES (@MortalityTableID, @MortalityTableAgeX, @Standart, @Weibull, @Relay, @Gompertz, @Exponential, @LogLogistic);  select last_insert_rowid()";
                         for (int i = 0; i < currentResidualDensitys.Count(); i++)
                         {
                             cmd.Parameters.AddWithValue("@MortalityTableID", currentResidualDensitys[i].MortalityTableID);
@@ -936,6 +1003,7 @@ namespace Van.ViewModel.Methods
                             cmd.Parameters.AddWithValue("@Relay", currentResidualDensitys[i].Relay);
                             cmd.Parameters.AddWithValue("@Gompertz", currentResidualDensitys[i].Gompertz);
                             cmd.Parameters.AddWithValue("@Exponential", currentResidualDensitys[i].Exponential);
+                            cmd.Parameters.AddWithValue("@LogLogistic", currentResidualDensitys[i].LogLogistic);
                             await cmd.ExecuteNonQueryAsync();
                         }
                     }

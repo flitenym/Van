@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Van.DataBase.Models;
 using Van.Helper.Classes;
 using Van.Helper.StaticInfo;
 
@@ -30,6 +31,8 @@ namespace Van.Methods.Helper
 
         public double lambda { get; set; }
 
+        public abstract int ParametrCount { get; set; }
+
         public IDictionary<string, object> Quality = new Dictionary<string, object>();
 
         public abstract double SurvivalFunction(double tValue);
@@ -38,7 +41,7 @@ namespace Van.Methods.Helper
 
         public abstract void ParamterCalculation(List<int> t, List<int> delta, double r); 
 
-        public void GetQuality(List<double> standartValues, List<double> survivalFunctions, RangeData FirstAgeX, RangeData SecondAgeX, double LValue, int tCount, int parametrCount)
+        public void GetQuality(List<double> standartValues, List<double> survivalFunctions, RangeData FirstAgeX, RangeData SecondAgeX, double LValue, int tCount)
         {
             List<double> distanceFirst = new List<double>();
             List<double> distanceSecond = new List<double>();
@@ -65,7 +68,7 @@ namespace Van.Methods.Helper
             }
 
             Quality.Clear();
-            Quality.Add(InfoKeys.AcaiciKey, Shared.GetQuality(LValue, parametrCount, tCount));
+            Quality.Add(InfoKeys.AcaiciKey, Shared.GetQuality(LValue, ParametrCount, tCount));
             Quality.Add(InfoKeys.DistanceFirstMethodKey, distanceFirst);
             Quality.Add(InfoKeys.DistanceSecondMethodKey, distanceSecond);
         }

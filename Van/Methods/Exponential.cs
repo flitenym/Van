@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Van.DataBase.Models;
 using Van.Methods.Helper;
 
 namespace Van.Methods
 {
     public class Exponential : MethodAbstractClass
     {
+        public override int ParametrCount { get; set; } = 1;
+
         public Exponential(List<double> tValue, List<int> t, double r, List<int> delta = null)
             : base(tValue, t, r, delta) { }
 
@@ -18,7 +21,7 @@ namespace Van.Methods
             lambda = r / tSum;
 
             //Вычисление ФМП
-            LValue = r * Math.Log(lambda == 0 ? 0.1 : lambda) - lambda * tSum;
+            LValue = r * lambda.GetLn() - lambda * tSum;
         }
 
         public override double SurvivalFunction(double tValue)

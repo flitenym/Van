@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Van.DataBase.Models;
 using Van.Helper.Classes;
 using Van.Helper.StaticInfo;
 using Van.Methods.Helper;
@@ -9,6 +10,8 @@ namespace Van.Methods
 {
     public class Weibull : MethodAbstractClass
     {
+        public override int ParametrCount { get; set; } = 2;
+
         public Weibull(List<double> tValue, List<int> t, double r, List<int> delta = null)
             : base(tValue, t, r, delta) { }
 
@@ -25,13 +28,11 @@ namespace Van.Methods
 
                 for (int i = 0; i < t.Count(); i++)
                 {
-                    double tValue = t[i] == 0 ? 0.1 : t[i];
-
-                    firstSum += Math.Log(tValue) * delta[i];
+                    firstSum += t[i].GetLn() * delta[i];
 
                     secondSum += Math.Pow(t[i], x);
 
-                    thirdSum += Math.Pow(t[i], x) * Math.Log(tValue);
+                    thirdSum += Math.Pow(t[i], x) * t[i].GetLn();
                 }
 
                 secondSum = r * Math.Pow(secondSum, -1);
@@ -75,14 +76,12 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                fiveSum += Math.Log(t[i] == 0 ? 0.1 : t[i]) * delta[i];
+                fiveSum += t[i].GetLn() * delta[i];
 
                 sixSum += Math.Pow(t[i], alpha);
             }
 
-            double paramsPow = lambda * alpha == 0 ? 0.1 : lambda * alpha;
-
-            LValue = r * Math.Log(paramsPow) + (alpha - 1) * fiveSum - lambda * sixSum;
+            LValue = r * (lambda * alpha).GetLn() + (alpha - 1) * fiveSum - lambda * sixSum;
         }
 
         public override double SurvivalFunction(double tValue)

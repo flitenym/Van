@@ -9,6 +9,8 @@ namespace Van.Methods
 {
     public class Standart : MethodAbstractClass
     {
+        public override int ParametrCount { get; set; } = 2;
+
         public Standart(List<double> tValue, List<int> t, double r, List<MortalityTable> currentMortalityTables, List<int> delta = null)
             : base()
         {

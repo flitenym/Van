@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.RightsManagement;
+using Van.Helper.StaticInfo;
 
 namespace Van.Methods.Helper
 {
@@ -18,5 +20,36 @@ namespace Van.Methods.Helper
         {
             return Math.Pow(first - second, 2);
         }
+
+        /// <summary>
+        /// Получение определителя двумерной матрицы
+        /// </summary>
+        public static double GetDetermine(double[,] matrix)
+        {
+            return matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0, 1];
+        }
+
+        public static double[] GetMultiplyMatrix(double[,] H, double[] G)
+        {
+            return new double[] { Math.Abs(H[0, 0] * G[0] + H[0, 1] * G[1]), Math.Abs(H[1, 0] * G[0] + H[1, 1] * G[1]) };
+        }
+
+        public static bool GetDifferenceMatrix(double[] Q_first, double[] Q_second)
+        {
+            if (Math.Abs(Q_first[0] - Q_second[0]) < SettingsDictionary.epsilon && Math.Abs(Q_first[1] - Q_second[1]) < SettingsDictionary.epsilon) return true;
+
+            return false;
+        }
+
+        public static double GetLn(this double num)
+        {
+            return num <= 0 ? Math.Log(SettingsDictionary.lnzero) : Math.Log(num);
+        }
+
+        public static double GetLn(this int num)
+        {
+            return num <= 0 ? Math.Log(SettingsDictionary.lnzero) : Math.Log(num);
+        }
+
     }
 }

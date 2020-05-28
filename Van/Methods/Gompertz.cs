@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Van.DataBase.Models;
 using Van.Helper.Classes;
 using Van.Helper.StaticInfo;
 using Van.Methods.Helper;
@@ -9,6 +10,8 @@ namespace Van.Methods
 {
     public class Gompertz : MethodAbstractClass
     {
+        public override int ParametrCount { get; set; } = 1;
+
         public Gompertz(List<double> tValue, List<int> t, double r, List<int> delta = null)
             : base(tValue, t, r, delta) { }
 
@@ -83,7 +86,7 @@ namespace Van.Methods
 
             lambda = alpha * r * Math.Pow(sum - t.Count(), -1);
 
-            LValue = r * Math.Log(lambda) + FirstSum(alpha) + (lambda / alpha) * (t.Count() - sum);
+            LValue = r * lambda.GetLn() + FirstSum(alpha) + (lambda / alpha) * (t.Count() - sum);
         }
 
         public override double SurvivalFunction(double tValue)

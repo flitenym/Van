@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Van.DataBase.Models;
 using Van.Helper.Classes;
 using Van.Helper.StaticInfo;
 using Van.Methods.Helper;
@@ -9,6 +10,8 @@ namespace Van.Methods
 {
     public class Relay : MethodAbstractClass
     {
+        public override int ParametrCount { get; set; } = 1;
+
         public Relay(List<double> tValue, List<int> t, double r, List<int> delta = null)
             : base(tValue, t, r, delta) { }
 
@@ -20,7 +23,7 @@ namespace Van.Methods
 
             for (int i = 0; i < t.Count(); i++)
             {
-                firstSum += delta[i] * Math.Log((t[i] == 0 ? 0.1 : t[i]) / Math.Pow(lambda, 2));
+                firstSum += delta[i] * (t[i]/ Math.Pow(lambda, 2)).GetLn();
             }
 
             double secondSum = 0;

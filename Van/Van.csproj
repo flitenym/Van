@@ -162,6 +162,7 @@
     <Compile Include="Methods\Exponential.cs" />
     <Compile Include="Methods\Gompertz.cs" />
     <Compile Include="Methods\Standart.cs" />
+    <Compile Include="Methods\LogLogistic.cs" />
     <Compile Include="Methods\Weibull.cs" />
     <Compile Include="Model\DistributionModel.cs" />
     <Compile Include="Model\ExcludingMortalityModel.cs" />

@@ -33,6 +33,9 @@ namespace Van.DataBase.Models
         [Description("Экспоненциальное")]
         public double? Exponential { get; set; }
 
+        [Description("Логлогистическое")]
+        public double? LogLogistic { get; set; }
+
         public object Clone()
         {
             return new ResidualSurvivalFunction
@@ -44,7 +47,8 @@ namespace Van.DataBase.Models
                 Weibull = this.Weibull,
                 Relay = this.Relay,
                 Gompertz = this.Gompertz,
-                Exponential = this.Exponential
+                Exponential = this.Exponential,
+                LogLogistic = this.LogLogistic
             };
         }
     }

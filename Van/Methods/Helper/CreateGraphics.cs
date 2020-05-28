@@ -37,6 +37,7 @@ namespace Van.Methods.Helper
                 resultListData[i].Exponential = GetDivide(firstListData[i].Exponential, secondListData[i].Exponential);
                 resultListData[i].Gompertz = GetDivide(firstListData[i].Gompertz, secondListData[i].Gompertz);
                 resultListData[i].Relay = GetDivide(firstListData[i].Relay, secondListData[i].Relay);
+                resultListData[i].LogLogistic = GetDivide(firstListData[i].LogLogistic, secondListData[i].LogLogistic);
             }
 
             return resultListData;
@@ -104,6 +105,16 @@ namespace Van.Methods.Helper
                     PointGeometry = null
                 };
                 seriescCollection.Add(relay);
+
+                var logLogistic = new LineSeries
+                {
+                    Title = "Логлогистическое",
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogLogistic ?? 0, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                seriescCollection.Add(logLogistic);
             }));
 
             return seriescCollection;

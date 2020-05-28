@@ -141,6 +141,21 @@
                     Content="Вычислить данные методы"
                     Foreground="{DynamicResource PreWindowButtonForeground}"
                     Style="{DynamicResource MaterialDesignRaisedButton}" />
+
+                <TextBox
+                        Width="250"
+                        materialDesign:HintAssist.Hint="Значение epsilon"
+                        AcceptsReturn="True"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding EpsilonValue}" />
+
+                <TextBox
+                        Width="250"
+                        materialDesign:HintAssist.Hint="Значение ln при 0"
+                        AcceptsReturn="True"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding LnZeroValue}" />
+
             </StackPanel>
 
             <TextBlock
