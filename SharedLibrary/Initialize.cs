@@ -54,8 +54,10 @@ namespace SharedLibrary
                     SharedProvider.SetToSingleton(nameof(InfoViewModel), infovm);
 
                     var mainWindow = new MainWindowView();
+                    SharedProvider.SetToSingleton(nameof(MainWindowView), mainWindow);
 
                     mainWindow.DataContext = vm;
+
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
                     splashScreen.Close();

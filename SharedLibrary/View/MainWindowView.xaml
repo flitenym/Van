@@ -10,10 +10,9 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:nodes="clr-namespace:SharedLibrary.Helper.Classes"
-    Width="1024"
+    Width="1200"
     Height="720"
-    FontSize="14"
-    Foreground="{DynamicResource WindowForeground}" 
+    Foreground="{DynamicResource WindowForeground}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 

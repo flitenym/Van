@@ -18,6 +18,7 @@ using Dapper;
 using SharedLibrary.Provider;
 using System.Collections.Generic;
 using SharedLibrary.Commands;
+using SharedLibrary.View;
 
 namespace SharedLibrary.ViewModel
 {
@@ -584,6 +585,56 @@ $@"1. Файл должен скачиваться по ссылке из инт
         }
 
         #endregion
+
+        #endregion
+
+        #region Размер шрифта
+
+        private int fontSizeValue = 14;
+
+        public int FontSizeValue
+        {
+            get { return fontSizeValue; }
+            set
+            {
+                fontSizeValue = value;
+                var mainWindowView = SharedProvider.GetFromDictionaryByKey(nameof(MainWindowView)) as MainWindowView;
+                if (mainWindowView != null)
+                {
+                    mainWindowView.FontSize = fontSizeValue;
+                    FontSizeChangingCommand.Execute(fontSizeValue);
+                }
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(FontSizeValue)));
+            }
+        }
+
+        private AsyncCommand fontSizeChangingCommand;
+        public AsyncCommand FontSizeChangingCommand => fontSizeChangingCommand ?? (fontSizeChangingCommand = new AsyncCommand(obj => UpdateFontSize(obj as int?)));
+
+        private async Task UpdateFontSize(int? fontSize) {
+            if (fontSize == null)
+            {
+                await Message("Размер шрифта не задан");
+                return;
+            }
+             
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await slc.OpenAsync();
+                connectionStringData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.fontSizeKey}'")).FirstOrDefault();
+            }
+
+            if (connectionStringData == null)
+            {
+                var fontSizeData = new Settings() { Name = InfoKeys.fontSizeKey, Value = connectionString };
+                await SQLExecutor.InsertExecutorAsync(connectionStringData, connectionStringData);
+            } 
+
+            if (connectionStringData != null && connectionStringData.Value != connectionString)
+            { 
+                await SQLExecutor.UpdateExecutorAsync(connectionStringData, connectionStringData, connectionStringData.ID);
+            }
+        }
 
         #endregion
 

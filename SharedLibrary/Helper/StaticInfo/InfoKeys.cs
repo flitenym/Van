@@ -7,6 +7,7 @@
         #region Ключи в настройках
 
         public static string ConnectionStringKey = "ConnectionString";
+        public static string fontSizeKey = "FontSize";
         public static string SelectedThemeKey = "SelectedTheme";
         public static string SelectedThemeDarkOrLightKey = "SelectedThemeDarkOrLight";
 
