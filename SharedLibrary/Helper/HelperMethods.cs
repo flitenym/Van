@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
@@ -9,9 +10,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dapper;
 using SharedLibrary.AbstractClasses;
 using SharedLibrary.Helper.Attributes;
 using SharedLibrary.Helper.StaticInfo;
+using SharedLibrary.LocalDataBase;
+using SharedLibrary.LocalDataBase.Models;
 using SharedLibrary.Provider;
 using SharedLibrary.ViewModel;
 
@@ -274,5 +278,44 @@ namespace SharedLibrary.Helper
 
             return assembly.GetName().Version.ToString();
         }
+
+        public static async Task<int> GetFontSize()
+        {
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await slc.OpenAsync();
+                var fontSizeData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.fontSizeKey}'")).FirstOrDefault();
+
+                if (fontSizeData != null && !string.IsNullOrEmpty(fontSizeData.Value))
+                {
+                    return Convert.ToInt32(fontSizeData.Value);
+                }
+                else return 14;
+            }
+        }
+
+        public static async Task UpdateFontSize(int? fontSize)
+        {
+            Settings fontSizeData;
+
+            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
+            {
+                await slc.OpenAsync();
+                fontSizeData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.fontSizeKey}'")).FirstOrDefault();
+            }
+
+            if (fontSizeData == null)
+            {
+                fontSizeData = new Settings() { Name = InfoKeys.fontSizeKey, Value = fontSize.ToString() };
+                await SQLExecutor.InsertExecutorAsync(fontSizeData, fontSizeData);
+            }
+
+            if (fontSizeData != null && fontSizeData.Value != fontSize.ToString())
+            {
+                fontSizeData.Value = fontSize.ToString();
+                await SQLExecutor.UpdateExecutorAsync(fontSizeData, fontSizeData, fontSizeData.ID);
+            }
+        }
+
     }
 }

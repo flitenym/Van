@@ -19,12 +19,20 @@ using SharedLibrary.Provider;
 using System.Collections.Generic;
 using SharedLibrary.Commands;
 using SharedLibrary.View;
+using System.Collections.ObjectModel;
+using SharedLibrary.Helper;
 
 namespace SharedLibrary.ViewModel
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public SettingsViewModel()
+        {
+            FontDataList = new ObservableCollection<int>(Enumerable.Range(14, 12));
+            FontSizeGetCommand.Execute(null);
+        }
 
         #region Темы
 
@@ -590,7 +598,19 @@ $@"1. Файл должен скачиваться по ссылке из инт
 
         #region Размер шрифта
 
-        private int fontSizeValue = 14;
+        private ObservableCollection<int> fontDataList = new ObservableCollection<int>();
+
+        public ObservableCollection<int> FontDataList
+        {
+            get { return fontDataList; }
+            set
+            {
+                fontDataList = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(FontDataList)));
+            }
+        }
+
+        private int fontSizeValue;
 
         public int FontSizeValue
         {
@@ -611,29 +631,17 @@ $@"1. Файл должен скачиваться по ссылке из инт
         private AsyncCommand fontSizeChangingCommand;
         public AsyncCommand FontSizeChangingCommand => fontSizeChangingCommand ?? (fontSizeChangingCommand = new AsyncCommand(obj => UpdateFontSize(obj as int?)));
 
-        private async Task UpdateFontSize(int? fontSize) {
-            if (fontSize == null)
-            {
-                await Message("Размер шрифта не задан");
-                return;
-            }
-             
-            using (var slc = new SQLiteConnection(SQLExecutor.LoadConnectionString))
-            {
-                await slc.OpenAsync();
-                connectionStringData = (await slc.QueryAsync<Settings>($"SELECT * FROM {nameof(Settings)} Where Name = '{InfoKeys.fontSizeKey}'")).FirstOrDefault();
-            }
+        private async Task UpdateFontSize(int? fontSize)
+        {
+            await HelperMethods.UpdateFontSize(fontSize);
+        }
 
-            if (connectionStringData == null)
-            {
-                var fontSizeData = new Settings() { Name = InfoKeys.fontSizeKey, Value = connectionString };
-                await SQLExecutor.InsertExecutorAsync(connectionStringData, connectionStringData);
-            } 
+        private AsyncCommand fontSizeGetCommand;
+        public AsyncCommand FontSizeGetCommand => fontSizeGetCommand ?? (fontSizeGetCommand = new AsyncCommand(x => GetFontSize()));
 
-            if (connectionStringData != null && connectionStringData.Value != connectionString)
-            { 
-                await SQLExecutor.UpdateExecutorAsync(connectionStringData, connectionStringData, connectionStringData.ID);
-            }
+        private async Task GetFontSize()
+        {
+            fontSizeValue = await HelperMethods.GetFontSize();
         }
 
         #endregion

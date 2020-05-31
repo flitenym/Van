@@ -18,6 +18,8 @@ using Dapper;
 using System.Threading.Tasks;
 using SharedLibrary.Provider;
 using SharedLibrary.Commands;
+using SharedLibrary.Helper;
+using SharedLibrary.View;
 
 namespace SharedLibrary.ViewModel
 {
@@ -39,15 +41,11 @@ namespace SharedLibrary.ViewModel
 
             SetViewModels();
 
-            Task.Factory.StartNew(async () =>
-                //загрузка тем из локальной БД
-                await GetThemesAsync()
-            );
+            GetThemesCommand.Execute(null);
 
-            Task.Factory.StartNew(async () =>
-                //подключение к внешней БД (загрузка connectionString из локальной БД)
-                await DatabaseOperation.ConnectionStringAsync()
-            );
+            GetConnectionString.Execute(null);
+
+            FontSizeCommand.Execute(null);
         }
 
         #region Fields
@@ -189,6 +187,25 @@ namespace SharedLibrary.ViewModel
         #endregion
 
         #region Methods
+
+        private AsyncCommand getConnectionString;
+        public AsyncCommand GetConnectionString => getConnectionString ?? (getConnectionString = new AsyncCommand(x => DatabaseOperation.ConnectionStringAsync()));
+
+        private AsyncCommand fontSizeCommand;
+        public AsyncCommand FontSizeCommand => fontSizeCommand ?? (fontSizeCommand = new AsyncCommand(x => FontSize()));
+
+        public async Task FontSize()
+        {
+            var mainWindowView = SharedProvider.GetFromDictionaryByKey(nameof(MainWindowView)) as MainWindowView;
+            if (mainWindowView != null)
+            {
+                mainWindowView.FontSize = await HelperMethods.GetFontSize();
+                await HelperMethods.UpdateFontSize((int)mainWindowView.FontSize);
+            }
+        }
+
+        private AsyncCommand getThemesCommand;
+        public AsyncCommand GetThemesCommand => getThemesCommand ?? (getThemesCommand = new AsyncCommand(x => GetThemesAsync()));
 
         public async Task GetThemesAsync()
         {

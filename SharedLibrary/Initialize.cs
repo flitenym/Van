@@ -46,15 +46,15 @@ namespace SharedLibrary
                         InfoKeys.ThemesKey,
                         HelperMethods.GetAllInstancesOf<ThemeBase>(new List<ThemeBase>()).ToList());
 
+                    var mainWindow = new MainWindowView();
+                    SharedProvider.SetToSingleton(nameof(MainWindowView), mainWindow);
+
                     //Основная ViewModel
                     var vm = new MainWindowViewModel();
                     SharedProvider.SetToSingleton(nameof(MainWindowViewModel), vm);
 
                     var infovm = new InfoViewModel();
                     SharedProvider.SetToSingleton(nameof(InfoViewModel), infovm);
-
-                    var mainWindow = new MainWindowView();
-                    SharedProvider.SetToSingleton(nameof(MainWindowView), mainWindow);
 
                     mainWindow.DataContext = vm;
 

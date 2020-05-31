@@ -245,19 +245,17 @@
             Grid.Row="2"
             Grid.Column="2"
             Orientation="Horizontal">
-            <TextBox
-                    VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Width="150"
-                    Margin="20"
-                    materialDesign:HintAssist.Hint="Размер шрифта"
-                    AcceptsReturn="True"
-                    Text="{Binding FontSizeValue}" />
+            <ComboBox
+                    Margin="100,0,0,0"
+                    Width="60"
+                    ItemsSource="{Binding FontDataList}"
+                    SelectedValue="{Binding FontSizeValue}" />
         </StackPanel>
 
 
 
         <Grid
-            Grid.RowSpan="3"
+            Grid.RowSpan="4"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom">
