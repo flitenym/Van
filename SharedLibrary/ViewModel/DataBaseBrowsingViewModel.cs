@@ -15,10 +15,11 @@ using SharedLibrary.Helper.Attributes;
 using SharedLibrary.LocalDataBase;
 using SharedLibrary.View;
 using SharedLibrary.ViewModel;
-using IronXL;
 using Microsoft.Win32;
 using static SharedLibrary.Helper.HelperMethods;
 using System.Windows.Controls;
+using System.IO;
+using ExcelDataReader;
 
 namespace SharedLibrary.ViewModel
 {
@@ -321,9 +322,10 @@ namespace SharedLibrary.ViewModel
                 string fileName = openFileDialog.FileName;
                 try
                 {
-                    WorkBook workbook = WorkBook.Load(fileName);
                     var loadFromExcelWindow = new LoadFromExcelWindowView();
-                    var vm = new LoadFromExcelWindowViewModel(workbook, SelectedModel, SelectedModelType);
+
+                    var vm = new LoadFromExcelWindowViewModel(fileName, SelectedModel, SelectedModelType);
+
                     loadFromExcelWindow.DataContext = vm;
                     if (loadFromExcelWindow.ShowDialog() == true)
                     {

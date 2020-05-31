@@ -1,14 +1,15 @@
-﻿using SharedLibrary.AbstractClasses;
+﻿using ExcelDataReader;
+using SharedLibrary.AbstractClasses;
 using SharedLibrary.Commands;
 using SharedLibrary.Helper;
 using SharedLibrary.LocalDataBase;
-using IronXL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows; 
 
 namespace SharedLibrary.ViewModel
 {
@@ -16,18 +17,18 @@ namespace SharedLibrary.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public LoadFromExcelWindowViewModel(WorkBook workBook, ModelClass modelClassItem, Type type)
+        public LoadFromExcelWindowViewModel(string fileName, ModelClass modelClassItem, Type type)
         {
-            this.workBook = workBook;
             this.type = type;
             this.modelClassItem = modelClassItem;
-            WorkSheets = workBook.WorkSheets;
-            WorkSheet = WorkSheets.First();
+            this.fileName = fileName;
+
+            GetDataTableData();
         }
 
         #region Fields
 
-        public WorkBook workBook;
+        public string fileName;
         public Type type;
         public ModelClass modelClassItem;
 
@@ -57,8 +58,8 @@ $@"При загрузке из Excel следует придерживатьс�
 
         #region Выбранный лист
 
-        private WorkSheet workSheet;
-        public WorkSheet WorkSheet
+        private string workSheet;
+        public string WorkSheet
         {
             get { return workSheet; }
             set
@@ -72,8 +73,8 @@ $@"При загрузке из Excel следует придерживатьс�
 
         #region Все доступные листы в Excel
 
-        private WorksheetsCollection workSheets;
-        public WorksheetsCollection WorkSheets
+        private List<string> workSheets = new List<string>();
+        public List<string> WorkSheets
         {
             get { return workSheets; }
             set
@@ -90,9 +91,9 @@ $@"При загрузке из Excel следует придерживатьс�
         #region Команда для старта загрузки
 
         private AsyncCommand startCommand;
-        public AsyncCommand StartCommand => startCommand ?? (startCommand = new AsyncCommand(obj => StartLoadingAsync(obj as Window)));
+        public AsyncCommand StartCommand => startCommand ?? (startCommand = new AsyncCommand(obj => StartLoadingAsync(obj as System.Windows.Window)));
 
-        public async Task StartLoadingAsync(Window window)
+        public async Task StartLoadingAsync(System.Windows.Window window)
         {
             await LoadAsync();
 
@@ -103,7 +104,19 @@ $@"При загрузке из Excel следует придерживатьс�
         {
             try
             {
-                var dataTable = WorkSheet.ToDataTable(ignoreFirstRow);
+                var result = GetDataSet();
+
+                DataTable dataTable = new DataTable();
+
+                for (int i = 0; i < result.Tables.Count; i++)
+                {
+                    if (result.Tables[i].TableName == workSheet)
+                    {
+                        dataTable = result.Tables[i];
+                        break;
+                    }
+                }
+
                 List<object> listObj = new List<object>();
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
@@ -128,6 +141,34 @@ $@"При загрузке из Excel следует придерживатьс�
             }
         }
 
+        public void GetDataTableData()
+        {
+            DataSet result = GetDataSet();
+
+            WorkSheets.Clear();
+
+            for (int i = 0; i < result.Tables.Count; i++)
+            {
+                workSheets.Add(result.Tables[i].TableName);
+            }
+
+            workSheet = workSheets.FirstOrDefault();
+        }
+
+        public DataSet GetDataSet()
+        {
+            using (var stream = File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    return reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = ignoreFirstRow }
+                    });
+                }
+            }
+        }
+
         #endregion
 
         #region Команда для отмены загрузки
@@ -137,7 +178,7 @@ $@"При загрузке из Excel следует придерживатьс�
 
         public void CancelFunction(object obj)
         {
-            (obj as Window).DialogResult = false;
+            (obj as System.Windows.Window).DialogResult = false;
         }
 
         #endregion
