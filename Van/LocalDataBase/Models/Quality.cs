@@ -40,6 +40,9 @@ namespace Van.DataBase.Models
         [Description("Логлогистическое")]
         public double? LogLogistic { get; set; }
 
+        [Description("Логнормальное")]
+        public double? LogNormal { get; set; }
+
         public object Clone()
         {
             return new Quality
@@ -53,7 +56,8 @@ namespace Van.DataBase.Models
                 Relay = this.Relay,
                 Gompertz = this.Gompertz,
                 Exponential = this.Exponential,
-                LogLogistic = this.LogLogistic                
+                LogLogistic = this.LogLogistic,
+                LogNormal = this.LogNormal
             };
         }
     }

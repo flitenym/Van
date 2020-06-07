@@ -11,11 +11,11 @@ using static Van.Methods.Helper.Shared;
 
 namespace Van.Methods
 {
-    public class LogLogistic : MethodAbstractClass
+    public class LogNormal : MethodAbstractClass
     {
         public override int ParametrCount { get; set; } = 2;
 
-        public LogLogistic(List<double> tValue, List<int> t, double r, List<int> delta = null)
+        public LogNormal(List<double> tValue, List<int> t, double r, List<int> delta = null)
             : base(tValue, t, r, delta) { }
 
         public double mu { get; set; }
@@ -29,22 +29,22 @@ namespace Van.Methods
 
         private double Get_first_first(double z)
         {
-            return 1 - 2 * Math.Exp(z) / (1 + Math.Exp(z));
+            return -z;
         }
 
         private double Get_first_second(double z)
         {
-            return -Math.Exp(z) / (1 + Math.Exp(z));
+            return -GetDensityByZ(z) / GetSurvivalByZ(z);
         }
 
         private double Get_second_first(double z)
         {
-            return - 2 * Math.Exp(z) / ((1 + Math.Exp(z))* (1 + Math.Exp(z)));
+            return -1;
         }
 
         private double Get_second_second(double z)
         {
-            return -Math.Exp(z) / ((1 + Math.Exp(z)) * (1 + Math.Exp(z)));
+            return z * GetDensityByZ(z) / GetSurvivalByZ(z) - Math.Pow(GetDensityByZ(z) / GetSurvivalByZ(z), 2);
         }
 
         private double[] Get_Q_Matrix(List<int> t, List<int> delta, double r)
@@ -140,13 +140,23 @@ namespace Van.Methods
         public override double SurvivalFunction(double tValue)
         {
             double z = GetZValue(tValue);
-            return 1.0 / (1.0 + Math.Exp(z)); 
+            return GetSurvivalByZ(z); 
+        }
+
+        public double GetSurvivalByZ(double zValue)
+        {
+            return 1.0 - GetDensityByZ(zValue);
         }
 
         public override double GetDensity(double tValue)
         {
             double z = GetZValue(tValue);
-            return Math.Exp(z) / ((1.0 + Math.Exp(z)) * (1.0 + Math.Exp(z)));
+            return GetDensityByZ(z);
+        }
+
+        public double GetDensityByZ(double zValue)
+        {
+            return Math.Exp(-zValue * zValue / 2.0) / Math.Sqrt(2.0 * Math.PI);
         }
     }
 }

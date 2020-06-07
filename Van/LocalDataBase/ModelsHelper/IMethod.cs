@@ -8,5 +8,6 @@
         double? Gompertz { get; set; }
         double? Exponential { get; set; }
         double? LogLogistic { get; set; }
+        double? LogNormal { get; set; }
     }
 }

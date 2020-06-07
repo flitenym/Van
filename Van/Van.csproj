@@ -158,6 +158,7 @@
     <Compile Include="Methods\Helper\CreateGraphics.cs" />
     <Compile Include="Methods\Helper\MethodAbstractClass.cs" />
     <Compile Include="Methods\Helper\Shared.cs" />
+    <Compile Include="Methods\LogNormal.cs" />
     <Compile Include="Methods\Relay.cs" />
     <Compile Include="Methods\Exponential.cs" />
     <Compile Include="Methods\Gompertz.cs" />

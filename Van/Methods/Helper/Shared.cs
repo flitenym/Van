@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.RightsManagement;
 using Van.Helper.StaticInfo;
 
@@ -27,6 +29,30 @@ namespace Van.Methods.Helper
         public static double GetDetermine(double[,] matrix)
         {
             return matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0, 1];
+        }
+
+        public static double[,] GetInverseHMatrix(double[,] H)
+        {
+            double[,] inverseH = new double[2, 2];
+
+            var determine = GetDetermine(H);
+
+            if (determine == 0)
+            {
+                inverseH[0, 0] = 0;
+                inverseH[0, 1] = 0;
+                inverseH[1, 0] = 0;
+                inverseH[1, 1] = 0;
+            }
+            else
+            {
+                inverseH[0, 0] = H[1, 1] / determine;
+                inverseH[0, 1] = H[1, 0] / -determine;
+                inverseH[1, 0] = H[0, 1] / -determine;
+                inverseH[1, 1] = H[0, 0] / determine;
+            }
+
+            return inverseH;
         }
 
         public static double[] GetMultiplyMatrix(double[,] H, double[] G)

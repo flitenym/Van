@@ -38,6 +38,7 @@ namespace Van.Methods.Helper
                 resultListData[i].Gompertz = GetDivide(firstListData[i].Gompertz, secondListData[i].Gompertz);
                 resultListData[i].Relay = GetDivide(firstListData[i].Relay, secondListData[i].Relay);
                 resultListData[i].LogLogistic = GetDivide(firstListData[i].LogLogistic, secondListData[i].LogLogistic);
+                resultListData[i].LogNormal = GetDivide(firstListData[i].LogNormal, secondListData[i].LogNormal);
             }
 
             return resultListData;
@@ -115,6 +116,16 @@ namespace Van.Methods.Helper
                     PointGeometry = null
                 };
                 seriescCollection.Add(logLogistic);
+
+                var logNormal = new LineSeries
+                {
+                    Title = "Логнормальное",
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogNormal ?? 0, SettingsDictionary.round))),
+                    Fill = Brushes.Transparent,
+                    StrokeThickness = strokeThickness,
+                    PointGeometry = null
+                };
+                seriescCollection.Add(logNormal);
             }));
 
             return seriescCollection;
