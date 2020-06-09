@@ -245,18 +245,23 @@ namespace SharedLibrary.ViewModel
 
         #region Команда для просмотра
 
-        public DataTable resultDataTable = new DataTable();
-
         private RelayCommand showDataCommand;
         public RelayCommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(x => ShowData(), y => CanStart()));
 
         public void ShowData()
         {
-            var showDataTable = new ShowDataTableView();
-            var vm = new ShowDataTableViewModel(resultDataTable);
-            showDataTable.DataContext = vm;
+            DataTable dataTable = null;
 
-            showDataTable.ShowDialog();
+            Task.Factory.StartNew(async () => { dataTable = await GetDataTable(); }).Wait();
+
+
+            if (dataTable != null)
+            {
+                var showDataTable = new ShowDataTableView();
+                var vm = new ShowDataTableViewModel(dataTable);
+                showDataTable.DataContext = vm;
+                showDataTable.ShowDialog();
+            }
         }
 
         #endregion
@@ -284,7 +289,25 @@ namespace SharedLibrary.ViewModel
 
         public async Task LoadAsync()
         {
-            
+            var dataTable = await GetDataTable();
+
+            List<object> listObj = new List<object>();
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                listObj.Add(dataTable.Rows[i].ToObjectLoad(type));
+            }
+            if (listObj.Count > 0)
+            {
+                await HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
+                for (int i = 0; i < listObj.Count; i++)
+                {
+                    await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
+                }
+            }
+            else
+            {
+                await HelperMethods.Message($"Данные не найдены");
+            }
         }
 
         #endregion
@@ -303,10 +326,6 @@ namespace SharedLibrary.ViewModel
 
         public async Task<DataTable> GetDataTable()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("AgeX");
-            dt.Columns.Add("NumberOfSurvivors");
-
             string resultCoef = string.Empty;
             for (int i = 1; i < CoefficientData.Count; i++)
             {
@@ -341,15 +360,15 @@ namespace SharedLibrary.ViewModel
                 return null;
             }
 
-            List<int> countData = new List<int>();
-            List<int> coefData = new List<int>();
+            List<double> countData = new List<double>();
+            List<double> coefData = new List<double>();
 
 
             var splitsCount = resultCount.Split(',');
 
             for (int i = 4; i < splitsCount.Length; i++)
             {
-                if (int.TryParse(splitsCount[i].Trim(), out int val))
+                if (double.TryParse(splitsCount[i].Trim(), out double val))
                 {
                     countData.Add(val);
                 }
@@ -359,24 +378,38 @@ namespace SharedLibrary.ViewModel
 
             for (int i = 4; i < splitsCoef.Length; i++)
             {
-                if (int.TryParse(splitsCoef[i].Trim(), out int val))
+                if (double.TryParse(splitsCoef[i].Trim(), out double val))
                 {
                     coefData.Add(val);
                 }
             }
 
-            List<int> resultData = new List<int>();
+            List<double> resultSurvivorsData = new List<double>();
+            List<double> resultDeadData = new List<double>();
 
             for (int i = 0; i < Math.Min(countData.Count(), coefData.Count()); i++)
             {
-
+                resultDeadData.Add(countData[i] * coefData[i] / 1000.0); 
             }
 
-            for (int i = 0; i < resultData.Count(); i++)
+            resultSurvivorsData.Add(resultDeadData.Sum());
+
+            for (int i = 1; i < resultDeadData.Count(); i++)
+            {
+                resultSurvivorsData.Add(resultSurvivorsData.Last() - resultDeadData[i]);
+            }
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("AgeX");
+            dt.Columns.Add("NumberOfSurvivors");
+            dt.Columns.Add("NumberOfDead");
+
+            for (int i = 0; i < resultDeadData.Count(); i++)
             {
                 DataRow dr = dt.NewRow();
                 dr["AgeX"] = i;
-                dr["NumberOfSurvivors"] = resultData[i];
+                dr["NumberOfSurvivors"] = Convert.ToInt32(resultSurvivorsData[i]);
+                dr["NumberOfDead"] = Convert.ToInt32(resultDeadData[i]);
                 dt.Rows.Add(dr);
             }
 
