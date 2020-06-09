@@ -42,6 +42,7 @@ namespace SharedLibrary.ViewModel
             models.ForEach(x => x.SetCanDelete(GetModelCanDeleteAttribute(x)));
             models.ForEach(x => x.SetCanUpdate(GetModelCanUpdateAttribute(x)));
             models.ForEach(x => x.SetCanLoad(GetModelCanLoadAttribute(x)));
+            models.ForEach(x => x.SetCanUpload(GetModelCanUploadAttribute(x)));
             models.ForEach(x => x.SetIsVisible(GetModelIsVisibleAttribute(x)));
 
             DatabaseModelsData = new ObservableCollection<ModelClass>(models.Where(x => x.GetIsVisible() == true));
@@ -290,6 +291,17 @@ namespace SharedLibrary.ViewModel
             return true;
         }
 
+        private bool GetModelCanUploadAttribute(object model)
+        {
+            var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
+            if (customAttributes.Length > 0)
+            {
+                var myAttribute = customAttributes[0];
+                return myAttribute.CanUpload;
+            }
+            return true;
+        }
+
         private bool GetModelIsVisibleAttribute(object model)
         {
             var customAttributes = (ModelClassAttribute[])model.GetType().GetCustomAttributes(typeof(ModelClassAttribute), true);
@@ -347,6 +359,44 @@ namespace SharedLibrary.ViewModel
         {
             if (SelectedModel == null) return false;
             return SelectedModel.GetCanLoad();
+        }
+
+        #endregion
+
+        #region Команда для загрузки из текста
+
+        private RelayCommand uploadCommand;
+
+        public RelayCommand UploadCommand => uploadCommand ?? (uploadCommand = new RelayCommand(x => Upload(), (o) => CanUpload()));
+
+        private void Upload()
+        {
+            try
+            {
+                var loadFromTXTWindow = new LoadFromTXTWindowView();
+
+                var vm = new LoadFromTXTWindowViewModel(SelectedModel, SelectedModelType);
+
+                loadFromTXTWindow.DataContext = vm;
+                if (loadFromTXTWindow.ShowDialog() == true)
+                {
+                    Task.Factory.StartNew(() =>
+                        Select()
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Task.Factory.StartNew(() =>
+                    Message($"{ex.Message}")
+                );
+            }
+        }
+
+        private bool CanUpload()
+        {
+            if (SelectedModel == null) return false;
+            return SelectedModel.GetCanUpload();
         }
 
         #endregion

@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Van.DataBase.Models
 {
-    [ModelClass(TableTitle = "Таблица выживаемости")]
+    [ModelClass(TableTitle = "Таблица выживаемости", CanUpload = true)]
     public class MortalityTable : ModelClass, ICloneable
     {
         [ColumnData(ShowInTable = false)]

@@ -124,10 +124,12 @@
     <Compile Include="ViewModel\ConnectionDataBaseViewModel.cs" />
     <Compile Include="ViewModel\DataBaseBrowsingViewModel.cs" />
     <Compile Include="ViewModel\InfoViewModel.cs" />
+    <Compile Include="ViewModel\LoadFromTXTWindowViewModel.cs" />
     <Compile Include="ViewModel\LoadFromExcelWindowViewModel.cs" />
     <Compile Include="ViewModel\MainMenuViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="ViewModel\ShowDataTableViewModel.cs" />
     <Compile Include="ViewModel\SplashScreenWindowViewModel.cs" />
     <Compile Include="View\ConnectionDataBaseView.xaml.cs">
       <DependentUpon>ConnectionDataBaseView.xaml</DependentUpon>
@@ -137,6 +139,12 @@
     </Compile>
     <Compile Include="View\InfoView.xaml.cs">
       <DependentUpon>InfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ShowDataTableView.xaml.cs">
+      <DependentUpon>ShowDataTableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LoadFromTXTWindowView.xaml.cs">
+      <DependentUpon>LoadFromTXTWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoadFromExcelWindowView.xaml.cs">
       <DependentUpon>LoadFromExcelWindowView.xaml</DependentUpon>
@@ -188,6 +196,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\InfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ShowDataTableView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LoadFromTXTWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

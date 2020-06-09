@@ -12,6 +12,7 @@ namespace SharedLibrary.Helper.Attributes
         public bool CanDelete { get; set; } = true;
         public bool CanUpdate { get; set; } = true;
         public bool CanLoad { get; set; } = true;
+        public bool CanUpload { get; set; } = false;
         public bool IsVisible { get; set; } = true;
     }
 }

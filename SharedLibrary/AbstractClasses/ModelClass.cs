@@ -53,6 +53,15 @@ namespace SharedLibrary.AbstractClasses
 
         #endregion
 
+        #region CanUpload
+
+        private bool CanUpload { get; set; }
+
+        public bool GetCanUpload() => CanUpload;
+        public void SetCanUpload(bool value) { CanUpload = value; }
+
+        #endregion
+
         public string InsertQuery(object obj)
         {
             var typeProperties = obj.GetType().GetProperties();

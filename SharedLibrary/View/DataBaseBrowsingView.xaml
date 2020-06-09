@@ -223,6 +223,20 @@
                         Width="auto"
                         Height="auto"
                         VerticalAlignment="Center"
+                        Command="{Binding UploadCommand}"
+                        Foreground="{DynamicResource PreWindowButtonForeground}"
+                        Style="{DynamicResource ButtonZoom}"
+                        ToolTip="Загрузить из TXT (Частный случай)"
+                        ToolTipService.Placement="Top">
+                        <materialDesign:PackIcon
+                            Width="30"
+                            Height="Auto"
+                            Kind="ProgressUpload" />
+                    </Button>
+                    <Button
+                        Width="auto"
+                        Height="auto"
+                        VerticalAlignment="Center"
                         Command="{Binding LoadCommand}"
                         Foreground="{DynamicResource PreWindowButtonForeground}"
                         Style="{DynamicResource ButtonZoom}"
