@@ -12,6 +12,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Converters;
 
 namespace SharedLibrary.ViewModel
 {
@@ -54,6 +56,8 @@ namespace SharedLibrary.ViewModel
             set
             {
                 years = value;
+                if (years != null)
+                    Year = years.FirstOrDefault();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(Years)));
             }
         }
@@ -84,6 +88,8 @@ namespace SharedLibrary.ViewModel
             set
             {
                 regs = value;
+                if (regs != null)
+                    Reg = regs.FirstOrDefault();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(Regs)));
             }
         }
@@ -114,6 +120,8 @@ namespace SharedLibrary.ViewModel
             set
             {
                 groups = value;
+                if (groups != null)
+                    Group = groups.FirstOrDefault();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(Groups)));
             }
         }
@@ -144,6 +152,8 @@ namespace SharedLibrary.ViewModel
             set
             {
                 sexs = value;
+                if (sexs != null)
+                    Sex = sexs.FirstOrDefault();
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(Sexs)));
             }
         }
@@ -157,31 +167,7 @@ namespace SharedLibrary.ViewModel
         public List<string> CountData = new List<string>();
 
         private RelayCommand getCountCommand;
-        public RelayCommand GetCountCommand => getCountCommand ?? (getCountCommand = new RelayCommand(x => GetCount()));
-
-        public void GetCount()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "TXT Files|*.txt"
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string filepath = openFileDialog.FileName;
-
-                if (File.Exists(filepath))
-                {
-                    CountData = new List<string>();
-                    using (StreamReader sr = new StreamReader(filepath))
-                    {
-                        while (sr.Peek() >= 0)
-                        {
-                            CountData.Add(sr.ReadLine());
-                        }
-                    }
-                }
-            }
-        }
+        public RelayCommand GetCountCommand => getCountCommand ?? (getCountCommand = new RelayCommand(x => GetData(CountData, false)));
 
         #endregion
 
@@ -190,9 +176,11 @@ namespace SharedLibrary.ViewModel
         public List<string> CoefficientData = new List<string>();
 
         private RelayCommand getCoefficientCommand;
-        public RelayCommand GetCoefficientCommand => getCoefficientCommand ?? (getCoefficientCommand = new RelayCommand(x => GetCoefficient()));
+        public RelayCommand GetCoefficientCommand => getCoefficientCommand ?? (getCoefficientCommand = new RelayCommand(x => GetData(CoefficientData, true)));
 
-        public void GetCoefficient()
+        #endregion
+
+        public void GetData(List<string> dataList, bool isCoef)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -204,26 +192,63 @@ namespace SharedLibrary.ViewModel
 
                 if (File.Exists(filepath))
                 {
-                    CoefficientData = new List<string>();
+                    dataList = new List<string>();
+
                     using (StreamReader sr = new StreamReader(filepath))
                     {
                         while (sr.Peek() >= 0)
                         {
-                            CoefficientData.Add(sr.ReadLine());
+                            dataList.Add(sr.ReadLine());
                         }
                     }
+
+                    if (isCoef) CoefficientData = dataList; else CountData = dataList;
+
+                    var yearFromCoef = new List<string>();
+                    var regFromCoef = new List<string>();
+                    var groupFromCoef = new List<string>();
+                    var sexFromCoef = new List<string>();
+                    for (int i = 1; i < dataList.Count; i++)
+                    {
+                        var splits = dataList[i].Split(',');
+                        if (splits.Length > 3)
+                        {
+                            yearFromCoef.Add(splits[0].Trim());
+                            regFromCoef.Add(splits[1].Trim());
+                            groupFromCoef.Add(splits[2].Trim());
+                            sexFromCoef.Add(splits[3].Trim());
+                        }
+                    }
+
+                    var newYears = yearFromCoef.Distinct().ToList();
+                    var newRegs = regFromCoef.Distinct().ToList();
+                    var newGroups = groupFromCoef.Distinct().ToList();
+                    var newSexs = sexFromCoef.Distinct().ToList();
+
+                    if (newYears.Except(Years).Any())
+                        Years = newYears.OrderBy(x=>x).ToList();
+
+                    if (newRegs.Except(Regs).Any())
+                        Regs = newRegs.OrderBy(x => x).ToList();
+
+                    if (newGroups.Except(Groups).Any())
+                        Groups = newGroups.OrderBy(x => x).ToList();
+
+                    if (newSexs.Except(Sexs).Any())
+                        Sexs = newSexs.OrderBy(x => x).ToList();
                 }
             }
+
+            StartCommand.RaiseCanExecuteChanged();
+            ShowDataCommand.RaiseCanExecuteChanged();
         }
 
-        #endregion
-
-        #region Команда для коэф
+        #region Команда для просмотра
 
         public DataTable resultDataTable = new DataTable();
 
         private RelayCommand showDataCommand;
-        public RelayCommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(x => ShowData()));
+        public RelayCommand ShowDataCommand => showDataCommand ?? (showDataCommand = new RelayCommand(x => ShowData(), y => CanStart()));
 
         public void ShowData()
         {
@@ -250,7 +275,8 @@ namespace SharedLibrary.ViewModel
 
         public bool CanStart()
         {
-            if (CountData.Any() && CoefficientData.Any() && CountData.Count == CoefficientData.Count)
+            if (CountData.Any() && CoefficientData.Any() && CountData.Count == CoefficientData.Count
+                    && !string.IsNullOrEmpty(Year) && !string.IsNullOrEmpty(Reg) && !string.IsNullOrEmpty(Group) && !string.IsNullOrEmpty(Sex))
                 return true;
 
             return false;
@@ -258,44 +284,8 @@ namespace SharedLibrary.ViewModel
 
         public async Task LoadAsync()
         {
-            //try
-            //{
-            //    string result;
-
-            //    DataTable dataTable = new DataTable();
-
-            //    for (int i = 0; i < result.Tables.Count; i++)
-            //    {
-            //        if (result.Tables[i].TableName == workSheet)
-            //        {
-            //            dataTable = result.Tables[i];
-            //            break;
-            //        }
-            //    }
-
-            //    List<object> listObj = new List<object>();
-            //    for (int i = 0; i < dataTable.Rows.Count; i++)
-            //    {
-            //        listObj.Add(dataTable.Rows[i].ToObjectLoad(type));
-            //    }
-            //    if (listObj.Count > 0)
-            //    {
-            //        await HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
-            //        for (int i = 0; i < listObj.Count; i++)
-            //        {
-            //            await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        await HelperMethods.Message($"Данные не найдены");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    await HelperMethods.Message($"{ex.Message}");
-            //}
-        } 
+            
+        }
 
         #endregion
 
@@ -310,6 +300,88 @@ namespace SharedLibrary.ViewModel
         }
 
         #endregion
+
+        public async Task<DataTable> GetDataTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("AgeX");
+            dt.Columns.Add("NumberOfSurvivors");
+
+            string resultCoef = string.Empty;
+            for (int i = 1; i < CoefficientData.Count; i++)
+            {
+                var splits = CoefficientData[i].Split(',');
+                if (splits[0].Trim() == Year && splits[1].Trim() == Reg && splits[2].Trim() == Group && splits[3].Trim() == Sex)
+                {
+                    resultCoef = CoefficientData[i];
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(resultCoef))
+            {
+                await HelperMethods.Message("Не нашлось в файле коэффициентов данных по указанным");
+                return null;
+            }
+
+            string resultCount = string.Empty;
+            for (int i = 1; i < CountData.Count; i++)
+            {
+                var splits = CountData[i].Split(',');
+                if (splits[0].Trim() == Year && splits[1].Trim() == Reg && splits[2].Trim() == Group && splits[3].Trim() == Sex)
+                {
+                    resultCount = CountData[i];
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(resultCount))
+            {
+                await HelperMethods.Message("Не нашлось в файле населения данных по указанным");
+                return null;
+            }
+
+            List<int> countData = new List<int>();
+            List<int> coefData = new List<int>();
+
+
+            var splitsCount = resultCount.Split(',');
+
+            for (int i = 4; i < splitsCount.Length; i++)
+            {
+                if (int.TryParse(splitsCount[i].Trim(), out int val))
+                {
+                    countData.Add(val);
+                }
+            }
+
+            var splitsCoef = resultCoef.Split(',');
+
+            for (int i = 4; i < splitsCoef.Length; i++)
+            {
+                if (int.TryParse(splitsCoef[i].Trim(), out int val))
+                {
+                    coefData.Add(val);
+                }
+            }
+
+            List<int> resultData = new List<int>();
+
+            for (int i = 0; i < Math.Min(countData.Count(), coefData.Count()); i++)
+            {
+
+            }
+
+            for (int i = 0; i < resultData.Count(); i++)
+            {
+                DataRow dr = dt.NewRow();
+                dr["AgeX"] = i;
+                dr["NumberOfSurvivors"] = resultData[i];
+                dt.Rows.Add(dr);
+            }
+
+            return dt;
+        }
 
     }
 }
