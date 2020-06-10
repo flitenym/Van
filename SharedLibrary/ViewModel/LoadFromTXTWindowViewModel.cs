@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using SharedLibrary.AbstractClasses;
 using SharedLibrary.Commands;
 using SharedLibrary.Helper;
+using SharedLibrary.Helper.Attributes;
 using SharedLibrary.LocalDataBase;
 using SharedLibrary.View;
 using System;
@@ -226,7 +227,7 @@ namespace SharedLibrary.ViewModel
                     var newSexs = sexFromCoef.Distinct().ToList();
 
                     if (newYears.Except(Years).Any())
-                        Years = newYears.OrderBy(x=>x).ToList();
+                        Years = newYears.OrderBy(x => x).ToList();
 
                     if (newRegs.Except(Regs).Any())
                         Regs = newRegs.OrderBy(x => x).ToList();
@@ -389,32 +390,38 @@ namespace SharedLibrary.ViewModel
 
             for (int i = 0; i < Math.Min(countData.Count(), coefData.Count()); i++)
             {
-                resultDeadData.Add(countData[i] * coefData[i] / 1000.0); 
+                resultDeadData.Add(countData[i] * coefData[i] / 100000.0);
+                resultSurvivorsData.Add(0);
             }
 
-            resultSurvivorsData.Add(resultDeadData.Sum());
 
-            for (int i = 1; i < resultDeadData.Count(); i++)
+            resultSurvivorsData[resultDeadData.Count() - 1] = resultDeadData[resultDeadData.Count() - 1];
+
+            for (int i = resultDeadData.Count() - 2; i >= 0; i--)
             {
-                resultSurvivorsData.Add(resultSurvivorsData.Last() - resultDeadData[i]);
+                resultSurvivorsData[i] = resultSurvivorsData[i + 1] + resultDeadData[i];
             }
 
-            DataTable dt = new DataTable();
-            dt.Columns.Add("AgeX");
-            dt.Columns.Add("NumberOfSurvivors");
-            dt.Columns.Add("NumberOfDead");
+            List<object> listObjs = new List<object>();
 
             for (int i = 0; i < resultDeadData.Count(); i++)
             {
-                DataRow dr = dt.NewRow();
-                dr["AgeX"] = i;
-                dr["NumberOfSurvivors"] = Convert.ToInt32(resultSurvivorsData[i]);
-                dr["NumberOfDead"] = Convert.ToInt32(resultDeadData[i]);
-                dt.Rows.Add(dr);
+                listObjs.Add(new Data() { AgeX = i.ToString(), NumberOfSurvivors = (int)resultSurvivorsData[i], NumberOfDead = (int)resultDeadData[i] });
             }
 
-            return dt;
+            return listObjs.ToDataTable(type);
         }
+    }
 
+    public class Data
+    {
+        [ColumnData(ShowInTable = false)]
+        public int ID { get; set; }
+        public string AgeX { get; set; }
+        public int? NumberOfSurvivors { get; set; }
+        public int? NumberOfDead { get; set; }
+        [ColumnData(ShowInTable = false)]
+        public double? Probability { get; set; }
+        public double? ExpectedDuration { get; set; }
     }
 }

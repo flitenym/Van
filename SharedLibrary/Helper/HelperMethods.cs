@@ -84,6 +84,8 @@ namespace SharedLibrary.Helper
 
             PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(type);
 
+            var itemProperties = data.FirstOrDefault()?.GetType().GetProperties();
+
             foreach (PropertyDescriptor prop in properties)
             {
                 DataColumn column = new DataColumn(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType)
@@ -91,11 +93,30 @@ namespace SharedLibrary.Helper
                     Caption = string.IsNullOrEmpty(prop.Description) ? prop.Name : prop.Description
                 };
 
+                bool isPropByType = false;
+
                 for (int i = 0; i < prop.Attributes.Count; i++)
                 {
                     if (prop.Attributes[i].GetType() == typeof(ColumnDataAttribute))
                     {
                         SetProperty(column, InfoKeys.ExtendedPropertiesKey);
+                        isPropByType = true;
+                    }
+                }
+
+                if (isPropByType != true && itemProperties != null)
+                {
+                    var itemProp = itemProperties.FirstOrDefault(x => x.Name == prop.Name);
+                    if (itemProp != null)
+                    {
+                        var attr = itemProp.GetCustomAttributes().ToArray();
+                        for (int i = 0; i < attr.Count(); i++)
+                        {
+                            if (attr[i].GetType() == typeof(ColumnDataAttribute))
+                            {
+                                SetProperty(column, InfoKeys.ExtendedPropertiesKey);
+                            }
+                        }
                     }
                 }
 
@@ -107,16 +128,20 @@ namespace SharedLibrary.Helper
                 DataRow row = table.NewRow();
                 foreach (PropertyDescriptor prop in properties)
                 {
-                    if (prop.GetValue(item) is double doubleValue)
+                    var itemProp = itemProperties.FirstOrDefault(x => x.Name == prop.Name);
+
+                    if (itemProp == null) continue;
+
+                    if (itemProp.GetValue(item) is double doubleValue)
                     {
                         row[prop.Name] = Math.Round(doubleValue, SettingsDictionary.round);
                     }
                     else
                     {
-                        row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                        row[prop.Name] = itemProp.GetValue(item) ?? DBNull.Value;
                     }
                 }
-                    
+
                 table.Rows.Add(row);
             }
             return table;
@@ -148,7 +173,7 @@ namespace SharedLibrary.Helper
                 object value;
                 var databaseType = properties[i].Name.GetType();
 
-                //в случае если столбцов в Excel меньше чем в БД, тогда искусственно заполним default значениями
+                //в случае если столбцов меньше чем в БД, тогда искусственно заполним default значениями
                 if (j >= row.Table.Columns.Count)
                 {
                     if (type.IsValueType)
@@ -162,7 +187,16 @@ namespace SharedLibrary.Helper
                 }
                 else
                 {
-                    var columnName = row.Table.Columns[j].ColumnName;
+                    string columnName = string.Empty;
+
+                    if (row.Table.Columns.Contains(properties[i].Name))
+                    {
+                        columnName = properties[i].Name;
+                    }
+                    else
+                    {
+                        columnName = row.Table.Columns[i].ColumnName;
+                    }
 
                     if (row[columnName] == DBNull.Value)
                     {
@@ -185,7 +219,7 @@ namespace SharedLibrary.Helper
                     }
                 }
 
-                expandoDict.Add(properties[i].Name.ToString(), value);
+                expandoDict.Add(properties[i].Name, value);
                 j++;
             }
 
