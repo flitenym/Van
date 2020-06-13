@@ -5,9 +5,9 @@ using static SharedLibrary.Helper.HelperMethods;
 
 namespace Van.View.Methods
 {
-    public partial class TestView : UserControl, IDisposable
+    public partial class MethodsView : UserControl, IDisposable
     {
-        public TestView()
+        public MethodsView()
         {
             InitializeComponent();
             MortalityTableDataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;

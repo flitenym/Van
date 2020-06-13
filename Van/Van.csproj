@@ -176,7 +176,7 @@
     <Compile Include="Model\ParametricModel.cs" />
     <Compile Include="Model\SemiParametricModel.cs" />
     <Compile Include="Model\SurvivalAnalysisMethodsModel.cs" />
-    <Compile Include="Model\TestModel.cs" />
+    <Compile Include="Model\MethodsModel.cs" />
     <Compile Include="ViewModel\DistributionViewModel.cs" />
     <Compile Include="ViewModel\ExcludingMortalityViewModel.cs" />
     <Compile Include="ViewModel\IncludingMortalityViewModel.cs" />
@@ -188,7 +188,7 @@
     <Compile Include="ViewModel\ParametricViewModel.cs" />
     <Compile Include="ViewModel\SemiParametricViewModel.cs" />
     <Compile Include="ViewModel\SurvivalAnalysisMethodsViewModel.cs" />
-    <Compile Include="ViewModel\TestViewModel.cs" />
+    <Compile Include="ViewModel\MethodsViewModel.cs" />
     <Compile Include="View\DistributionView.xaml.cs">
       <DependentUpon>DistributionView.xaml</DependentUpon>
     </Compile>
@@ -222,8 +222,8 @@
     <Compile Include="View\SurvivalAnalysisMethodsView.xaml.cs">
       <DependentUpon>SurvivalAnalysisMethodsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TestView.xaml.cs">
-      <DependentUpon>TestView.xaml</DependentUpon>
+    <Compile Include="View\MethodsView.xaml.cs">
+      <DependentUpon>MethodsView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\DistributionView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -269,7 +269,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\TestView.xaml">
+    <Page Include="View\MethodsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -296,6 +296,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram.cd" />
     <None Include="Database.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

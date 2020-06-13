@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SharedLibrary.ViewModel.DataBaseBrowsingViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AMCQyAcAjEoggEgAoJCEAMwShAiUAFSIEADxQCJgAIA=</HashCode>
+      <FileName>ViewModel\DataBaseBrowsingViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.InfoViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIgAAAAAAAAAhAAAAQAACAAEhAAABAAAAUAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\InfoViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.LoadFromExcelWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="8.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>YAEIAQAhIAAAAAIAQAAADAAAgAAJAAAAAEAACCABAAA=</HashCode>
+      <FileName>ViewModel\LoadFromExcelWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.LoadFromTXTWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="7.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAEEAGAiNAAgBgIIZAYAHAAAgBAJIAQCACAEAgABgAA=</HashCode>
+      <FileName>ViewModel\LoadFromTXTWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.MainMenuViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\MainMenuViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.MainWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>aAggBAQAIAAkAAAQCAAggqiSgIAAAAiAJQAgAC8AAgA=</HashCode>
+      <FileName>ViewModel\MainWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.SettingsViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEACMEAAQSEAAEAkhFBMAADAoAIAAFEg2gEAZ5AhklM=</HashCode>
+      <FileName>ViewModel\SettingsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.ShowDataTableViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAgAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ShowDataTableViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.ViewModel.SplashScreenWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>ViewModel\SplashScreenWindowViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.DataBaseBrowsingView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\DataBaseBrowsingView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.InfoView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\InfoView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.LoadFromExcelWindowView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="1.75" Y="8.25" Width="2.25" />
+    <InheritanceLine Type="SharedLibrary.Controls.WindowControl" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="2.941" />
+        <Point X="1.25" Y="8.562" />
+        <Point X="1.75" Y="8.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\LoadFromExcelWindowView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.LoadFromTXTWindowView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="1.75" Y="7.25" Width="2.25" />
+    <InheritanceLine Type="SharedLibrary.Controls.WindowControl" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="2.941" />
+        <Point X="1.25" Y="7.562" />
+        <Point X="1.75" Y="7.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\LoadFromTXTWindowView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.MainMenuView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\MainMenuView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.MainWindowView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\MainWindowView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.SettingsView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\SettingsView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.ShowDataTableView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2" Y="9.25" Width="1.75" />
+    <InheritanceLine Type="SharedLibrary.Controls.WindowControl" FixedToPoint="true">
+      <Path>
+        <Point X="1.25" Y="2.941" />
+        <Point X="1.25" Y="9.562" />
+        <Point X="2" Y="9.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\ShowDataTableView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.View.SplashScreenWindowView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\SplashScreenWindowView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.Model.SettingsModel" Collapsed="true">
+    <Position X="7" Y="4.25" Width="1.5" />
+    <InheritanceLine Type="SharedLibrary.AbstractClasses.ModuleBase" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="2.812" />
+        <Point X="9.5" Y="4.562" />
+        <Point X="8.5" Y="4.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIAAAgAAAEAAAAAQAAAAAAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\SettingsModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Model.InfoModel" Collapsed="true">
+    <Position X="7" Y="5.25" Width="1.5" />
+    <InheritanceLine Type="SharedLibrary.AbstractClasses.ModuleBase" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="2.812" />
+        <Point X="9.5" Y="5.562" />
+        <Point X="8.5" Y="5.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIAAAgAAAEAAAAAQAAAAAAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\InfoModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Model.MainMenuModel" Collapsed="true">
+    <Position X="7" Y="3.25" Width="1.5" />
+    <InheritanceLine Type="SharedLibrary.AbstractClasses.ModuleBase" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="2.812" />
+        <Point X="9.5" Y="3.625" />
+        <Point X="8.5" Y="3.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIAAAgAAAEAAAAAQAAAAAAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\MainMenuModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Model.DataBaseBrowsingModel" Collapsed="true">
+    <Position X="6.75" Y="6.25" Width="2" />
+    <InheritanceLine Type="SharedLibrary.AbstractClasses.ModuleBase" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="2.812" />
+        <Point X="9.5" Y="6.562" />
+        <Point X="8.75" Y="6.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIAAAgAAAEAAAAAQAAAAAAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\DataBaseBrowsingModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Themes.Red.Red" Collapsed="true">
+    <Position X="10.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAQAAAAEEAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Themes\Red\Red.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Themes.Green.Green" Collapsed="true">
+    <Position X="10.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAQAAAAEEAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Themes\Green\Green.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Themes.Blue.Blue" Collapsed="true">
+    <Position X="10.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAQAAAAEEAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Themes\Blue\Blue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.AbstractClasses.ThemeBase" Collapsed="true">
+    <Position X="12.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAQQBAAGEAAQEAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AbstractClasses\ThemeBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.AbstractClasses.ModuleBase" Collapsed="true">
+    <Position X="8.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAQAAAAAIABAgAAAEAAAAAQAAAAAAAgAAQAAgAAAAAA=</HashCode>
+      <FileName>AbstractClasses\ModuleBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Controls.WindowControl" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAADAIBADBIBAAICAAAgAIAAAAGAAICEAABEAAAAA=</HashCode>
+      <FileName>Controls\WindowControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.Attributes.ColumnDataAttribute" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Attributes\ColumnDataAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.Attributes.ModelClassAttribute" Collapsed="true">
+    <Position X="8.75" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAQAAAAgEAAAAAAAAEAAAAAAAAAIAAABAAAAAAA=</HashCode>
+      <FileName>Attributes\ModelClassAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.AbstractClasses.ModelClass" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAQAAQBoEGAAAAABQAAAAAAAgAwIEAAJEAIAAAA=</HashCode>
+      <FileName>AbstractClasses\ModelClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Behavior.DataGridBehavior" Collapsed="true">
+    <Position X="2.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAEACAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Behavior\DataGridBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Behavior.DropBehavior" Collapsed="true">
+    <Position X="4.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAEAAAAAAAAAAAAAQAAAAAAAAAAAI=</HashCode>
+      <FileName>Behavior\DropBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Commands.AsyncCommand" Collapsed="true">
+    <Position X="2.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQEACAAQAAMCAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\AsyncCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharedLibrary.Commands.RelayCommand" Collapsed="true">
+    <Position X="4.25" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAACAAQAAEAEAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SharedLibrary.DataBase.DatabaseOperation" Collapsed="true">
+    <Position X="9.75" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>CABAAAAAAAAAAAgAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>DataBase\DatabaseOperation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.Classes.Data" Collapsed="true">
+    <Position X="8" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAIAAAAAAAgAAAAAAAAIAQAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Helper\Classes\Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.Classes.Node" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAgAAAAAAAAARAgAABAIAAAACAAgAAAAI=</HashCode>
+      <FileName>Helper\Classes\Node.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.Helper.Classes.TabControlData" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAkAAAAAAEAAQAgAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Helper\Classes\TabControlData.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="SharedLibrary.Helper.Classes.ViewInfo" Collapsed="true">
+    <Position X="9.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAgAAAAAAAAAAAAEAAAAAQAAAABAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\Classes\ViewInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.StaticInfo.Enums" Collapsed="true">
+    <Position X="8" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.StaticInfo.InfoKeys" Collapsed="true">
+    <Position X="9.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAABAgAAAAABAAAAAAKACAA=</HashCode>
+      <FileName>Helper\StaticInfo\InfoKeys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.StaticInfo.SettingsDictionary" Collapsed="true">
+    <Position X="5.25" Y="10.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\SettingsDictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.StaticInfo.Types" Collapsed="true">
+    <Position X="9.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\Types.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Helper.HelperMethods" Collapsed="true">
+    <Position X="8" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAACAAAAAAAAAAAoBAEAACBAAEAAEAAAAABIAACIBA=</HashCode>
+      <FileName>Helper\HelperMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.LocalDataBase.Models.Errors" Collapsed="true">
+    <Position X="10.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>LocalDataBase\Errors.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.LocalDataBase.Models.Settings" Collapsed="true">
+    <Position X="10.75" Y="2" Width="1.5" />
+    <InheritanceLine Type="SharedLibrary.AbstractClasses.ModelClass" FixedToPoint="true">
+      <Path>
+        <Point X="13.25" Y="1.062" />
+        <Point X="13.25" Y="2.375" />
+        <Point X="12.25" Y="2.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>LocalDataBase\Settings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.LocalDataBase.SQLExecutor" Collapsed="true">
+    <Position X="10.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAACAAAAAAAAAAAAAAAAAgAAAAAAAIACA=</HashCode>
+      <FileName>LocalDataBase\SQLExecutor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Provider.SharedProvider" Collapsed="true">
+    <Position X="1.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAIAABAgAAAAAAAAAAAAAAAAAAAAAQAAAAgAAAAA=</HashCode>
+      <FileName>Provider\SharedProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.Provider.Singleton" Collapsed="true">
+    <Position X="3.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAgAABAAAAAAAAgAEABQAAAQAAAAAAABABAAA=</HashCode>
+      <FileName>Provider\SharedProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

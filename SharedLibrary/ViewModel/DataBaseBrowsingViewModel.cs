@@ -593,7 +593,7 @@ namespace SharedLibrary.ViewModel
 
         #endregion
 
-        #region Команда для перемещения панели
+        #region Команда для открытии и закрытии поиска
 
         private RelayCommand replaceCommand;
         public RelayCommand ReplaceCommand => replaceCommand ?? (replaceCommand = new RelayCommand(x => ReplaceCommandIsClicked()));

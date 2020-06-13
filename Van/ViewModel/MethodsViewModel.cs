@@ -22,11 +22,11 @@ using static Van.Helper.Methods;
 
 namespace Van.ViewModel.Methods
 {
-    class TestViewModel : INotifyPropertyChanged
+    class MethodsViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public TestViewModel()
+        public MethodsViewModel()
         {
             LoadTableCommand.Execute(null);
         }

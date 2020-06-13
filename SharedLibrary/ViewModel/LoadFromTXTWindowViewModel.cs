@@ -1,9 +1,8 @@
-﻿using ExcelDataReader;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using SharedLibrary.AbstractClasses;
 using SharedLibrary.Commands;
 using SharedLibrary.Helper;
-using SharedLibrary.Helper.Attributes;
+using SharedLibrary.Helper.Classes;
 using SharedLibrary.LocalDataBase;
 using SharedLibrary.View;
 using System;
@@ -13,8 +12,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Converters;
 
 namespace SharedLibrary.ViewModel
 {
@@ -411,17 +408,5 @@ namespace SharedLibrary.ViewModel
 
             return listObjs.ToDataTable(type);
         }
-    }
-
-    public class Data
-    {
-        [ColumnData(ShowInTable = false)]
-        public int ID { get; set; }
-        public string AgeX { get; set; }
-        public int? NumberOfSurvivors { get; set; }
-        public int? NumberOfDead { get; set; }
-        [ColumnData(ShowInTable = false)]
-        public double? Probability { get; set; }
-        public double? ExpectedDuration { get; set; }
     }
 }

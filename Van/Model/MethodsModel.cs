@@ -8,7 +8,7 @@ using static SharedLibrary.Helper.StaticInfo.Enums;
 
 namespace Van.Model.Methods
 {
-    class TestModel : ModuleBase
+    class MethodsModel : ModuleBase
     {
         public override string Name => Types.ViewData.Test.Name;
 
@@ -26,7 +26,7 @@ namespace Van.Model.Methods
 
         protected override UserControl CreateViewAndViewModel()
         {
-            return new TestView() { DataContext = new TestViewModel() };
+            return new MethodsView() { DataContext = new MethodsViewModel() };
         }
 
     }

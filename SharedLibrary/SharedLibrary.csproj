@@ -99,6 +99,7 @@
     <Compile Include="DataBase\DatabaseOperation.cs" />
     <Compile Include="Helper\Classes\Node.cs" />
     <Compile Include="Helper\Classes\TabControlData.cs" />
+    <Compile Include="Helper\Classes\Data.cs" />
     <Compile Include="Helper\Classes\ViewInfo.cs" />
     <Compile Include="Helper\HelperMethods.cs" />
     <Compile Include="Helper\StaticInfo\Enums.cs" />
@@ -230,6 +231,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Info.cd" />
+    <None Include="DataBaseBrowsing.cd" />
+    <None Include="MainWindow.cd" />
+    <None Include="Settings.cd" />
+    <None Include="ProgramInitialize.cd" />
+    <None Include="SplashScreen.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

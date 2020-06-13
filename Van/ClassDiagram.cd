@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Van.ViewModel.Methods.TestViewModel" Collapsed="true">
+    <Position X="1.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>nAWAhyQN0kOjgCxHWkg4ptz02sdsNkjGBCTHB0ES1JE=</HashCode>
+      <FileName>ViewModel\TestViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Van.View.Methods.TestView" Collapsed="true">
+    <Position X="3.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>View\TestView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Van.Model.Methods.TestModel" Collapsed="true">
+    <Position X="5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIAAAgAAAEAAAAAQAAAAAAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Model\TestModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Weibull" Collapsed="true">
+    <Position X="3.25" Y="3.25" Width="1.5" />
+    <InheritanceLine Type="Van.Methods.Helper.MethodAbstractClass" FixedToPoint="true">
+      <Path>
+        <Point X="2.5" Y="3.062" />
+        <Point X="2.5" Y="3.562" />
+        <Point X="3.25" Y="3.562" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAQACAAAAAAABAAA=</HashCode>
+      <FileName>Methods\Weibull.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Exponential" Collapsed="true">
+    <Position X="3.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAQACAAAAAAABAAA=</HashCode>
+      <FileName>Methods\Exponential.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Gompertz" Collapsed="true">
+    <Position X="3.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAQACAAAAAAABAAA=</HashCode>
+      <FileName>Methods\Gompertz.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.LogLogistic" Collapsed="true">
+    <Position X="3.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAIBAAAAAAAQAAAAAAAAAAAEAQAaAAAAAAIBAAA=</HashCode>
+      <FileName>Methods\LogLogistic.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.LogNormal" Collapsed="true">
+    <Position X="3.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAIBAAAAAAAQAAAAAAAAAgAEAQAaEAAAAAIBAAA=</HashCode>
+      <FileName>Methods\LogNormal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Relay" Collapsed="true">
+    <Position X="3.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAQACAAAAAAABAAA=</HashCode>
+      <FileName>Methods\Relay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Standart" Collapsed="true">
+    <Position X="3.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAIAAAAAAAAAAAAAAAAAAAAAAQACAAAAAAQBAAA=</HashCode>
+      <FileName>Methods\Standart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Helper.CreateGraphics" Collapsed="true">
+    <Position X="1.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Methods\Helper\CreateGraphics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Helper.MethodAbstractClass" Collapsed="true">
+    <Position X="1.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIoAAAAAABACEAAAAAAAAAAAQACAAAQAAABAAA=</HashCode>
+      <FileName>Methods\Helper\MethodAbstractClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Methods.Helper.Shared" Collapsed="true">
+    <Position X="3.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQACAAAACAAAAAAEAAAIAAAAAIEAAAAAAAAAAQAAA=</HashCode>
+      <FileName>Methods\Helper\Shared.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.DataBase.Models.SurvivalFunction" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAAAAAoAEAAAAAAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\SurvivalFunction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.Density" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAAAAAoAEAAAAAAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\Density.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.LifeTimes" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAFAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\LifeTimes.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.MortalityTable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAIAAAAAAAgAAAAAAAAIAQAAAAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\MortalityTable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.Quality" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAAAAAoAEAAAAgAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\Quality.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.QualityAssessmentOfModels" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAAAAAAAoABAAAAAAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\QualityAssessmentOfModels.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.ResidualDensity" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAAAAAoAEAAAAAAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\ResidualDensity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.DataBase.Models.ResidualSurvivalFunction" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAAAAAoAEAAAAAAAAAAAAgAABAAIAAAAAAABA=</HashCode>
+      <FileName>LocalDataBase\Models\ResidualSurvivalFunction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Van.Helper.Methods" Collapsed="true">
+    <Position X="5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Helper\Methods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Helper.StaticInfo.Enums" Collapsed="true">
+    <Position X="1.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Helper.StaticInfo.InfoKeys" Collapsed="true">
+    <Position X="3.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\InfoKeys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Helper.StaticInfo.SettingsDictionary" Collapsed="true">
+    <Position X="1.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAgAgAwAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\SettingsDictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Helper.StaticInfo.Types" Collapsed="true">
+    <Position X="3.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helper\StaticInfo\Types.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Van.Helper.Classes.RangeData" Collapsed="true">
+    <Position X="5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Helper\Classes\RangeData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SharedLibrary.AbstractClasses.ModelClass" Collapsed="true">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="Van.LocalDataBase.ModelsHelper.IMortalityTable" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LocalDataBase\ModelsHelper\IMortalityTable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Van.LocalDataBase.ModelsHelper.IMethod" Collapsed="true">
+    <Position X="7.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAAAAAAAoAAAAAAAAAAAAAAgAABAAIAAAAAAAAA=</HashCode>
+      <FileName>LocalDataBase\ModelsHelper\IMethod.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

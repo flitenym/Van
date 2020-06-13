@@ -11,7 +11,7 @@ namespace SharedLibrary.LocalDataBase.Models
         [Description("Stack")]
         public string StackTrace { get; set; }
 
-        [Description("Название")]
+        [Description("Дата")]
         public DateTime Date { get; set; }
     }
 }
