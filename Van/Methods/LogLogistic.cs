@@ -109,21 +109,21 @@ namespace Van.Methods
             for (int i = 0; i < t.Count; i++)
             {
                 dispSum += Math.Pow(t[i].GetLn(), 2) * probability;
-            } 
+            }
 
             mu = matOj;
             sigma = Math.Sqrt(dispSum - matOj * matOj);
 
             var Q = Get_Q_Matrix(t, delta, r);
 
-            for (int i = 0; ; i++)
+            for (int i = 0; i < 50; i++)
             {
                 mu = Q[0];
                 sigma = Q[1];
 
                 var nextQ = Get_Q_Matrix(t, delta, r);
 
-                if (GetDifferenceMatrix(nextQ, Q))
+                if (GetDifferenceMatrix(nextQ, Q) || i == 49)
                 {
                     mu = nextQ[0];
                     sigma = nextQ[1];

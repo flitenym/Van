@@ -662,7 +662,7 @@ namespace Van.ViewModel.Methods
 
         private bool CanCalculateMethods()
         {
-            return currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count;
+            return currentSurvivalFunctions.Any() && currentSurvivalFunctions.Count == currentMortalityTables.Count && t.Any() && currentMortalityTables.FirstOrDefault(x => x.Probability == null) == null;
         }
 
         private async Task UpdateSTAsync()

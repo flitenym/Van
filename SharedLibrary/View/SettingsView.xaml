@@ -46,7 +46,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <GridSplitter
-            Grid.RowSpan="3"
+            Grid.RowSpan="4"
             Grid.Column="1"
             Width="Auto"
             HorizontalAlignment="Stretch"
@@ -260,14 +260,14 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom">
             <Grid.RenderTransform>
-                <TranslateTransform Y="135" />
+                <TranslateTransform Y="150" />
             </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
                 <RowDefinition Height="25" />
                 <RowDefinition Height="25" />
                 <RowDefinition Height="25" />
-                <RowDefinition Height="35" />
+                <RowDefinition Height="45" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
@@ -282,7 +282,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            To="-100"
+                                            To="-10"
                                             Duration="0:0:0.8" />
                                     </Storyboard>
                                 </BeginStoryboard>
@@ -292,7 +292,7 @@
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                            To="135"
+                                            To="150"
                                             Duration="0:0:0.8" />
                                     </Storyboard>
                                 </BeginStoryboard>
