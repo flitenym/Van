@@ -17,7 +17,13 @@ namespace Van.Methods
 
         public override void ParamterCalculation(List<int> t, List<int> delta, double r)
         {
-            lambda = Math.Sqrt(t.Sum(x => x * x) / (2.0 * r));
+            double sum = 0;
+            for (int i = 0; i < t.Count(); i++)
+            {
+                sum += t[i] * t[i];
+            }
+
+            lambda = Math.Sqrt(sum / (2.0 * r));
 
             double firstSum = 0;
 

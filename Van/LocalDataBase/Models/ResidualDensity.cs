@@ -36,6 +36,7 @@ namespace Van.DataBase.Models
         [Description("Логлогистическое")]
         public double? LogLogistic { get; set; }
 
+        [ColumnData(ShowInTable = false)]
         [Description("Логнормальное")]
         public double? LogNormal { get; set; }
 

@@ -248,11 +248,7 @@ namespace SharedLibrary.ViewModel
 
         public void ShowData()
         {
-            DataTable dataTable = null;
-
-            Task.Factory.StartNew(async () => { dataTable = await GetDataTable(); }).Wait();
-
-
+            DataTable dataTable = GetDataTable();
             if (dataTable != null)
             {
                 var showDataTable = new ShowDataTableView();
@@ -287,7 +283,7 @@ namespace SharedLibrary.ViewModel
 
         public async Task LoadAsync()
         {
-            var dataTable = await GetDataTable();
+            var dataTable = GetDataTable();
 
             List<object> listObj = new List<object>();
             for (int i = 0; i < dataTable.Rows.Count; i++)
@@ -296,7 +292,7 @@ namespace SharedLibrary.ViewModel
             }
             if (listObj.Count > 0)
             {
-                await HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
+                HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
                 for (int i = 0; i < listObj.Count; i++)
                 {
                     await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
@@ -304,7 +300,7 @@ namespace SharedLibrary.ViewModel
             }
             else
             {
-                await HelperMethods.Message($"Данные не найдены");
+                HelperMethods.Message($"Данные не найдены");
             }
         }
 
@@ -322,7 +318,7 @@ namespace SharedLibrary.ViewModel
 
         #endregion
 
-        public async Task<DataTable> GetDataTable()
+        public DataTable GetDataTable()
         {
             string resultCoef = string.Empty;
             for (int i = 1; i < CoefficientData.Count; i++)
@@ -337,7 +333,7 @@ namespace SharedLibrary.ViewModel
 
             if (string.IsNullOrEmpty(resultCoef))
             {
-                await HelperMethods.Message("Не нашлось в файле коэффициентов данных по указанным");
+                HelperMethods.Message("Не нашлось в файле коэффициентов данных по указанным");
                 return null;
             }
 
@@ -354,7 +350,7 @@ namespace SharedLibrary.ViewModel
 
             if (string.IsNullOrEmpty(resultCount))
             {
-                await HelperMethods.Message("Не нашлось в файле населения данных по указанным");
+                HelperMethods.Message("Не нашлось в файле населения данных по указанным");
                 return null;
             }
 

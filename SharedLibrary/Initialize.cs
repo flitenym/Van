@@ -61,7 +61,7 @@ namespace SharedLibrary
                     Application.Current.MainWindow = mainWindow;
                     mainWindow.Show();
                     splashScreen.Close();
-                    mainWindow.Closing += async (s, args) =>
+                    mainWindow.Closing += (s, args) =>
                     {
                         try
                         {
@@ -78,7 +78,7 @@ namespace SharedLibrary
                         }
                         catch (Exception ex)
                         {
-                            await HelperMethods.Message($"{ex.Message}");
+                            HelperMethods.Message($"{ex.Message}");
                         }
                     };
                 });

@@ -455,7 +455,7 @@ namespace SharedLibrary.ViewModel
             
             if (selectedItems.Count() == 0)
             {
-                await Message("Нет выделенных строк");
+                Message("Нет выделенных строк");
                 return;
             }
 
@@ -484,7 +484,7 @@ namespace SharedLibrary.ViewModel
                 TableData.Rows.Remove(selectedItem.Row);
             }
             TableData.AcceptChanges();
-            await Message("Удаление успешно");
+            Message("Удаление успешно");
         }
 
         #endregion
@@ -514,7 +514,7 @@ namespace SharedLibrary.ViewModel
                     }
                 }
                 TableData.AcceptChanges();
-                await Message("Внесенные изменения сохранены");
+                Message("Внесенные изменения сохранены");
             }
 
             var newRow = TableData.NewRow();
@@ -524,11 +524,11 @@ namespace SharedLibrary.ViewModel
                 newRow["ID"] = ID;
                 TableData.Rows.Add(newRow);
                 TableData.AcceptChanges();
-                await Message("Добавление новой строки успешно");
+                Message("Добавление новой строки успешно");
             }
             else
             {
-                await Message("Добавление произошло неудачно");
+                Message("Добавление произошло неудачно");
             }
         }
 
@@ -551,7 +551,7 @@ namespace SharedLibrary.ViewModel
 
             if (tableData == null || tableData.Rows.Count == 0)
             {
-                await Message("Изменения не найдены");
+                Message("Изменения не найдены");
                 return;
             }
             for (int i = 0; i < tableData.Rows.Count; i++)
@@ -562,7 +562,7 @@ namespace SharedLibrary.ViewModel
                 }
             }
             TableData.AcceptChanges();
-            await Message("Изменения сохранены");
+            Message("Изменения сохранены");
         }
 
         #endregion

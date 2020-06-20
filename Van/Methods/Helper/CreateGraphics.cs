@@ -117,15 +117,15 @@ namespace Van.Methods.Helper
                 };
                 seriescCollection.Add(logLogistic);
 
-                var logNormal = new LineSeries
-                {
-                    Title = "Логнормальное",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogNormal ?? 0, SettingsDictionary.round))),
-                    Fill = Brushes.Transparent,
-                    StrokeThickness = strokeThickness,
-                    PointGeometry = null
-                };
-                seriescCollection.Add(logNormal);
+                //var logNormal = new LineSeries
+                //{
+                //    Title = "Логнормальное",
+                //    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogNormal ?? 0, SettingsDictionary.round))),
+                //    Fill = Brushes.Transparent,
+                //    StrokeThickness = strokeThickness,
+                //    PointGeometry = null
+                //};
+                //seriescCollection.Add(logNormal);
             }));
 
             return seriescCollection;

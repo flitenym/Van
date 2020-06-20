@@ -124,7 +124,7 @@ $@"При загрузке из Excel следует придерживатьс�
                 }
                 if (listObj.Count > 0)
                 {
-                    await HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
+                    HelperMethods.Message($"Найдено {listObj.Count} строк, выполняется загрузка в БД");
                     for (int i = 0; i < listObj.Count; i++)
                     {
                         await SQLExecutor.InsertExecutorAsync(modelClassItem, listObj[i]);
@@ -132,12 +132,12 @@ $@"При загрузке из Excel следует придерживатьс�
                 }
                 else
                 {
-                    await HelperMethods.Message($"Данные не найдены");
+                    HelperMethods.Message($"Данные не найдены");
                 }
             }
             catch (Exception ex)
             {
-                await HelperMethods.Message($"{ex.Message}");
+                HelperMethods.Message($"{ex.Message}");
             }
         }
 

@@ -135,6 +135,19 @@ namespace Van.Methods
                     Q = nextQ.Clone() as double[];
                 }
             }
+
+            double firstsum = 0.0;
+            double secondsum = 0.0;
+
+            for (int i = 0; i < t.Count(); i++)
+            {
+                var zValue = GetZValue(t[i]);
+                var sum = 1 + Math.Exp(zValue).GetLn();
+                firstsum += delta[i] * (zValue - 2 * sum);
+                secondsum += (1 - delta[i]) * sum;
+            }
+
+            LValue = -r * sigma.GetLn() + firstsum - secondsum;
         }
 
         public override double SurvivalFunction(double tValue)

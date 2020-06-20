@@ -49,7 +49,7 @@ namespace SharedLibrary.DataBase
                     connection.Close();
                     connectionString = ConnectionString;
                     canGetData = true;
-                    await Message("ConnectionString верный");
+                    Message("ConnectionString верный");
 
                     if (connectionStringData == null)
                     {
@@ -75,7 +75,7 @@ namespace SharedLibrary.DataBase
             }
             catch (Exception ex)
             {
-                await Message($"ConnectionString неверный, проверьте адрес сервера {ex.Message}");
+                Message($"ConnectionString неверный, проверьте адрес сервера {ex.Message}");
                 canGetData = false;
             }
         }

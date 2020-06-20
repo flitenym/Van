@@ -29,7 +29,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                     return new DataTable();
                 }
             });
@@ -49,7 +49,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                     return new List<T>();
                 }
             });
@@ -69,7 +69,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                 }
             });
         }
@@ -88,7 +88,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                 }
             });
         }
@@ -107,7 +107,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                 }
             });
         }
@@ -130,7 +130,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                     return -1;
                 }
             });
@@ -154,7 +154,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                 }
             });
         }
@@ -176,7 +176,7 @@ namespace SharedLibrary.LocalDataBase
                 }
                 catch (Exception ex)
                 {
-                    await HelperMethods.Message(ex.ToString());
+                    HelperMethods.Message(ex.ToString());
                 }
             });
         }

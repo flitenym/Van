@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dapper;
 using SharedLibrary.AbstractClasses;
+using SharedLibrary.Commands;
 using SharedLibrary.Helper.Attributes;
 using SharedLibrary.Helper.StaticInfo;
 using SharedLibrary.LocalDataBase;
@@ -30,22 +31,29 @@ namespace SharedLibrary.Helper
         /// </summary>
         /// <param name="content">Сообщение</param>
         /// <param name="isNoDuplicateConsider">Если true и будет дубликаты сообщений, то они каждый все равно вызовет новое уведомление, если false то выйдет повторное сообщение 1 раз</param>
-        public static Task Message(string content, bool isNoDuplicateConsider = false)
+        
+
+        private static RelayCommand setMessage;
+
+        public static RelayCommand SetMessage => setMessage ?? (setMessage = new RelayCommand(x => SetMessageToQueue((string)x)));
+
+        public static void SetMessageToQueue(string content)
         {
-            return Task.Run(
-                () =>
-                {
-                    if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
-                    {
-                        mainWindowViewModel.IsMessagePanelContent.Enqueue(
-                        content,
-                        "OK",
-                        param => Trace.WriteLine("Actioned: " + param),
-                        null,
-                        false,
-                        isNoDuplicateConsider);
-                    }
-                });
+            if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowViewModel)) is MainWindowViewModel mainWindowViewModel)
+            {
+                mainWindowViewModel.IsMessagePanelContent.Enqueue(
+                content,
+                "OK",
+                param => Trace.WriteLine("Actioned: " + param),
+                null,
+                false,
+                false);
+            }
+        }
+
+        public static void Message(string content)
+        {
+            SetMessage.Execute(content);
         }
 
         #endregion

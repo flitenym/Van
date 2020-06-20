@@ -486,7 +486,7 @@ namespace Van.ViewModel.Methods
 
             await SelectLifeTimesFunction();
 
-            await Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             stopwatch.Stop();
         }
 
@@ -585,7 +585,7 @@ namespace Van.ViewModel.Methods
             if (currentMortalityTables.Count() < 2)
             {
                 await SelectMortalityAsync();
-                await HelperMethods.Message("Слишком мало данных");
+                HelperMethods.Message("Слишком мало данных");
                 return;
             }
 
@@ -593,12 +593,14 @@ namespace Van.ViewModel.Methods
 
             await CalculateProbability();
 
+            await CalculateExpectedDuration();
+
             //Обновим в БД данные исходя из текущего списка
             await UpdateMortality();
             //обновим таблицу через БД
             await SelectMortalityAsync();
 
-            await HelperMethods.Message("Вычисление прошло успешно");
+            HelperMethods.Message("Вычисление прошло успешно");
         }
 
         private async Task CalculateNumberOfDead()
@@ -628,6 +630,25 @@ namespace Van.ViewModel.Methods
                 });
         }
 
+        private async Task CalculateExpectedDuration()
+        {
+            await Task.Run(
+                () =>
+                {
+                    for (int i = 0; i < currentMortalityTables.Count(); i++)
+                    {
+                        var sumOfSurvival = 0.0;
+
+                        for (int j = 0; j < currentMortalityTables.Count(); j++)
+                        {
+                            sumOfSurvival += (double)currentMortalityTables[i].NumberOfSurvivors / (double)currentMortalityTables.First().NumberOfSurvivors;
+                        }
+
+                        currentMortalityTables[i].ExpectedDuration = sumOfSurvival;
+                    }
+                });
+        }
+
         #endregion
 
         #region Комманда для обновления таблицы (используется после вычислений)
@@ -641,7 +662,7 @@ namespace Van.ViewModel.Methods
             //обновим таблицу через БД
             await SelectMortalityAsync();
 
-            await HelperMethods.Message("Таблица обновлена");
+            HelperMethods.Message("Таблица обновлена");
         }
 
         private async Task UpdateMortality()
@@ -737,7 +758,7 @@ namespace Van.ViewModel.Methods
             await RefreshChartsQuality();
 
 
-            await HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
             stopwatch.Stop();
         }
 

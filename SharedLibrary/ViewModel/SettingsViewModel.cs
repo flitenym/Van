@@ -86,11 +86,11 @@ namespace SharedLibrary.ViewModel
                             await slc.ExecuteAsync($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeDarkOrLightKey}' ", parameters);
                         }
 
-                        await Message("Тема изменена");
+                        Message("Тема изменена");
                     }
                     else
                     {
-                        await Message("Тема уже применена");
+                        Message("Тема уже применена");
                     }
                 }
                 else
@@ -105,11 +105,11 @@ namespace SharedLibrary.ViewModel
                             await slc.ExecuteAsync($@"UPDATE {nameof(Settings)} SET Value = @themeName WHERE Name = '{InfoKeys.SelectedThemeKey}' ", parameters);
                         }
 
-                        await Message("Тема изменена");
+                        Message("Тема изменена");
                     }
                     else
                     {
-                        await Message("Тема уже применена");
+                        Message("Тема уже применена");
                     }
                 }
             }
@@ -395,7 +395,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
             }
             catch (Exception ex)
             {
-                await Message(ex.Message);
+                Message(ex.Message);
             }
         }
 
@@ -445,7 +445,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
                 }
                 catch (Exception ex)
                 {
-                    await Message(ex.Message);
+                    Message(ex.Message);
                     IsDownload = false;
                 }
                 finally
@@ -486,7 +486,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
             sw.Stop();
             if (e.Cancelled == true)
             {
-                await Message("Скачивание отменено");
+                Message("Скачивание отменено");
                 if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
                 client.Dispose();
 
@@ -500,13 +500,13 @@ $@"1. Файл должен скачиваться по ссылке из инт
             else if (e.Error != null)
             {
                 string error = e.Error.ToString();
-                await Message(error);
+                Message(error);
                 if (Directory.Exists(TempFolderPath)) Directory.Delete(TempFolderPath, true);
                 return;
             }
             else
             {
-                await Message("Скачивание завершено");
+                Message("Скачивание завершено");
                 await UpdateProgramCommand();
             }
         }
@@ -577,14 +577,14 @@ $@"1. Файл должен скачиваться по ссылке из инт
 
         #region Команда для Drag and Drop
 
-        private AsyncCommand previewDropCommand;
-        public AsyncCommand PreviewDropCommand => previewDropCommand ?? (previewDropCommand = new AsyncCommand(obj => DragAndDrop(obj)));
-        public async Task DragAndDrop(object obj)
+        private RelayCommand previewDropCommand;
+        public RelayCommand PreviewDropCommand => previewDropCommand ?? (previewDropCommand = new RelayCommand(obj => DragAndDrop(obj)));
+        public void DragAndDrop(object obj)
         {
             var list = (obj as DataObject).GetFileDropList();
             if (list.Count == 0)
             {
-                await Message("Ни один файл не был загружен");
+                Message("Ни один файл не был загружен");
                 return;
             }
 

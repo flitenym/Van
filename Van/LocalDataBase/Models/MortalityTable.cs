@@ -23,7 +23,6 @@ namespace Van.DataBase.Models
         [Description("Вероятность")]
         public double? Probability { get; set; }
 
-        [ColumnData(ShowInTable = false)]
         [Description("Продолжительность жизни")]
         public double? ExpectedDuration { get; set; }
 
