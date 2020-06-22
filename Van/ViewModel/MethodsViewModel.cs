@@ -37,9 +37,9 @@ namespace Van.ViewModel.Methods
 
         public List<int> t = new List<int>();
 
-        public List<int> delta = new List<int>();
+        public List<int> Delta = new List<int>();
 
-        double r => delta.Count(x => x == 1);
+        double R => Delta.Count(x => x == 1);
 
         public bool HaveNullProbability = true;
 
@@ -381,7 +381,7 @@ namespace Van.ViewModel.Methods
             currentLifeTimes = await SQLExecutor.SelectExecutorAsync<LifeTimes>(nameof(LifeTimes));
 
             t = currentLifeTimes.Select(x => x.LifeTime.Value).ToList();
-            delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
+            Delta = currentLifeTimes.Select(x => x.Censor.Value).ToList();
         }
 
         #endregion
@@ -486,7 +486,7 @@ namespace Van.ViewModel.Methods
 
             await SelectLifeTimesFunction();
 
-            Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            Message($"t вычислено. Время: {stopwatch.Elapsed.TotalSeconds}");
             stopwatch.Stop();
         }
 
@@ -530,12 +530,12 @@ namespace Van.ViewModel.Methods
         public async Task RewriteLifeTimesTable()
         {
             currentLifeTimes = new List<LifeTimes>();
-            delta = new List<int>();
+            Delta = new List<int>();
 
             for (int i = 0; i < t.Count(); i++)
             {
                 currentLifeTimes.Add(new LifeTimes() { LifeTime = t[i], Censor = 1 });
-                delta.Add(1);
+                Delta.Add(1);
             }
 
             await SQLExecutor.DeleteExecutor(nameof(LifeTimes));
@@ -758,7 +758,7 @@ namespace Van.ViewModel.Methods
             await RefreshChartsQuality();
 
 
-            HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds.ToString()}");
+            HelperMethods.Message($"Время: {stopwatch.Elapsed.TotalSeconds}");
             stopwatch.Stop();
         }
 
@@ -776,7 +776,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTStandart()
         {
-            Standart standart = new Standart(ageValues, t, r, currentMortalityTables);
+            Standart standart = new Standart(ageValues, t, R, currentMortalityTables);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -790,7 +790,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTWeibull()
         {
-            Weibull weibull = new Weibull(ageValues, t, r, delta);
+            Weibull weibull = new Weibull(ageValues, t, R, Delta);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -814,7 +814,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTRelay()
         {
-            Relay relay = new Relay(ageValues, t, r, delta);
+            Relay relay = new Relay(ageValues, t, R, Delta);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -838,7 +838,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTGompertz()
         {
-            Gompertz gompertz = new Gompertz(ageValues, t, r, delta);
+            Gompertz gompertz = new Gompertz(ageValues, t, R, Delta);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -862,7 +862,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateSTExponential()
         {
-            Exponential exponential = new Exponential(ageValues, t, r);
+            Exponential exponential = new Exponential(ageValues, t, R);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -886,7 +886,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateLogLogistic()
         {
-            LogLogistic logLogistic = new LogLogistic(ageValues, t, r, delta);
+            LogLogistic logLogistic = new LogLogistic(ageValues, t, R, Delta);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {
@@ -910,7 +910,7 @@ namespace Van.ViewModel.Methods
 
         public void CalculateLogNormal()
         {
-            LogNormal logNormal = new LogNormal(ageValues, t, r, delta);
+            LogNormal logNormal = new LogNormal(ageValues, t, R, Delta);
 
             for (int i = 0; i < currentMortalityTables.Count; i++)
             {

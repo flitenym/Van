@@ -142,7 +142,7 @@ namespace SharedLibrary.Helper
 
                     if (itemProp.GetValue(item) is double doubleValue)
                     {
-                        row[prop.Name] = Math.Round(doubleValue, SettingsDictionary.round);
+                        row[prop.Name] = Math.Round(doubleValue, SettingsDictionary.TableRound);
                     }
                     else
                     {
@@ -195,8 +195,7 @@ namespace SharedLibrary.Helper
                 }
                 else
                 {
-                    string columnName = string.Empty;
-
+                    string columnName;
                     if (row.Table.Columns.Contains(properties[i].Name))
                     {
                         columnName = properties[i].Name;
@@ -283,8 +282,7 @@ namespace SharedLibrary.Helper
                 throw new ArgumentNullException(nameof(storage));
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            object obj;
-            if (!storage.TryGetValue(key, out obj))
+            if (!storage.TryGetValue(key, out object obj))
                 return defaultValue;
             try
             {

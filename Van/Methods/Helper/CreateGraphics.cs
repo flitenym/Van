@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Van.Helper.StaticInfo;
+using SharedLibrary.Helper.StaticInfo;
 using Van.LocalDataBase.ModelsHelper;
 
 namespace Van.Methods.Helper
@@ -60,7 +60,7 @@ namespace Van.Methods.Helper
                 var standart = new LineSeries
                 {
                     Title = "Табличное",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Standart ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -70,7 +70,7 @@ namespace Van.Methods.Helper
                 var weibull = new LineSeries
                 {
                     Title = "Вейбулл",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Weibull ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -80,7 +80,7 @@ namespace Van.Methods.Helper
                 var exponential = new LineSeries
                 {
                     Title = "Экспоненциальное",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Exponential ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -90,7 +90,7 @@ namespace Van.Methods.Helper
                 var gompertz = new LineSeries
                 {
                     Title = "Гомпертц",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Gompertz ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -100,7 +100,7 @@ namespace Van.Methods.Helper
                 var relay = new LineSeries
                 {
                     Title = "Рэлея",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.Relay ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null
@@ -110,7 +110,7 @@ namespace Van.Methods.Helper
                 var logLogistic = new LineSeries
                 {
                     Title = "Логлогистическое",
-                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogLogistic ?? 0, SettingsDictionary.round))),
+                    Values = new ChartValues<double>(firstListData.Select(x => Math.Round(x.LogLogistic ?? 0, SettingsDictionary.GraphicRound))),
                     Fill = Brushes.Transparent,
                     StrokeThickness = strokeThickness,
                     PointGeometry = null

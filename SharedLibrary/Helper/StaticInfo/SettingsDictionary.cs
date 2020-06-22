@@ -2,6 +2,8 @@
 {
     public static class SettingsDictionary
     {
-        public static int round = 5;
+        public static int TableRound = 5; 
+        
+        public static int GraphicRound = 5;
     }
 }

@@ -231,12 +231,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Info.cd" />
-    <None Include="DataBaseBrowsing.cd" />
-    <None Include="MainWindow.cd" />
-    <None Include="Settings.cd" />
-    <None Include="ProgramInitialize.cd" />
-    <None Include="SplashScreen.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

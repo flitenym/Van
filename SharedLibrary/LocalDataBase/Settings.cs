@@ -10,8 +10,12 @@ namespace SharedLibrary.LocalDataBase.Models
         [ColumnData(ShowInTable = false)]
         public int ID { get; set; }
 
-        [Description("Название")]
+        [ColumnData(ShowInTable = false)]
+        [Description("Название ключа")]
         public string Name { get; set; }
+
+        //[Description("Название")]
+        //public string Title { get; set; }
 
         [Description("Значение")]
         public string Value { get; set; }

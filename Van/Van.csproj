@@ -296,7 +296,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram.cd" />
     <None Include="Database.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

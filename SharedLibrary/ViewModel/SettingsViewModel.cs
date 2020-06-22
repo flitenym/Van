@@ -170,7 +170,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
 
         #region Ссылка для файла
 
-        private bool isHavePath => !string.IsNullOrEmpty(LinkData);
+        private bool IsHavePath_ => !string.IsNullOrEmpty(LinkData);
 
         /// <summary>
         /// Ссылка для файла
@@ -179,7 +179,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
         {
             get
             {
-                return isHavePath;
+                return IsHavePath_;
             }
             set
             {
@@ -618,8 +618,7 @@ $@"1. Файл должен скачиваться по ссылке из инт
             set
             {
                 fontSizeValue = value;
-                var mainWindowView = SharedProvider.GetFromDictionaryByKey(nameof(MainWindowView)) as MainWindowView;
-                if (mainWindowView != null)
+                if (SharedProvider.GetFromDictionaryByKey(nameof(MainWindowView)) is MainWindowView mainWindowView)
                 {
                     mainWindowView.FontSize = fontSizeValue;
                     FontSizeChangingCommand.Execute(fontSizeValue);
