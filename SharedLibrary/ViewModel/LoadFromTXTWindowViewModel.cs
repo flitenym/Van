@@ -3,7 +3,9 @@ using SharedLibrary.AbstractClasses;
 using SharedLibrary.Commands;
 using SharedLibrary.Helper;
 using SharedLibrary.Helper.Classes;
+using SharedLibrary.Helper.StaticInfo;
 using SharedLibrary.LocalDataBase;
+using SharedLibrary.Provider;
 using SharedLibrary.View;
 using System;
 using System.Collections.Generic;
@@ -23,12 +25,16 @@ namespace SharedLibrary.ViewModel
         {
             this.type = type;
             this.modelClassItem = modelClassItem;
+
+            models = SharedProvider.GetFromDictionaryByKey(InfoKeys.ModelsKey) as List<ModelClass>;
         }
 
         #region Fields
 
         public Type type;
         public ModelClass modelClassItem;
+        public List<ModelClass> models;
+
 
         #region Выбранный год
 
@@ -158,6 +164,72 @@ namespace SharedLibrary.ViewModel
 
         #endregion
 
+        #region Выбранная причина смерти
+
+        private string cause;
+        public string Cause
+        {
+            get { return cause; }
+            set
+            {
+                cause = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Cause)));
+            }
+        }
+
+        #endregion
+
+        #region Все доступные причины смерти
+
+        private List<string> causes = new List<string>();
+        public List<string> Causes
+        {
+            get { return causes; }
+            set
+            {
+                causes = value;
+                if (causes != null)
+                    Cause = causes.FirstOrDefault();
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Causes)));
+            }
+        }
+
+        #endregion
+
+        #region Доступна причина смерти
+
+        private bool isCause = false;
+        public bool IsCause
+        {
+            get { return isCause; }
+            set
+            {
+                isCause = value;
+                if (isCause)
+                {
+                    IsFiveYear = true;
+                }
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsCause)));
+            }
+        }
+
+        #endregion
+
+        #region Пятилетка
+
+        private bool isFiveYear = false;
+        public bool IsFiveYear
+        {
+            get { return isFiveYear; }
+            set
+            {
+                isFiveYear = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsFiveYear)));
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Команда для численности населения
@@ -234,6 +306,8 @@ namespace SharedLibrary.ViewModel
 
                     if (newSexs.Except(Sexs).Any())
                         Sexs = newSexs.OrderBy(x => x).ToList();
+
+
                 }
             }
 
@@ -317,6 +391,31 @@ namespace SharedLibrary.ViewModel
         }
 
         #endregion
+
+        #region Команда для отмены загрузки
+
+        private RelayCommand infoCommand;
+        public RelayCommand InfoCommand => infoCommand ?? (infoCommand = new RelayCommand(obj => GetInfo(obj as string)));
+
+        public void GetInfo(string parametr)
+        {
+            var model = models.FirstOrDefault(x => x.GetType().Name == parametr);
+            if (model != null)
+            {
+                var dataTable = SQLExecutor.SelectExecutor(model);
+                if (dataTable != null)
+                {
+                    var showDataTable = new ShowDataTableView();
+                    var vm = new ShowDataTableViewModel(dataTable);
+                    showDataTable.DataContext = vm;
+                    showDataTable.ShowDialog();
+                }
+            }
+        }
+
+        #endregion
+
+        
 
         public DataTable GetDataTable()
         {

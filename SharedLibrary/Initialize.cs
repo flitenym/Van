@@ -46,6 +46,10 @@ namespace SharedLibrary
                         InfoKeys.ThemesKey,
                         HelperMethods.GetAllInstancesOf<ThemeBase>(new List<ThemeBase>()).ToList());
 
+                    SharedProvider.SetToSingleton(
+                        InfoKeys.ModelsKey,
+                        HelperMethods.GetAllInstancesOf<ModelClass>(new List<ModelClass>()).ToList());
+
                     var mainWindow = new MainWindowView();
                     SharedProvider.SetToSingleton(nameof(MainWindowView), mainWindow);
 

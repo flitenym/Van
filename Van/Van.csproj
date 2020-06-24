@@ -147,6 +147,10 @@
     <Compile Include="Helper\StaticInfo\Types.cs" />
     <Compile Include="LocalDataBase\ModelsHelper\IMortalityTable.cs" />
     <Compile Include="LocalDataBase\ModelsHelper\IMethod.cs" />
+    <Compile Include="LocalDataBase\Models\RegInfo.cs" />
+    <Compile Include="LocalDataBase\Models\SexInfo.cs" />
+    <Compile Include="LocalDataBase\Models\GroupInfo.cs" />
+    <Compile Include="LocalDataBase\Models\CauseInfo.cs" />
     <Compile Include="LocalDataBase\Models\ResidualDensity.cs" />
     <Compile Include="LocalDataBase\Models\Density.cs" />
     <Compile Include="LocalDataBase\Models\LifeTimes.cs" />

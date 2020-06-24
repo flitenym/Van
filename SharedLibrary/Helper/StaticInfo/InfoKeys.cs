@@ -19,6 +19,8 @@
 
         public static string ThemesKey = "Themes";
 
+        public static string ModelsKey = "Models";
+
         #endregion
     }
 }

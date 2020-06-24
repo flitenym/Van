@@ -30,6 +30,7 @@
             <RowDefinition Height="45" />
             <RowDefinition Height="45" />
             <RowDefinition Height="45" />
+            <RowDefinition Height="65" />
             <RowDefinition Height="*" />
             <RowDefinition Height="45" />
         </Grid.RowDefinitions>
@@ -62,7 +63,7 @@
             Grid.Column="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Text="Выбрать Year" />
+            Text="Выбрать Year (год)" />
 
         <ComboBox
             Grid.Row="1"
@@ -71,12 +72,36 @@
             ItemsSource="{Binding Years}"
             SelectedValue="{Binding Year}" />
 
-        <TextBlock
-            Grid.Row="2"
-            Grid.Column="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="Выбрать Reg" />
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Выбрать Reg (регион)" />
+
+            <Button
+                    Grid.Column="1"
+                    Width="auto"
+                    Height="auto"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding InfoCommand}"
+                    CommandParameter="RegionInfo"
+                    Foreground="{DynamicResource PreWindowButtonForeground}"
+                    Style="{DynamicResource ButtonZoom}"
+                    ToolTip="Инфо"
+                    ToolTipService.Placement="Bottom">
+                <materialDesign:PackIcon
+                        Width="30"
+                        Height="Auto"
+                        Kind="InfoCircleOutline" />
+            </Button>
+        </Grid>
 
         <ComboBox
             Grid.Row="2"
@@ -85,12 +110,36 @@
             ItemsSource="{Binding Regs}"
             SelectedValue="{Binding Reg}" />
 
-        <TextBlock
-            Grid.Row="3"
-            Grid.Column="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="Выбрать Group" />
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock 
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Выбрать Group (группу)" />
+
+            <Button
+                    Grid.Column="1"
+                    Width="auto"
+                    Height="auto"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding InfoCommand}"
+                    CommandParameter="GroupInfo"
+                    Foreground="{DynamicResource PreWindowButtonForeground}"
+                    Style="{DynamicResource ButtonZoom}"
+                    ToolTip="Инфо"
+                    ToolTipService.Placement="Bottom">
+                <materialDesign:PackIcon
+                        Width="30"
+                        Height="Auto"
+                        Kind="InfoCircleOutline" />
+            </Button>
+        </Grid>
 
         <ComboBox
             Grid.Row="3"
@@ -99,12 +148,36 @@
             ItemsSource="{Binding Groups}"
             SelectedValue="{Binding Group}" />
 
-        <TextBlock
-            Grid.Row="4"
-            Grid.Column="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="Выбрать Sex" />
+        <Grid Grid.Row="4" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Выбрать Sex (пол)" />
+
+            <Button
+                    Grid.Column="1"
+                    Width="auto"
+                    Height="auto"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding InfoCommand}"
+                    CommandParameter="SexInfo"
+                    Foreground="{DynamicResource PreWindowButtonForeground}"
+                    Style="{DynamicResource ButtonZoom}"
+                    ToolTip="Инфо"
+                    ToolTipService.Placement="Bottom">
+                <materialDesign:PackIcon
+                        Width="30"
+                        Height="Auto"
+                        Kind="InfoCircleOutline" />
+            </Button>
+        </Grid>
 
         <ComboBox
             Grid.Row="4"
@@ -113,17 +186,100 @@
             ItemsSource="{Binding Sexs}"
             SelectedValue="{Binding Sex}" />
 
+        <Grid Grid.Row="5" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCause}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Выбрать Cause (причина смерти)" />
+
+            <Button
+                    Grid.Column="1"
+                    Width="auto"
+                    Height="auto"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding InfoCommand}"
+                    CommandParameter="CauseInfo"
+                    Foreground="{DynamicResource PreWindowButtonForeground}"
+                    Style="{DynamicResource ButtonZoom}"
+                    ToolTip="Инфо"
+                    ToolTipService.Placement="Bottom">
+                <materialDesign:PackIcon
+                        Width="30"
+                        Height="Auto"
+                        Kind="InfoCircleOutline" />
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="5" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCause}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <ComboBox
+                Margin="15,5,15,5"
+                ItemsSource="{Binding Causes}"
+                SelectedValue="{Binding Cause}" />
+        </Grid>
+
+       
+        <Grid Grid.Row="6" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <CheckBox
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IsCause}"
+                Content="Использовать причины смерти"/>
+
+            <CheckBox
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IsFiveYear}"
+                Content="Пятилетние данные"/>
+        </Grid>
+
         <Button
-                Grid.Row="5"
-                Grid.Column="3"
-                Margin="5"
-                Command="{Binding ShowDataCommand}"
-                Content="Просмотр данных"
-                Foreground="{DynamicResource PreWindowButtonForeground}"
-                Style="{DynamicResource MaterialDesignRaisedButton}" />
+            Grid.Row="6"
+            Grid.Column="3"
+            Margin="5"
+            Command="{Binding ShowDataCommand}"
+            Content="Просмотр данных"
+            Foreground="{DynamicResource PreWindowButtonForeground}"
+            Style="{DynamicResource MaterialDesignRaisedButton}" />
 
         <GridSplitter
-            Grid.RowSpan="3"
+            Grid.RowSpan="50"
             Grid.Column="1"
             Width="Auto"
             HorizontalAlignment="Stretch"
@@ -132,7 +288,7 @@
 
         
 
-        <Grid Grid.Row="7" Grid.ColumnSpan="3">
+        <Grid Grid.Row="8" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />

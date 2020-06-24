@@ -35,6 +35,23 @@ namespace SharedLibrary.LocalDataBase
             });
         }
 
+        public static DataTable SelectExecutor(ModelClass modelClass, string param = default)
+        { 
+            try
+            {
+                using (var slc = new SQLiteConnection(LoadConnectionString))
+                {
+                    slc.Open();
+                    return (slc.Query(modelClass?.GetType(), $"SELECT * FROM {modelClass?.GetType().Name} {param}")).ToList().ToDataTable(modelClass?.GetType()) ?? new DataTable();
+                }
+            }
+            catch (Exception ex)
+            {
+                HelperMethods.Message(ex.ToString());
+                return new DataTable();
+            } 
+        }
+
         public static async Task<List<T>> SelectExecutorAsync<T>(string tableName, string param = default)
         {
             return await Task.Run(async () =>

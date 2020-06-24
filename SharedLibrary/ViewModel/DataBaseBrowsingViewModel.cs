@@ -20,6 +20,8 @@ using static SharedLibrary.Helper.HelperMethods;
 using System.Windows.Controls;
 using System.IO;
 using ExcelDataReader;
+using SharedLibrary.Provider;
+using SharedLibrary.Helper.StaticInfo;
 
 namespace SharedLibrary.ViewModel
 {
@@ -36,7 +38,8 @@ namespace SharedLibrary.ViewModel
         {
             TableData = new DataTable();
 
-            var models = GetAllInstancesOf<ModelClass>(new List<ModelClass>()).ToList();
+            var models = SharedProvider.GetFromDictionaryByKey(InfoKeys.ModelsKey) as List<ModelClass>;
+
             models.ForEach(x => x.Title = GetModelTitleAttribute(x));
             models.ForEach(x => x.SetCanInsert(GetModelCanInsertAttribute(x)));
             models.ForEach(x => x.SetCanDelete(GetModelCanDeleteAttribute(x)));
